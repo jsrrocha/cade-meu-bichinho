@@ -1,0 +1,44 @@
+
+<div mat-dialog-content class = "register" id="register-content"> 
+  <form [formGroup]="formRegister" (submit)="addUser()">
+    <h4 mat-dialog-title>Cadastre-se</h4>  
+      
+      <!-- Name insertion-->
+      <mat-form-field  class="form-style"> 
+       <input matInput formControlName="name" required placeholder="Seu nome">
+      </mat-form-field> 
+      <br />
+
+      <!-- Email insertion-->
+      <mat-form-field class="form-style">
+        <input matInput formControlName="email" required placeholder="Seu email">
+      </mat-form-field>
+
+      <!-- Password insertion-->
+      <mat-form-field class="form-style">
+        <input matInput type="password" formControlName="password" required placeholder="Cadastre uma senha">
+      </mat-form-field>
+
+      <br />
+
+      <!-- Phone insertion-->
+      <mat-form-field class="form-style">
+        <input matInput formControlName="phone" placeholder="Telefone c/ DDD" required>
+
+        <mat-error *ngIf="formRegister.controls.phone.invalid">{{getPhoneErrorMessage()}}</mat-error>
+
+        <mat-button-toggle (click)="isPhoneWithWhats()" matSuffix matTooltip="Marque se o telefone possui whats">
+            <img  class="whats-png-icon" src="../assets/icons/whats.png">
+        </mat-button-toggle>
+      </mat-form-field> 
+
+      
+      
+      <div mat-dialog-actions class="actions">
+       <button mat-raised-button color="primary" class=button type="submit">Logar</button>
+       <button mat-raised-button class="button" (click)="close()">Cancelar</button>
+      </div>
+
+  </form>
+</div>
+

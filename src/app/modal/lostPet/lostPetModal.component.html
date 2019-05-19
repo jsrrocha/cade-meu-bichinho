@@ -1,0 +1,122 @@
+
+
+<div mat-dialog-content class= "add-lost-pet" >
+  <form [formGroup]="formPetLost">
+    <h4 mat-dialog-title >Cadastre um pet perdido</h4>
+
+    <!-- Name insertion-->
+    <mat-form-field  class="form-style">
+      <input  matInput formControlName="name" required placeholder="Nome do pet">
+    </mat-form-field>
+
+    <!-- Specie selection-->
+    <mat-button-toggle-group class=group [(value)]="selectedSpecie" #speciegroup="matButtonToggleGroup">
+      
+      <mat-button-toggle class=group-button [value]="0"  matTooltip="Meu pet é um cachorro">
+        <img  class="select-png-icon" src="../assets/icons/blank.png">
+      </mat-button-toggle>
+
+      <mat-button-toggle class=group-button [value]="1" matTooltip="Meu pet é um gato">
+          <img  class="select-png-icon" src="../assets/icons/veia.png">
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+
+    <!-- Upload photo-->
+    <mat-form-field  class="form-style">
+      <input readonly required id="input-photo-src" formControlName="photoSrc" class="input-photo-src" matInput placeholder="Insira uma foto dele" />
+      <input  id="input-photo" type="file" style="display: none;" (change)="onFileSelected($event)" />
+      <label matSuffix for="input-photo">
+         <mat-icon  matTooltip="Clique para escolher">cloud_upload</mat-icon>
+      </label>
+    </mat-form-field>
+
+    <!-- Sex selection-->
+    <mat-button-toggle-group class=group [(value)]="selectedSex"  #sexgroup="matButtonToggleGroup" >
+      <mat-button-toggle class=group-button [value]="0" checked matTooltip="Ele é macho">
+        <img  class="select-png-icon" src="../assets/icons/male.png">
+      </mat-button-toggle>
+
+      <mat-button-toggle class=group-button [value]="1" matTooltip="Ela é fêmea">
+        <img  class="select-png-icon" src="../assets/icons/female.png">
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+
+    <!-- Date selection-->
+    <mat-form-field class="form-style">
+      <input matInput [matDatepicker]="picker" [formControl]="date" placeholder="Data de encontro" >
+      <mat-datepicker-toggle matSuffix [for]="picker" matTooltip="Selecione a data"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+    <!-- Life stage selection-->
+    <mat-button-toggle-group id="life-stage" class="group" [(value)]="selectedLifeStage"  #lifegroup="matButtonToggleGroup" >
+      <mat-button-toggle class=group-button [value]="0" checked matTooltip="Ele é filhote">
+        <img  class="select-png-icon" src="../assets/icons/puppy.png">
+      </mat-button-toggle>
+
+      <mat-button-toggle class=group-button [value]="1" matTooltip="Ele é adulto">
+        <img  class="select-png-icon" src="../assets/icons/adult.png">
+      </mat-button-toggle>
+
+      <mat-button-toggle class=group-button [value]="2" matTooltip="Ele é idoso">
+        <img  class="select-png-icon" src="../assets/icons/old.png">
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+
+    <!-- Phone insertion-->
+    <mat-form-field class="form-style">
+      <input matInput formControlName="phone" placeholder="Telefone c/ DDD" required>
+      <mat-button-toggle (click)="isPhoneWithWhats()" matSuffix matTooltip="Marque se o telefone possui whats">
+        <img  class="whats-png-icon" src="../assets/icons/whats.png">
+      </mat-button-toggle>
+    </mat-form-field>
+
+    <!-- Fur color selection-->
+    <mat-button-toggle-group id="fur-color" class=group [(value)]="selectedFurColor"  #colorgroup="matButtonToggleGroup" >
+      <mat-button-toggle class=group-button [value]="0" checked matTooltip="A cor é parecida com branco">
+        <img  class="color-png-icon" src="../assets/icons/dogbranco.png">
+      </mat-button-toggle>
+
+      <mat-button-toggle class=group-button [value]="1" matTooltip="A cor dele é parecida com preto">
+        <img  class="color-png-icon" src="../assets/icons/dogpreto.png">
+      </mat-button-toggle>
+
+      <mat-button-toggle class=group-button [value]="2" matTooltip="A cor dele é parecida com preto e branco">
+        <img  class="color-png-icon" src="../assets/icons/dogpretoebranco.png">
+      </mat-button-toggle>
+
+      <mat-button-toggle class=group-button [value]="3" matTooltip="A cor dele é parecida com marrom/caramelo">
+        <img  class="color-png-icon" src="../assets/icons/dogcaramelo.png">
+      </mat-button-toggle>
+
+      <mat-button-toggle class=group-button [value]="4" matTooltip="A cor dele é parecida com cinza">
+        <img  class="color-png-icon" src="../assets/icons/dogcinza.png">
+      </mat-button-toggle>
+
+      <mat-button-toggle class=group-button [value]="5" matTooltip="A cor dele é parecida com malhado/listrado">
+        <img  class="color-png-icon" src="../assets/icons/dogmalhado.png">
+      </mat-button-toggle>
+
+      <mat-button-toggle class=group-button [value]="6" matTooltip="A cor dele tem bolinhas/manchinhas">
+        <img  class="color-png-icon" src="../assets/icons/dogcombolinhas.png">
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+
+    <!-- description insertion-->
+    <textarea id="description" class ="description-field border-on" rows="2" cols="60" maxlength="500" wrap="hard" required formControlName="description" matInput placeholder="Faltou algo? Ele possui raça? Ele usa coleira? É castrado? Possui alguma caracteristica que o identifique?  Descreva aqui :)" ></textarea>
+
+    <!-- Local insertion(mockup)-->
+    <label class="map-label">Onde ele foi encontrado? Arraste o marcador para o local no mapa:</label>
+    
+    <div  class="select-local"> 
+      <div id=streetviewMap #streetviewMap class="map-location"> </div>
+    </div>    
+
+    <div mat-dialog-actions class="actions">
+      <button mat-raised-button color="primary" class=button type="submit" (click)="addPet()">Cadastrar</button>
+      <button mat-raised-button class="button" (click)="close()">Cancelar</button> 
+    </div>
+  </form>
+</div>    
+
+   
