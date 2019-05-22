@@ -34,7 +34,20 @@ agm-map {
 
 /* Plus menu */
 .plus-menu {
-  margin-bottom: 10px;
+  margin-bottom: 15px; 
+}
+
+.plus-menu:after{
+  content: ''; 
+  position: absolute; 
+  bottom: 0; 
+  left:95%; 
+  width: 0; 
+  height: 0; 
+  border: 15px solid transparent; 
+  border-top-color: white; 
+  border-bottom: 0; 
+  margin-bottom: 4px;
 }
 
 /*Just work here*/
@@ -84,6 +97,7 @@ agm-map {
 .mat-card > :first-child{
    margin-top: 5px !important;
 }
+
 .search-results{
   .mat-list-base .mat-list-item.mat-multi-line .mat-list-item-content, .mat-list-base .mat-list-option.mat-multi-line .mat-list-item-content {
     padding: 5px !important;

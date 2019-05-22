@@ -106,7 +106,8 @@ export class CommentModalComponent {
           },
           error => {
               console.log(error);
-              alert("Algo deu errado");
+              this.service.handleErrors(error);
+
           });
     }
   }

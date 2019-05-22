@@ -106,7 +106,6 @@
             </mat-button-toggle-group>
           </div>
 
-        
           <!-- Fur color selection-->
           <div class="filter-option">
             <label>Cor:</label>
@@ -217,10 +216,11 @@
             </div>
             
             <div class="card-result-options">
-              <button mat-icon-button class="delete" *ngIf="this.cookieService.get('logged')=='true'" (click)="openDialogRemovePet()" matTooltip="Remover pet">
+              <button mat-icon-button class="delete" *ngIf=
+              "petBelongsToUser" (click)="openDialogRemovePet()" matTooltip="Remover pet">
                 <mat-icon>delete</mat-icon>
               </button>
-              <button mat-icon-button class="edit" *ngIf="this.cookieService.get('logged')=='true'" (click)="openDialogLogin()" matTooltip="Editar">
+              <button mat-icon-button class="edit" *ngIf="petBelongsToUser" (click)="openDialogLogin()" matTooltip="Editar">
                 <mat-icon>edit</mat-icon>
               </button>
               <button mat-icon-button class="comment" (click)="openDialogComment()" matTooltip="Clique para postar um comentário">
@@ -252,6 +252,14 @@
     </button>
   </div>
 
+  <!-- Logout -->
+  <div *ngIf="this.cookieService.get('logged') == 'true'">
+    <button mat-icon-button class="logout-button logout" (click)="logoutUser()">
+      <mat-icon>person</mat-icon>
+      <span>Logout</span>
+    </button>
+  </div>
+
   <div class="notification-list" *ngIf="showNotifications">
     <div class="card-list" >
     <mat-card class="notification-card" *ngFor="let notif of notifications" >
@@ -273,7 +281,8 @@
   </div>
 
   <!-- Plus button -->
-  <mat-menu #appMenu="matMenu" yPosition="above" class="plus-menu" >
+  
+  <mat-menu #appMenu="matMenu" yPosition="above" class="plus-menu">
     <button mat-menu-item (click)="openDialogLostPet()">
       <mat-icon>add</mat-icon>
       <span>Cadastre seu pet perdido</span>
@@ -296,7 +305,7 @@
       </div>
 
       <agm-info-window>
-        <strong>Eu sou o {{pet.name}} e estou {{pet.lostPet == "true" ? "perdido" : "encontrado"}}</strong>
+        <strong>Eu sou o {{pet.name}} e {{pet.lostPet == "true" ? "estou perdido" : "fui encontrado"}}</strong>
       </agm-info-window>
     </agm-overlay>
 

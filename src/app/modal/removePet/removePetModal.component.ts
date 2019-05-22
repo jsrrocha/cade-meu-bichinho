@@ -8,7 +8,6 @@ import { MAT_DIALOG_DATA, MatDialogRef,MatDatepickerModule,
 MatNativeDateModule} from '@angular/material';
 import {DateAdapter, MAT_DATE_FORMATS,MAT_DATE_LOCALE} from '@angular/material/core';
 
-
 // Components
 import { ServiceComponent } from '../../service.component';
 
@@ -39,36 +38,41 @@ export class RemovePetModalComponent {
   }
 
   removePet(){ 
-     if(this.formRemove.valid){    
+    if(this.formRemove.valid){    
 
       console.log(this.form.reason.value);    
       this.service.addComment(null).subscribe(
-            (data:any)=> {
-                console.log(data);
-                this.dialogRef.close();
-                alert("Pet foi removido com sucesso");
-
-            },
-            error => {
-                console.log(error);
-                alert("Algo deu errado");
-            });
+        (data:any)=> {
+          console.log(data);
+          this.dialogRef.close();
+          swal.fire({
+            title: 'Bom trabalho!',
+            text: 'Pet foi removido com sucesso',
+            type: 'success',
+            width: 350
+          })
+        },
+        error => {
+            this.service.handleErrors(error);
+            console.log(error);
+        });
     }
   }
   
   close() {
     swal.fire({
-        title: 'Você realmente deseja sair?',
-        type: 'warning',
-        width: 350,
-        showCancelButton: true,
-        confirmButtonText: 'OK',
-        cancelButtonText: 'Cancelar',
-        reverseButtons: true
+      title: 'Você realmente deseja sair?',
+      type: 'warning',
+      width: 350,
+      showCancelButton: true,
+      confirmButtonText: 'OK',
+      cancelButtonText: 'Cancelar',
+      reverseButtons: true
       }).then((result) => { 
-        if (result.value) {
-          this.dialogRef.close();
-        } 
+      
+      if (result.value) {
+        this.dialogRef.close();
+      } 
     })
   }
 }

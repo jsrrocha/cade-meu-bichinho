@@ -3,9 +3,7 @@ import {HttpClient, HttpParams, HttpHeaders} from '@angular/common/http';
 import {FormBuilder,FormControl, FormGroup,Validators} from '@angular/forms';
 import swal from 'sweetalert2';
 
-
 //material
-
 import { MAT_DIALOG_DATA, MatDialogRef,MatDialogConfig,MatDialog,
          MatButtonModule,MatButtonToggleModule,
          MatIconModule,MatIconRegistry,MatTooltipModule} 
@@ -13,11 +11,8 @@ import { MAT_DIALOG_DATA, MatDialogRef,MatDialogConfig,MatDialog,
 
 // Components
 import { RegisterModalComponent } from '../../modal/register/registerModal.component';  
-
-
 import { ServiceComponent } from '../../service.component';
 import { TokenInterceptor } from '../../token.interceptor';   
-
 
 @Component({
   selector: 'register-new-password-modal',
@@ -36,15 +31,12 @@ export class RegisterNewPasswordModalComponent {
     private service: ServiceComponent,
     private dialog: MatDialog, 
     ){
-    
     this.formRegister = this.formBuilder.group({
       phone: ['', Validators.required],
       email: ['', Validators.required],
       newPassword: ['',Validators.required],
       confirmPassword: ['', Validators.required], 
-
     });
-
   }
 
   get form() {
@@ -52,38 +44,43 @@ export class RegisterNewPasswordModalComponent {
   }
 
   isPhoneWithWhats() { 
-   if(this.phoneWithWhats){  
+    if(this.phoneWithWhats){  
       this.phoneWithWhats = false; 
-   }else{
-     this.phoneWithWhats = true; 
-   }    
+    }else{
+      this.phoneWithWhats = true; 
+    }    
   }  
 
+  //COMPARAÇÃO DE SENHAS ANTES?
   registerNewPassword(){
-      if(this.formRegister.valid){
+    if(this.formRegister.valid){
 
-        let user = { 
-           "phone" : this.form.phone.value,
-           "email" : this.form.email.value,
-           "newPassword" : this.form.newPassword.value,
-           "confirmNewPassword": this.form.confirmPassword.value
-        }
-        console.log(user);
-        
-        this.service.addNewPassword(user).subscribe(
-              (data:any)=> {
-                  console.log(data);
-                  this.dialogRef.close(); 
-                  alert("Nova senha cadastrada com sucesso"); 
-              },
-              error => {
-                  console.log(error);
-                  alert("Algo deu errado");
-              });
+      let user = { 
+        "phone" : this.form.phone.value,
+        "email" : this.form.email.value,
+        "newPassword" : this.form.newPassword.value,
+        "confirmNewPassword": this.form.confirmPassword.value
       }
+      console.log(user);
+      
+      this.service.addNewPassword(user).subscribe(
+        (data:any)=> {
+            console.log(data);
+            this.dialogRef.close(); 
+            swal.fire({
+              title: 'Bom trabalho!',
+              text: 'Nova senha cadastrada com sucesso',
+              type: 'success',
+              width: 350
+            })
+        },
+        error => {
+            this.service.handleErrors(error);
+            console.log(error);
+        });
+    }
   }
   
-
   close() {
     swal.fire({
         title: 'Você realmente deseja sair?',
@@ -99,5 +96,4 @@ export class RegisterNewPasswordModalComponent {
         } 
     })
   }
- 
 }

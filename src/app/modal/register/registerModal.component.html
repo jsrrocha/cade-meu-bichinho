@@ -1,6 +1,6 @@
 
 <div mat-dialog-content class = "register" id="register-content"> 
-  <form [formGroup]="formRegister" (submit)="addUser()">
+  <form [formGroup]="formRegister" >
     <h4 mat-dialog-title>Cadastre-se</h4>  
       
       <!-- Name insertion-->
@@ -35,7 +35,7 @@
       
       
       <div mat-dialog-actions class="actions">
-       <button mat-raised-button color="primary" class=button type="submit">Logar</button>
+       <button mat-raised-button color="primary" class=button type="submit" (click)="addUser()">Cadastrar</button>
        <button mat-raised-button class="button" (click)="close()">Cancelar</button>
       </div>
 

@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpParams, HttpHeaders} from '@angular/common/http';
+import {HttpClient, HttpParams, 
+        HttpHeaders} from '@angular/common/http';
+import swal from 'sweetalert2'; 
 
 @Injectable({
   providedIn: 'root'
@@ -7,14 +9,15 @@ import {HttpClient, HttpParams, HttpHeaders} from '@angular/common/http';
 
 export class ServiceComponent {
 
-  backendUrl = "http://localhost:8086/cademeubichinho/";
+  //backendUrl = "http://localhost:8086/";
+  backendUrl = "https://cademeubichinho02.herokuapp.com/";
+
   tokenForClient = "Basic Z2xvYmFsOjEyMzQ1Ng==";
 
   constructor(private http: HttpClient) {}
 
-
   authentication(username:string,password:string){
-      const url = this.backendUrl + "oauth/token?grant_type=password&username="+ username +"&password=" + password;
+      const url = this.backendUrl + "oauth/token?grant_type=password&username="+ username +"&password=" + password;                                                       
       return this.http.post(url,null);
   }
 
@@ -38,6 +41,10 @@ export class ServiceComponent {
       return this.http.get(url);
   }
 
+  logoutUser(){
+      const url = this.backendUrl + "user/logout";
+      return this.http.post(url,null);
+  }
 
 
   addPet(data: object){
@@ -73,7 +80,6 @@ export class ServiceComponent {
   }
 
 
-
   addComment(data: object){
       const url = this.backendUrl + "comment/add";
       return this.http.post(url,data);
@@ -89,6 +95,35 @@ export class ServiceComponent {
       return this.http.post(url,null);
   }
 
-  
-  
+  handleErrors(error: any){
+    if(error.error.errorMessage != undefined){
+      swal.fire({
+        type: 'error',
+        title: error.error.errorMessage,
+        width: 350
+      })
+    }else if(error.error.error_description == "Bad credentials"){
+      swal.fire({
+        type: 'error',
+        title: 'Usuário ou senha inválidos',
+        width: 350
+      })
+    }else if(error.status == 0){
+      swal.fire({
+        type: 'error',
+        title: 'Oops...',
+        text: 'Sistema está fora do ar',
+        width: 350
+      })
+    }else if(error.error.error_description == "Invalid refresh token: "){
+      //Ignora!
+    }else{
+      swal.fire({
+        type: 'error',
+        title: 'Oops... Algo deu errado',
+        text: 'Tente novamente',
+        width: 350
+      })
+    }
+  }  
 }

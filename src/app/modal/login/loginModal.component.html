@@ -1,5 +1,5 @@
 <div mat-dialog-content class = "login" id="login-content"> 
-  <form [formGroup]="formLogin" (submit)="loginAuth()">
+  <form [formGroup]="formLogin" >
     <h2 mat-dialog-title>Login</h2>  
     <!-- Email insertion-->
     <mat-form-field class="form-style">
@@ -25,7 +25,7 @@
     <br />
 
     <div mat-dialog-actions class="actions">
-      <button mat-raised-button color="primary" class=button type="submit">Logar</button>
+      <button mat-raised-button color="primary" class=button type="submit" (click)="loginAuth()">Logar</button>
       <button mat-raised-button class="button" (click)="close()">Cancelar</button>
     </div>
   </form>

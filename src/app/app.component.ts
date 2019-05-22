@@ -1,4 +1,5 @@
 /// <reference types="@types/googlemaps" />
+
 import { Component, ElementRef, NgZone, OnInit, ViewChild,AfterViewInit } from '@angular/core';
 import { MapsAPILoader } from '@agm/core';
 import {ScrollDispatchModule} from '@angular/cdk/scrolling';
@@ -15,16 +16,13 @@ import swal from 'sweetalert2';
 import { MatDialog, MatDialogConfig,MatRadioModule,MatNativeDateModule,MatDividerModule,
 MatListModule,MatPaginatorModule,MatCheckboxModule } from '@angular/material';
 
-
 // Components
 import { LostPetModalComponent } from './modal/lostPet/lostPetModal.component';
 import { FoundPetModalComponent } from './modal/foundPet/foundPetModal.component';
 import { LoginModalComponent } from './modal/login/loginModal.component';
 import { CommentModalComponent } from './modal/comment/commentModal.component';
 import { ServiceComponent } from './service.component';
-
 import { RemovePetModalComponent } from './modal/removePet/removePetModal.component'; 
-
 
 export const MY_FORMATS = {
   parse: {
@@ -37,7 +35,6 @@ export const MY_FORMATS = {
     monthYearA11yLabel: 'YYYY',
   },
 };
-
 
 @Component({
   selector: 'app-root',
@@ -72,6 +69,7 @@ export class AppComponent implements OnInit {
   searching = false;
   existPets = false; 
   showNotifications = false;
+  petBelongsToUser = false;
   
   //Others
   datePicker;
@@ -102,7 +100,7 @@ export class AppComponent implements OnInit {
     private service: ServiceComponent,
     private formBuilder: FormBuilder,
     private formBuilder2: FormBuilder,
-    public cookieService: CookieService
+    private cookieService: CookieService
     ){
   
     this.formLocal = this.formBuilder.group({
@@ -175,7 +173,6 @@ export class AppComponent implements OnInit {
 
     //inicialize cookies 
     //(Problema: quando o user atualizar a página se desloga..)
-
     this.cookieService.put('token',"");
     this.cookieService.put('refreshToken',"");
     this.cookieService.put('expiresIn',"");
@@ -227,6 +224,13 @@ export class AppComponent implements OnInit {
    this.petDescription = v[0].value.description;
    this.petPhone = v[0].value.phone;
    this.petPhoneWithWhats = v[0].value.phonewithWhats;
+   this.petUserId = v[0].value.userId;
+
+   if(this.petUserId == this.cookieService.get('userLoggedId')){
+      this.petBelongsToUser = true;
+   }else{
+      this.petBelongsToUser = false;
+   }
 
    //Name
    (<HTMLInputElement>document.getElementById('resultName')).textContent = 
@@ -273,9 +277,6 @@ export class AppComponent implements OnInit {
       var withWhats = (<HTMLInputElement>document.getElementById('resultWithWhats')).textContent;
       withWhats = " Ou mande Whatsapp " + this.petPhoneWithWhats;
    }
-   
-   //For comment:
-   this.petUserId = v[0].value.userId;
 
   }
 
@@ -292,12 +293,30 @@ export class AppComponent implements OnInit {
           console.log(data); 
           this.pets = data;
           this.existPets = true;
-
       },
       error => {
           console.log(error);
       });
         
+  }
+
+  logoutUser(){
+      this.service.logoutUser().subscribe(
+      (data:any)=> {
+          console.log(data);
+          this.cookieService.put('token',"");
+          this.cookieService.put('refreshToken',"");
+          this.cookieService.put('expiresIn',"");
+
+          this.cookieService.put('userLoggedId',"");
+          this.cookieService.put('userName',"");
+          this.cookieService.put('userPhone',"");
+          this.cookieService.put('UserPhoneWithWhats',"");
+          this.cookieService.put('logged',"false"); 
+      },
+      error => {
+          console.log(error);
+      });  
   }
 
   getPetSearch(){
@@ -332,28 +351,26 @@ export class AppComponent implements OnInit {
 
       this.service.petSearch(pet).subscribe(
       (data:any)=> {
-          console.log(data); 
+          //console.log(data); 
           this.pets = data;
           this.existPets = true; 
       },
       error => {
-          alert("Algo deu errado");
+          this.service.handleErrors(error);
           console.log(error);
       });        
   }
 
   getNotifications(){
     if(this.cookieService.get('userLoggedId') !=""){
-
       this.service.getCommentsWithNotificationsActiveByUserReceived(    +this.cookieService.get('userLoggedId'))
         .subscribe(
-            (data:any)=> {
-                console.log(data); 
-                this.notifications = data;
-                
-            },
-            error => {
-                console.log(error);
+          (data:any)=> {
+              console.log(data); 
+              this.notifications = data;
+          },
+          error => {
+              console.log(error);
       });
     }
   }
@@ -378,12 +395,12 @@ export class AppComponent implements OnInit {
         confirmButtonText: 'OK',
         cancelButtonText: 'Cancelar',
         reverseButtons: true
-      }).then((result) => { 
+        }).then((result) => { 
+        
         if (result.value) {
           this.service.removeNotification(id)
               .subscribe(
                   (data:any)=> {
-                      
                       swal.fire({
                         title: 'Bom trabalho!',
                         text: 'Notificação removida com sucesso',
@@ -392,12 +409,7 @@ export class AppComponent implements OnInit {
                       })
                   },
                   error => {
-                      swal.fire({
-                        type: 'error',
-                        title: 'Oops...',
-                        text: 'Sistema está fora do ar',
-                        width: 350
-                      })
+                      this.service.handleErrors(error);
                       console.log(error);
           });
           
@@ -418,20 +430,16 @@ export class AppComponent implements OnInit {
   }
 
   openDialogFoundPet() {
-
     const dialogConfig = new MatDialogConfig();
 
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
     dialogConfig.width = '520px';
     dialogConfig.height = '585px'
-
-
     this.dialog.open(FoundPetModalComponent, dialogConfig);
   }
 
   openDialogPetEdition() {
-
     const dialogConfig = new MatDialogConfig();
 
     dialogConfig.disableClose = true;
@@ -458,11 +466,9 @@ export class AppComponent implements OnInit {
     dialogConfig.autoFocus = true;
     dialogConfig.width = '230px';
     dialogConfig.height = '330px';  
-
     this.dialog.open(LoginModalComponent, dialogConfig);
   }
 
- 
   openDialogComment() { 
     const dialogConfig = new MatDialogConfig();
 
@@ -480,7 +486,6 @@ export class AppComponent implements OnInit {
     this.dialog.open(CommentModalComponent, dialogConfig);
   }
 
-
   openDialogRemovePet() {
     const dialogConfig = new MatDialogConfig();
 
@@ -488,10 +493,6 @@ export class AppComponent implements OnInit {
     dialogConfig.autoFocus = true;
     dialogConfig.width = '250px';
     dialogConfig.height = '200px';  
-
     this.dialog.open(RemovePetModalComponent, dialogConfig);
   }
-  
-
-
 }

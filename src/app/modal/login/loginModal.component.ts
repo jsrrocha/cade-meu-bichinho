@@ -4,9 +4,7 @@ import {FormBuilder,FormControl, FormGroup,Validators} from '@angular/forms';
 import { CookieService } from 'ngx-cookie';
 import swal from 'sweetalert2';
 
-
 //material
-
 import { MAT_DIALOG_DATA, MatDialogRef,MatDialogConfig,MatDialog,
          MatButtonModule,MatButtonToggleModule,
          MatIconModule,MatIconRegistry,MatTooltipModule} 
@@ -15,7 +13,6 @@ import { MAT_DIALOG_DATA, MatDialogRef,MatDialogConfig,MatDialog,
 // Components
 import { RegisterModalComponent } from '../../modal/register/registerModal.component';  
 import { RegisterNewPasswordModalComponent } from '../../modal/registerNewPassword/registerNewPasswordModal.component'; 
-
 import { ServiceComponent } from '../../service.component';
 import { TokenInterceptor } from '../../token.interceptor';   
 
@@ -36,13 +33,14 @@ export class LoginModalComponent {
     private service: ServiceComponent,
     private dialog: MatDialog, 
     private cookieService:CookieService,
-    ){
     
+    @Inject(MAT_DIALOG_DATA) 
+    private pet: any, 
+    ){
     this.formLogin = this.formBuilder.group({
       email: ['', Validators.required],
       password: ['',Validators.required]   
     });
-
   }
 
   get formControl() {
@@ -60,89 +58,91 @@ export class LoginModalComponent {
   loginAuth(){
     if(this.formLogin.valid){
       this.cookieService.put('token',this.service.tokenForClient);
-      console.log(this.cookieService.get('token'));
 
       this.service.authentication(
         this.formControl.email.value,
         this.formControl.password.value)
         .subscribe(
         (data:any)=> {
-            console.log(data);
-            this.cookieService.put('token','Bearer ' + data.access_token);
-            this.cookieService.put('refreshToken',data.refresh_token);
-            
-            this.cookieService.put('expiresIn',data.expires_in);
-
-            var expireTime = new Date().getTime() +  data.expires_in * 1000;  
-            this.cookieService.put('expireTime',expireTime.toString());
-   
-            this.getUserLoggedInAndAddUserOfPet();
-            this.dialogRef.close();
-            
-            alert("Login realizado com sucesso");
+          //console.log(data);
+          this.cookieService.put('token','Bearer ' + data.access_token);
+          this.cookieService.put('refreshToken',data.refresh_token);
+          this.cookieService.put('expiresIn',data.expires_in);
+          var expireTime = new Date().getTime() +  data.expires_in * 1000;  
+          this.cookieService.put('expireTime',expireTime.toString());
+          
+          //Save user in cookies and save pet if is necessary
+          this.getUserLoggedInAndSavePet(); //ERROR NO SAVEPET?
         }, 
-
         error => {
-            alert("Algo deu errado");
-            console.error(error);
+          this.service.handleErrors(error);
+          console.log(error);
         });
     }
   }
 
-  getUserLoggedInAndAddUserOfPet(){
-      this.service.getUserLoggedIn().subscribe(
-        (data:any)=> {
-          console.log(data); 
-          
-          if(data != null){
-            this.cookieService.put('logged','true');
-            this.cookieService.put('userLoggedId',data.id);
-            this.cookieService.put('userName',data.name);
-            this.cookieService.put('userPhone',data.phone);
-            this.cookieService.put('userPhoneWithWhats',data.phoneWithWhats);
-
-            if(this.cookieService.get('petId') != ""){
-              this.addUserOfPet();
-            }
-         
-          }
-        },
-        error => {
-            console.log(error);
-        });
-  }
-
-  addUserOfPet(){
-    this.service.addUserOfPet(
-     +this.cookieService.get('petId'),
-     +this.cookieService.get('userLoggedId'))
-      .subscribe(
+  getUserLoggedInAndSavePet(){
+    this.service.getUserLoggedIn().subscribe(
       (data:any)=> {
-          console.log(data);
-          this.cookieService.put('petHaveUser','true');
-      },
+        console.log(data); 
 
+        if(data != null){
+          this.cookieService.put('logged','true');
+          this.cookieService.put('userLoggedId',data.id);
+          this.cookieService.put('userName',data.name);
+          this.cookieService.put('userPhone',data.phone);
+          this.cookieService.put('userPhoneWithWhats',data.phoneWithWhats);
+
+          this.dialogRef.close();
+          swal.fire({
+            title: 'Bom trabalho!',
+            text: 'Login realizado com sucesso',
+            type: 'success',
+            width: 350
+          })
+
+          if(this.pet !=null){
+            this.pet.userId = this.cookieService.get('userLoggedId');
+            this.savePet(this.pet);
+          }
+        }
+      },
       error => {
-          console.error(error);
+          console.log(error);
       });
   }
 
+  savePet(pet:any){
+    this.service.addPet(pet).subscribe(
+      (data:any)=> { 
+        this.cookieService.put('petId',data.id);
+        this.dialogRef.close();
+
+        swal.fire({
+          title: 'Bom trabalho!',
+          text: 'Pet cadastrado com sucesso',
+          type: 'success',
+          width: 350
+        })
+      },
+      error => {
+        console.log(error);
+    }); 
+  }
 
   refreshAccessAuth(){
     this.cookieService.put('token',this.service.tokenForClient);
-    
-    console.log(this.cookieService.get('refreshToken')); 
-
     this.service.refreshToken(this.cookieService.get('refreshToken'))
     .subscribe(
     (data:any)=> {
-        console.log(data);
+        //console.log(data);
 
         this.cookieService.put('token','Bearer ' + data.access_token);
         this.cookieService.put('refreshToken',data.refresh_token);
         this.cookieService.put('expiresIn',data.expires_in);
     },
     error => {
+        this.service.handleErrors(error);
         console.error(error);
     });
   }
@@ -156,7 +156,6 @@ export class LoginModalComponent {
     dialogConfig.width = '250px';
     dialogConfig.height = '350px'; 
     this.dialog.open(RegisterModalComponent, dialogConfig);
-    
   }
 
   openDialogRegisterNewPassword() {
@@ -167,7 +166,6 @@ export class LoginModalComponent {
     dialogConfig.autoFocus = true;
     dialogConfig.width = '250px';
     dialogConfig.height = '300px';  
-
     this.dialog.open(RegisterNewPasswordModalComponent, dialogConfig);
   }
 
@@ -180,7 +178,8 @@ export class LoginModalComponent {
         confirmButtonText: 'OK',
         cancelButtonText: 'Cancelar',
         reverseButtons: true
-      }).then((result) => { 
+        }).then((result) => { 
+        
         if (result.value) {
           this.dialogRef.close();
         } 

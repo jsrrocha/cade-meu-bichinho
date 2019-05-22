@@ -31,7 +31,6 @@ export const MY_FORMATS = {
   },
 };
 
-
 @Component({
   selector: 'found-pet-modal',
   templateUrl: './foundPetModal.component.html',
@@ -92,8 +91,8 @@ export class FoundPetModalComponent implements OnInit{
 
   ngOnInit() {
       let center = { 
-          lat: this.lat, 
-          lng: this.lng 
+        lat: this.lat, 
+        lng: this.lng 
       };
 
       var streetviewMap = (<HTMLInputElement>document.getElementById('streetviewMap'));
@@ -101,13 +100,11 @@ export class FoundPetModalComponent implements OnInit{
         streetviewMap,  
         { 
           center: center,  
-          zoom: this.zoom, 
-         
+          zoom: this.zoom,
           zoomControl: true,
           zoomControlOptions: {
             position: google.maps.ControlPosition.RIGHT_CENTER
           },
-
         });
 
       var image = {
@@ -183,7 +180,6 @@ export class FoundPetModalComponent implements OnInit{
     myReader.onloadend = (e) => {
       this.photoData = myReader.result; 
     }
-   
     myReader.readAsDataURL(file); 
   }
   
@@ -206,112 +202,106 @@ export class FoundPetModalComponent implements OnInit{
   }
 
   addPet(){
-      if(this.formPetFound.valid){
+    if(this.formPetFound.valid){
 
-        if(this.cookieService.get('userLoggedId') != ""){
-          this.userLoggedId = this.cookieService.get('userLoggedId');
-        }
-        
-        if(this.photoData !=null){
-          this.photoWithoutHeader64 = this.photoData.split(',')[1]; 
-        }
-
-        let pet = {
-           "name": this.form.name.value, 
-           "specie": this.selectedSpecie,
-           "sex": this.selectedSex,
-           "furColor": this.selectedFurColor,
-           "lifeStage": this.selectedLifeStage,
-           "photo" : this.photoWithoutHeader64, 
-           "date" : this.date.value,
-           "latitude" : this.markerPet.getPosition().lat(),
-           "longitude" : this.markerPet.getPosition().lng(),
-           "phone" : this.form.phone.value,
-           "phoneWithWhats" :  this.phoneWithWhats,
-           "description" : this.form.description.value,
-           "lostPet" : "false",
-           "userId": this.userLoggedId
-        }
-        //console.log(pet);
-        
-        this.service.addPet(pet).subscribe(
-            (data:any)=> { 
-                //console.log(data);
-                this.cookieService.put('petId',data.id);
-                this.dialogRef.close();
-
-                if(this.cookieService.get('userLoggedId') == ""){
-                  swal.fire({
-                    type: 'warning',
-                    title: 'Faça login para cadastrar o pet',
-                    width: 350
-                  }).then((result) => { 
-                      this.openDialogLogin();
-                  })
-                }else{
-                  swal.fire({
-                    title: 'Bom trabalho!',
-                    text: 'Pet cadastrado com sucesso',
-                    type: 'success',
-                    width: 350
-                  })
-                }   
-            },
-            error => {
-                swal.fire({
-                    type: 'error',
-                    title: 'Oops...',
-                    text: 'Sistema está fora do ar',
-                    width: 350
-                })
-
-                console.log(error);
-        }); 
+      if(this.cookieService.get('userLoggedId') != ""){
+        this.userLoggedId = this.cookieService.get('userLoggedId');
       }
+      
+      if(this.photoData !=null){
+        this.photoWithoutHeader64 = this.photoData.split(',')[1]; 
+      }
+
+      let pet = {
+         "name": this.form.name.value, 
+         "specie": this.selectedSpecie,
+         "sex": this.selectedSex,
+         "furColor": this.selectedFurColor,
+         "lifeStage": this.selectedLifeStage,
+         "photo" : this.photoWithoutHeader64, 
+         "date" : this.date.value,
+         "latitude" : this.markerPet.getPosition().lat(),
+         "longitude" : this.markerPet.getPosition().lng(),
+         "phone" : this.form.phone.value,
+         "phoneWithWhats" :  this.phoneWithWhats,
+         "description" : this.form.description.value,
+         "lostPet" : "false",
+         "userId": this.userLoggedId
+      }
+      //console.log(pet);
+
+      if(this.cookieService.get('userLoggedId') == ""){
+        this.dialogRef.close();
+        swal.fire({
+          type: 'warning',
+          title: 'Faça login para cadastrar o pet',
+          width: 350
+        }).then((result) => { 
+
+          this.openDialogLogin(pet);
+        })
+      }else{
+        this.service.addPet(pet).subscribe(
+          (data:any)=> { 
+              this.cookieService.put('petId',data.id);
+              this.dialogRef.close();
+
+              swal.fire({
+                title: 'Bom trabalho!',
+                text: 'Pet cadastrado com sucesso',
+                type: 'success',
+                width: 350
+              })
+          },
+          error => {
+              this.service.handleErrors(error);
+              console.log(error);
+        }); 
+      } 
+    }
   }
 
   editPet(){
-      if(this.formPetFound.valid){
+    if(this.formPetFound.valid){
 
-        if(this.photoData !=null){
-          this.photoWithoutHeader64 = this.photoData.split(',')[1]; 
-        }
-
-        let pet = {
-           "id": this.petEdition.petId,
-           "name": this.form.name.value, 
-           "photo" : this.photoWithoutHeader64, 
-           "phone" : this.form.phone.value,
-           "phoneWithWhats" :  this.phoneWithWhats,
-           "description" : this.form.description.value
-        }
-        console.log(pet);
-        
-        this.service.editPet(pet).subscribe(
-            (data:any)=> { 
-                //console.log(data);
-                this.dialogRef.close();
-
-                swal.fire(
-                    'Bom trabalho!',
-                    'Pet editado com sucesso',
-                    'success'
-                )
-            },
-            error => {
-                console.log(error);
-        });
+      if(this.photoData !=null){
+        this.photoWithoutHeader64 = this.photoData.split(',')[1]; 
       }
+      let pet = {
+         "id": this.petEdition.petId,
+         "name": this.form.name.value, 
+         "photo" : this.photoWithoutHeader64, 
+         "phone" : this.form.phone.value,
+         "phoneWithWhats" :  this.phoneWithWhats,
+         "description" : this.form.description.value
+      }
+      //console.log(pet);
+      
+      this.service.editPet(pet).subscribe(
+          (data:any)=> {
+              this.dialogRef.close();
+               swal.fire({
+                title: 'Bom trabalho!',
+                text: 'Pet editado com sucesso',
+                type: 'success',
+                width: 350
+              })
+          },
+          error => {
+              this.service.handleErrors(error);
+              console.log(error);
+      });
+    }
   }
 
-  openDialogLogin() {
-    this.close;
-    
+  openDialogLogin(pet:any) { 
+    console.log(pet);
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
     dialogConfig.width = '250px';
-    dialogConfig.height = '350px';  
+    dialogConfig.height = '350px'; 
+    dialogConfig.data = pet; 
 
     this.dialog.open(LoginModalComponent, dialogConfig);
   }

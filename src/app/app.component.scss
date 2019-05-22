@@ -155,6 +155,8 @@
   width: 100%;
   border-radius: 5px;
   background-color: #fff;
+  //background-color:#f5efff;
+
   padding: 5px;
   margin-top: 10px;
   box-sizing: border-box;
@@ -224,8 +226,8 @@
 
   .img-pet{
     position:absolute;
-    max-width: 110px;
-    max-height: 95px;
+    max-width: 100px;
+    max-height: 90px; 
     right: 0; 
     top: 0;
     z-index: 2;
@@ -270,7 +272,6 @@
      font-size: 12px ;
   }
   
-  
   .img-pet-selected{
      margin: 0 auto;
      text-align: center;
@@ -278,7 +279,7 @@
 
      img{
       width: 250px;
-      max-height: 200px;
+      max-height: 190px;
      }
   }
 
@@ -304,11 +305,9 @@
     font-size: 12px ;
   
   }
-
   .msg-style{
      font-weight: bold;
   }
-
 
   .card-result-options {
     .delete{
@@ -355,9 +354,7 @@
   border-color:red;
   width: 50px;
   height: 50px;
-
 }
-
 
 /* Plus menu button */
 .plus-menu-button {
@@ -369,6 +366,7 @@
   font-weight: bold;
   color: #FFF;
 }
+
 
 /* Footer info */
 .footer-info {
@@ -395,14 +393,31 @@
 }
 
 
-
 /* Buttons top */
 .login-button{
   font-size: 14px;
   font-weight: bold;
   position: fixed;
   z-index: 2;
-  right: 135px;
+  right: 50px;
+  width: inherit !important;
+  height: inherit !important;
+  background: #FFF;
+  border-radius: 4px;
+  top: 8px;
+  padding: 0 8px;
+  &:hover{
+    background: #663db1;
+    color: #fff;
+  }
+}
+
+.logout-button{
+  font-size: 14px;
+  font-weight: bold;
+  position: fixed;
+  z-index: 2;
+  right: 50px;
   width: inherit !important;
   height: inherit !important;
   background: #FFF;
@@ -420,7 +435,7 @@
   font-weight: bold;
   position: fixed;
   z-index: 2;
-  right: 10px;
+  right: 150px;
   width: inherit !important;
   height: inherit !important;
   background: #FFF;
@@ -440,7 +455,7 @@
   right:10px;
   width: 340px;
   height: 345px;
-  background-color:white;
+  background-color:#f5efff;
   border-radius: 4px;
   padding: 5px;
   box-sizing: border-box;
@@ -455,10 +470,11 @@
   width: 0;
   height: 0;
   border: 15px solid transparent;
-  border-bottom-color: white;
+  border-bottom-color: #f5efff;
   border-top: 0;
   margin-left: -15px;
   margin-top: -15px;
+
 }
 
 .card-list{
@@ -478,13 +494,10 @@
   padding: 10px !important;
 }
 
-
 notification-delete{
   width: 30px  !important;
   height: 30px !important;
 }
-
-
 
 /* In common */
 mat-button-toggle-group, .mat-button-toggle-group-appearance-standard{
@@ -499,9 +512,6 @@ mat-button-toggle, .mat-button-toggle-appearance-standard{
 .mat-button-toggle-group-appearance-standard .mat-button-toggle + .mat-button-toggle{
   border-left: none;
 }
-
-
-
 
 @media only screen and (max-width : 480px) {
   .search-container {

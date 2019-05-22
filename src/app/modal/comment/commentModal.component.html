@@ -1,5 +1,5 @@
 <div mat-dialog-content class= "comment"> 
-  <form [formGroup]="formComment"  (submit)="addComment()">
+  <form [formGroup]="formComment" >
     <h4 mat-dialog-title>Comentário</h4>
 
     <!-- Name insertion-->
@@ -31,7 +31,7 @@
     <textarea matInput rows="4" cols="60" maxlength="254" wrap="hard" formControlName="comment" class ="border-on" placeholder="Viu esse pet? Descreva aqui :)"></textarea>
 
     <div mat-dialog-actions class="actions">
-      <button mat-raised-button color="primary" class=button type="submit">Comentar</button>
+      <button mat-raised-button color="primary" class=button type="submit"  (click)="addComment()">Comentar</button>
       <button mat-raised-button class="button" (click)="close()">Cancelar</button>
     </div>
   </form>

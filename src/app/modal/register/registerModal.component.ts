@@ -3,7 +3,6 @@ import {HttpClient, HttpParams, HttpHeaders} from '@angular/common/http';
 import {FormBuilder,FormControl, FormGroup,Validators} from '@angular/forms';
 import swal from 'sweetalert2';
 
-
 //material
 import { MatDialogConfig,MAT_DIALOG_DATA, MatDialogRef,
          MatButtonModule,MatButtonToggleModule,
@@ -68,7 +67,6 @@ export class RegisterModalComponent {
 
   addUser(){
      if(this.formRegister.valid){
-
       let user = {
          "name": this.form.name.value, 
          "phone" : this.form.phone.value,
@@ -79,14 +77,20 @@ export class RegisterModalComponent {
       
       this.service.addUser(user).subscribe(
             (data:any)=> {
-                console.log(data);
-                this.dialogRef.close();  
-                alert("Cadastro realizado com sucesso");
+              //console.log(data);
+              this.dialogRef.close();  
+
+              swal.fire({
+                title: 'Bom trabalho!',
+                text: 'Cadastro realizado com sucesso',
+                type: 'success',
+                width: 350
+              })
             },
             error => {
-                console.log(error);
-                alert("Algo deu errado");
-            });
+              this.service.handleErrors(error);
+              console.log(error);
+      });
     }
   }
 
@@ -105,7 +109,4 @@ export class RegisterModalComponent {
         } 
     })
   }
-
-  
-
 }
