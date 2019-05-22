@@ -100,7 +100,7 @@ export class AppComponent implements OnInit {
     private service: ServiceComponent,
     private formBuilder: FormBuilder,
     private formBuilder2: FormBuilder,
-    private cookieService: CookieService
+    public cookieService: CookieService
     ){
   
     this.formLocal = this.formBuilder.group({
