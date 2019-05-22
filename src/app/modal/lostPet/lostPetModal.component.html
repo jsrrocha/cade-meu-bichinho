@@ -66,6 +66,8 @@
     <!-- Phone insertion-->
     <mat-form-field class="form-style">
       <input matInput formControlName="phone" placeholder="Telefone c/ DDD" required>
+      <mat-error *ngIf="formPetLost.controls.phone.invalid">{{getPhoneErrorMessage()}}</mat-error>
+
       <mat-button-toggle (click)="isPhoneWithWhats()" matSuffix matTooltip="Marque se o telefone possui whats">
         <img  class="whats-png-icon" src="../assets/icons/whats.png">
       </mat-button-toggle>
@@ -103,7 +105,7 @@
     </mat-button-toggle-group>
 
     <!-- description insertion-->
-    <textarea id="description" class ="description-field border-on" rows="2" cols="60" maxlength="500" wrap="hard" required formControlName="description" matInput placeholder="Faltou algo? Ele possui raça? Ele usa coleira? É castrado? Possui alguma caracteristica que o identifique?  Descreva aqui :)" ></textarea>
+    <textarea id="description" class ="description-field border-on" rows="2" cols="60" maxlength="500" wrap="hard" formControlName="description" matInput placeholder="Faltou algo? Ele possui raça? Ele usa coleira? É castrado? Possui alguma caracteristica que o identifique?  Descreva aqui :)" ></textarea>
 
     <!-- Local insertion(mockup)-->
     <label class="map-label">Onde ele foi encontrado? Arraste o marcador para o local no mapa:</label>

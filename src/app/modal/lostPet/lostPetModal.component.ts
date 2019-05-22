@@ -77,7 +77,10 @@ export class LostPetModalComponent implements OnInit{
 
     this.formPetLost = this.formBuilder.group({
       name: ['', Validators.required], 
-      phone: ['', Validators.required],
+      phone: ['', 
+        [Validators.required,
+        Validators.minLength(10),
+        Validators.pattern('[0-9]+')]],
       description: [''],
       photoSrc: ['',Validators.required]   
     });
@@ -166,6 +169,16 @@ export class LostPetModalComponent implements OnInit{
    
     myReader.readAsDataURL(file); 
   }
+
+  getPhoneErrorMessage() {
+    if(this.form.phone.hasError('required')){
+       return 'Preencha com seu telefone';
+    }else if(this.form.phone.hasError('pattern')){
+       return 'Campo aceita somente números';
+    }else if(this.form.phone.hasError('minlength')){
+       return 'Telefone possui digitos faltando';
+    } 
+  } 
 
   addPet(){
     if(this.formPetLost.valid){

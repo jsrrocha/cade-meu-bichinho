@@ -424,7 +424,7 @@ export class AppComponent implements OnInit {
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
     dialogConfig.width = '520px';
-    dialogConfig.height = '570px'
+    dialogConfig.height = '585px'; 
 
     this.dialog.open(LostPetModalComponent, dialogConfig);
   }
