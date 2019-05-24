@@ -84,6 +84,7 @@ export class AppComponent implements OnInit {
   classLostPet = false;
   pets: Object = [];
   petUserId;
+  petTotal = 0;
 
   //For edit pet
   petId;
@@ -170,6 +171,7 @@ export class AppComponent implements OnInit {
     });
 
     this.setDateOfDayInPicker();
+    this.getPetCounting();
 
     //inicialize cookies 
     //(Problema: quando o user atualizar a página se desloga..)
@@ -188,7 +190,20 @@ export class AppComponent implements OnInit {
 
   setDateOfDayInPicker(){
     this.datePicker = new FormControl(new Date());
-    
+  }
+
+  getPetCounting(){
+
+      this.service.getPetCounting().subscribe(
+      (data:any)=> {
+          console.log(data); 
+          this.petTotal = data;
+          
+      },
+      error => {
+          console.log(error);
+      });
+        
   }
 
   get formFilterPet() {
@@ -285,20 +300,7 @@ export class AppComponent implements OnInit {
     this.showFilters= true; 
   }
   
-  getAllPets(){
-      this.searching = true;
-
-      this.service.getAllPets().subscribe(
-      (data:any)=> {
-          console.log(data); 
-          this.pets = data;
-          this.existPets = true;
-      },
-      error => {
-          console.log(error);
-      });
-        
-  }
+  
 
   logoutUser(){
       this.service.logoutUser().subscribe(

@@ -9,8 +9,8 @@ import swal from 'sweetalert2';
 
 export class ServiceComponent {
 
-  //backendUrl = "http://localhost:8086/";
-  backendUrl = "https://cademeubichinho02.herokuapp.com/";
+  backendUrl = "http://localhost:8086/";
+  //backendUrl = "https://cademeubichinho02.herokuapp.com/";
 
   tokenForClient = "Basic Z2xvYmFsOjEyMzQ1Ng==";
 
@@ -71,6 +71,11 @@ export class ServiceComponent {
 
   getAllPets(){
       const url = this.backendUrl + "pet/all";
+      return this.http.get(url);
+  }
+
+  getPetCounting(){
+      const url = this.backendUrl + "pet/count";
       return this.http.get(url);
   }
 
