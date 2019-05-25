@@ -237,18 +237,10 @@
     </div>
 
   <!-- Login -->
-  <div *ngIf="this.cookieService.get('logged') == 'false'">
+  <div *ngIf="this.cookieService.get('logged') != 'true'">
     <button mat-icon-button class="login-button login" (click)="openDialogLogin()">
       <mat-icon>person</mat-icon>
       <span>Login</span>
-    </button>
-  </div>
-
-  <!-- Notification of comment -->
-  <div *ngIf="this.cookieService.get('logged')=='true'">
-    <button mat-icon-button class="notification-button notification" (click)="openNotifications()">
-      <mat-icon>notification_important</mat-icon>
-      <span>Notificações</span>
     </button>
   </div>
 
@@ -260,19 +252,27 @@
     </button>
   </div>
 
+  <!-- Notification of comment -->
+  <div *ngIf="this.cookieService.get('logged')=='true'">
+    <button mat-icon-button class="notification-button notification" (click)="openNotifications()">
+      <mat-icon>notification_important</mat-icon>
+      <span>Notificações</span>
+    </button>
+  </div>
+
   <div class="notification-list" *ngIf="showNotifications">
     <div class="card-list" >
     <mat-card class="notification-card" *ngFor="let notif of notifications" >
 
       <mat-card-content >
-       <p> <b>{{notif.nameUser}}</b> comentou na postagem do <b>{{notif.specie}} {{notif.name}}</b> que foi <b>{{notif.lostPet == "true" ? "perdido" : "encontrado"}} em {{notif.date | date:'dd/MM/yyy'}}: </b></p>
+       <p> <b>{{notif.userName}}</b> comentou na postagem do <b>{{notif.specie}} {{notif.name}}</b> que foi <b>{{notif.lostPet == "true" ? "perdido" : "encontrado"}} em {{notif.date | date:'dd/MM/yyy'}}: </b></p>
        <br />
        <p>{{notif.comment}}</p>
        <br />
-       O telefone de contato do {{notif.nameUser}} é: {{notif.phone}} e {{notif.phoneWithWhats == "true" ? "possui" : "não possui"}} whats
-      </mat-card-content>
+       O telefone de contato do {{notif.userName}} é: {{notif.userPhone}} e {{notif.userPhoneWithWhats == "true" ? "possui" : "não possui"}} whats
+      </mat-card-content> 
 
-      <button class="notification-delete" mat-icon-button (click)="deleteNotification(notif.id)" >
+      <button class="notification-delete" mat-icon-button (click)="deleteNotification(notif.id)" *ngIf="this.cookieService.get('userName') !='Admin global'" >
         <mat-icon >delete</mat-icon>
       </button>
 

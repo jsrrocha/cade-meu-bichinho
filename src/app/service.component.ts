@@ -52,12 +52,6 @@ export class ServiceComponent {
       return this.http.post(url,data);
   }
 
-  addUserOfPet(petId:number,userId:number){
-      console.log(userId);
-      const url = this.backendUrl + "pet/" + petId + "/add/user/" + userId;
-      return this.http.post(url,null);
-  }
-
   editPet(data: object){
       const url = this.backendUrl + "pet/edit";
       return this.http.post(url,data);

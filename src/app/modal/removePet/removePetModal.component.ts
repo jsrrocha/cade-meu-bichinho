@@ -39,7 +39,6 @@ export class RemovePetModalComponent {
 
   removePet(){ 
     if(this.formRemove.valid){    
-
       console.log(this.form.reason.value);    
       this.service.addComment(null).subscribe(
         (data:any)=> {

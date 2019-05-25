@@ -60,11 +60,12 @@ export class CommentModalComponent {
     this.setDateOfDayInPick();
     
     //Set user logged(if exist)
-    this.form.name.setValue(this.cookieService.get('userName'));
-    this.form.phone.setValue(this.cookieService.get('userPhone'));
-    this.phoneWithWhats = !!this.cookieService.get('UserPhoneWithWhats');   
+    if(this.cookieService.get('logged') != null){
+      this.form.name.setValue(this.cookieService.get('userName'));
+      this.form.phone.setValue(this.cookieService.get('userPhone'));
+      this.phoneWithWhats = !!this.cookieService.get('UserPhoneWithWhats'); 
+    }  
   }
-
 
   setDateOfDayInPick(){
     this.date = new FormControl(new Date());
@@ -85,29 +86,32 @@ export class CommentModalComponent {
 
   addComment(){  
      if(this.formComment.valid){      
-      console.log(this.user); 
+      
       let comment = {
-         "name": this.form.name.value, 
+         "userName": this.form.name.value, 
+         "userPhone" : this.form.phone.value,
+         "userPhoneWithWhats" :  this.phoneWithWhats,
          "date" : this.date.value,
-         "phone" : this.form.phone.value,
-         "phoneWithWhats" :  this.phoneWithWhats,
          "comment" : this.form.comment.value,
          "idPet": this.petData.petId, 
-         "idReceived": this.petData.petUserId, //OBRIGATORIO
-         "idSend": this.cookieService.get('userLoggedId') 
+         "idReceived": this.petData.petUserId, //OBRIGATÓRIO
       }
+      //"idSend": this.cookieService.get('userLoggedId') SUBSTITUIDO! 
      
       this.service.addComment(comment).subscribe(
           (data:any)=> {
               console.log(data);
               this.dialogRef.close();
-              alert("Comentário adicionado com sucesso");
-
+              swal.fire({
+                        title: 'Bom trabalho!',
+                        text: 'Comentário adicionado com sucesso',
+                        type: 'success',
+                        width: 350
+              })
           },
           error => {
               console.log(error);
               this.service.handleErrors(error);
-
           });
     }
   }

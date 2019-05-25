@@ -72,7 +72,7 @@ export class LoginModalComponent {
           this.cookieService.put('expireTime',expireTime.toString());
           
           //Save user in cookies and save pet if is necessary
-          this.getUserLoggedInAndSavePet(); //ERROR NO SAVEPET?
+          this.getUserLoggedInAndSavePet(); //if ERROR NO SAVEPET?
         }, 
         error => {
           this.service.handleErrors(error);
@@ -85,7 +85,8 @@ export class LoginModalComponent {
     this.service.getUserLoggedIn().subscribe(
       (data:any)=> {
         console.log(data); 
-
+        console.log(this.cookieService.get('logged'));  
+        
         if(data != null){
           this.cookieService.put('logged','true');
           this.cookieService.put('userLoggedId',data.id);

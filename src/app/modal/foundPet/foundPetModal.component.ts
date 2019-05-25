@@ -90,68 +90,71 @@ export class FoundPetModalComponent implements OnInit{
 
 
   ngOnInit() {
-      let center = { 
-        lat: this.lat, 
-        lng: this.lng 
-      };
+    let center = { 
+      lat: this.lat, 
+      lng: this.lng 
+    };
 
-      var streetviewMap = (<HTMLInputElement>document.getElementById('streetviewMap'));
-      let map = new window['google'].maps.Map( 
-        streetviewMap,  
-        { 
-          center: center,  
-          zoom: this.zoom,
-          zoomControl: true,
-          zoomControlOptions: {
-            position: google.maps.ControlPosition.RIGHT_CENTER
-          },
-        });
-
-      var image = {
-        url: '../assets/icons/dog_found.png',
-        scaledSize: new google.maps.Size(35, 35),
-        origin: new google.maps.Point(0, 0)
-      };
-
-      var marker = new google.maps.Marker({
-        map: map,
-        draggable: true,
-        position: {lat: -30.055819, lng: -51.223238}, //Local Default
-        icon: image,
-        title:"Arrasta-me!"
-      }); 
-
-      var infowindow = new google.maps.InfoWindow({
-          content: "Arrasta-me para o local"
+    var streetviewMap = (<HTMLInputElement>document.getElementById('streetviewMap'));
+    let map = new window['google'].maps.Map( 
+      streetviewMap,  
+      { 
+        center: center,  
+        zoom: this.zoom,
+        zoomControl: true,
+        zoomControlOptions: {
+          position: google.maps.ControlPosition.RIGHT_CENTER
+        },
       });
 
-      marker.addListener('click', function() {
-        infowindow.open(map, marker);
-      });
+    var image = {
+      url: '../assets/icons/dog_found.png',
+      scaledSize: new google.maps.Size(35, 35),
+      origin: new google.maps.Point(0, 0)
+    };
 
-      this.markerPet = marker; 
-      marker.addListener('dragend',handleEvent);
+    var marker = new google.maps.Marker({
+      map: map,
+      draggable: true,
+      position: {lat: -30.055819, lng: -51.223238}, //Local Default
+      icon: image,
+      title:"Arrasta-me!"
+    }); 
 
-      function handleEvent(event) {
-        console.log(marker.getPosition().lat());
-      }
+    var infowindow = new google.maps.InfoWindow({
+        content: "Arrasta-me para o local"
+    });
 
-      this.setDateOfDayInPick();
-      
-      //Set user logged(if exist)
+    marker.addListener('click', function() {
+      infowindow.open(map, marker);
+    });
+
+    this.markerPet = marker; 
+    marker.addListener('dragend',handleEvent);
+
+    function handleEvent(event) {
+      //console.log(marker.getPosition().lat());
+      //console.log(marker.getPosition().lng());
+    }
+
+    this.setDateOfDayInPick();
+    
+    //Set user logged(if exist)
+    if(this.cookieService.get('logged') != null){
       this.form.phone.setValue(this.cookieService.get('userPhone'));
       this.phoneWithWhats = !!this.cookieService.get('UserPhoneWithWhats'); 
-
-      //If is pet edition set fields
-      console.log(this.petEdition);
-      if(this.petEdition !=null){
-        this.edition = true;
-        this.form.name.setValue(this.petEdition.petName);
-        this.form.description.setValue(this.petEdition.petDescription);
-        this.form.phone.setValue(this.petEdition.petPhone);
-        this.form.photoSrc.setValue("imagemPet.jpg");
-        this.phoneWithWhats = this.petEdition.petPhoneWithWhats;
-      }
+    }
+    
+    //If is pet edition set fields
+    console.log(this.petEdition);
+    if(this.petEdition !=null){
+      this.edition = true;
+      this.form.name.setValue(this.petEdition.petName);
+      this.form.description.setValue(this.petEdition.petDescription);
+      this.form.phone.setValue(this.petEdition.petPhone);
+      this.form.photoSrc.setValue("imagemPet.jpg");
+      this.phoneWithWhats = this.petEdition.petPhoneWithWhats;
+    }
   }
 
   setDateOfDayInPick(){

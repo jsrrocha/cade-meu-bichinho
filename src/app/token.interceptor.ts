@@ -12,35 +12,36 @@ export class TokenInterceptor implements HttpInterceptor {
   constructor(
     public service: ServiceComponent,
     public login: LoginModalComponent,
-    public cookieService: CookieService,
-  ) {}
+    public cookieService: CookieService){}
 
   expiresIn;
   expireTime;
 
-  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {     
-    this.expiresIn = parseInt(this.cookieService.get('expiresIn'));
-    this.expireTime = parseInt(this.cookieService.get('expireTime'));
+  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
-    if(new Date().getTime() >= this.expireTime){ 
-          console.log("PASSOU AQ"); 
-          
-          this.expireTime = new Date().getTime() + 
-            this.expiresIn  * 1000;
-  
-          this.cookieService.put('expireTime',
-            this.expireTime.toString());
+    if(this.cookieService.get('expiresIn') != null 
+      && this.cookieService.get('expireTime')){
+      this.expiresIn = parseInt(this.cookieService.get('expiresIn'));
+      this.expireTime = parseInt(this.cookieService.get('expireTime'));
 
-          this.login.refreshAccessAuth();
+      if(new Date().getTime() >= this.expireTime){ 
+        console.log("PASSOU AQ");       
+        this.expireTime = new Date().getTime() + this.expiresIn * 1000;
+        this.cookieService.put('expireTime',
+        this.expireTime.toString());
+
+        this.login.refreshAccessAuth();
+      }
+    }   
+    var authToken = "";
+    if(this.cookieService.get('token') != null){
+      authToken = this.cookieService.get('token');
     }
-
-    var authToken = this.cookieService.get('token');
     request = request.clone({
       setHeaders: {
         Authorization: authToken 
       }
     });
-
     return next.handle(request);
   }
 

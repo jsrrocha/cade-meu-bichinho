@@ -131,13 +131,15 @@ export class LostPetModalComponent implements OnInit{
       marker.addListener('dragend',handleEvent);
 
       function handleEvent(event) {
-        console.log(marker.getPosition().lat());
+        //console.log(marker.getPosition().lat());
       }
       this.setDateOfDayInPick();
             
       //Set user logged(if exist)
-      this.form.phone.setValue(this.cookieService.get('userPhone'));
-      this.phoneWithWhats = !!this.cookieService.get('UserPhoneWithWhats'); 
+      if(this.cookieService.get('logged') != null){
+        this.form.phone.setValue(this.cookieService.get('userPhone'));
+        this.phoneWithWhats = !!this.cookieService.get('UserPhoneWithWhats'); 
+      }
   }
 
   get form() {

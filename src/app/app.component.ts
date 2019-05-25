@@ -72,6 +72,8 @@ export class AppComponent implements OnInit {
   petBelongsToUser = false;
   
   //Others
+  latitude = null;
+  longitude = null;
   datePicker;
   serializedDate;
   path = "";
@@ -85,6 +87,7 @@ export class AppComponent implements OnInit {
   pets: Object = [];
   petUserId;
   petTotal = 0;
+  isNormalUser = true;
 
   //For edit pet
   petId;
@@ -154,9 +157,16 @@ export class AppComponent implements OnInit {
           this.lat = place.geometry.location.lat();
           this.lng = place.geometry.location.lng();
           this.zoom = 16;
+          
+          //set to search! if is NULL find ALL places.
+          this.latitude = this.lat;
+          this.longitude = this.lng; 
 
 	        // show filters
           document.querySelector('.filter-container').classList.add("active");
+          
+          //Atualize list of pets!
+          this.getPetSearch();
           
         });
       });
@@ -171,20 +181,21 @@ export class AppComponent implements OnInit {
     });
 
     this.setDateOfDayInPicker();
-    this.getPetCounting();
+    this.getPetCounting();  
 
     //inicialize cookies 
     //(Problema: quando o user atualizar a página se desloga..)
-    this.cookieService.put('token',"");
-    this.cookieService.put('refreshToken',"");
-    this.cookieService.put('expiresIn',"");
+    //this.cookieService.put('token',"");
+    //this.cookieService.put('refreshToken',"");
+    //this.cookieService.put('expiresIn',"");
 
-    this.cookieService.put('userLoggedId',"");
-    this.cookieService.put('userName',"");
-    this.cookieService.put('userPhone',"");
-    this.cookieService.put('UserPhoneWithWhats',"");
-    this.cookieService.put('logged',"false");
+    //this.cookieService.put('logged',"false");
+    //this.cookieService.put('userLoggedId',"");
+    //this.cookieService.put('userName',"");
+    //this.cookieService.put('userPhone',"");
+    //this.cookieService.put('UserPhoneWithWhats',"");
     this.cookieService.put('petId',"");
+
   }
 
 
@@ -193,17 +204,14 @@ export class AppComponent implements OnInit {
   }
 
   getPetCounting(){
-
       this.service.getPetCounting().subscribe(
       (data:any)=> {
-          console.log(data); 
+          //console.log(data); 
           this.petTotal = data;
-          
       },
       error => {
-          console.log(error);
+          console.log(error); 
       });
-        
   }
 
   get formFilterPet() {
@@ -212,6 +220,11 @@ export class AppComponent implements OnInit {
 
   clearLocal() { 
     this.formLocal.controls.searchValue.setValue('');
+    this.latitude = null;
+    this.longitude = null; 
+    
+    //Atualize list of pets!
+    this.getPetSearch();
   }
 
   showHiddenFilters(){
@@ -292,7 +305,6 @@ export class AppComponent implements OnInit {
       var withWhats = (<HTMLInputElement>document.getElementById('resultWithWhats')).textContent;
       withWhats = " Ou mande Whatsapp " + this.petPhoneWithWhats;
    }
-
   }
 
   hiddenSelectedResult(){
@@ -300,20 +312,17 @@ export class AppComponent implements OnInit {
     this.showFilters= true; 
   }
   
-  
-
   logoutUser(){
       this.service.logoutUser().subscribe(
       (data:any)=> {
-          console.log(data);
-          this.cookieService.put('token',"");
-          this.cookieService.put('refreshToken',"");
-          this.cookieService.put('expiresIn',"");
+          this.cookieService.put('token',null);
+          this.cookieService.put('refreshToken',null);
+          this.cookieService.put('expiresIn',null);
 
-          this.cookieService.put('userLoggedId',"");
-          this.cookieService.put('userName',"");
-          this.cookieService.put('userPhone',"");
-          this.cookieService.put('UserPhoneWithWhats',"");
+          this.cookieService.put('userLoggedId',null);
+          this.cookieService.put('userName',null);
+          this.cookieService.put('userPhone',null);
+          this.cookieService.put('UserPhoneWithWhats',null);
           this.cookieService.put('logged',"false"); 
       },
       error => {
@@ -334,7 +343,7 @@ export class AppComponent implements OnInit {
       }
       
       if(this.formFilterPet.myPosts.value !=null
-         && this.cookieService.get('userLoggedId') != ""){
+         && this.cookieService.get('userLoggedId') != null){
         this.userLoggedId = this.cookieService.get('userLoggedId');
       } 
       
@@ -347,6 +356,8 @@ export class AppComponent implements OnInit {
          "description" : this.formFilterPet.description.value,
          "lostPet" : this.formFilterPet.type.value,
          "date" : this.dateFilter,
+         "latitude": this.latitude,
+         "longitude": this.longitude,
          "userId": this.userLoggedId
       }
       console.log(pet); 
@@ -364,11 +375,12 @@ export class AppComponent implements OnInit {
   }
 
   getNotifications(){
-    if(this.cookieService.get('userLoggedId') !=""){
+    if(this.cookieService.get('userLoggedId') != null){
+      
       this.service.getCommentsWithNotificationsActiveByUserReceived(    +this.cookieService.get('userLoggedId'))
-        .subscribe(
+        .subscribe( 
           (data:any)=> {
-              console.log(data); 
+              //console.log(data); 
               this.notifications = data;
           },
           error => {
@@ -390,32 +402,31 @@ export class AppComponent implements OnInit {
   deleteNotification(id){
     console.log(id);
     swal.fire({
-        title: 'Você realmente deseja remover a notificação?',
-        type: 'warning',
-        width: 350,
-        showCancelButton: true,
-        confirmButtonText: 'OK',
-        cancelButtonText: 'Cancelar',
-        reverseButtons: true
-        }).then((result) => { 
-        
-        if (result.value) {
-          this.service.removeNotification(id)
-              .subscribe(
-                  (data:any)=> {
-                      swal.fire({
-                        title: 'Bom trabalho!',
-                        text: 'Notificação removida com sucesso',
-                        type: 'success',
-                        width: 350
-                      })
-                  },
-                  error => {
-                      this.service.handleErrors(error);
-                      console.log(error);
-          });
-          
-        } 
+      title: 'Você realmente deseja remover a notificação?',
+      type: 'warning',
+      width: 350,
+      showCancelButton: true,
+      confirmButtonText: 'OK',
+      cancelButtonText: 'Cancelar',
+      reverseButtons: true
+      }).then((result) => { 
+      
+      if (result.value) {
+        this.service.removeNotification(id)
+            .subscribe(
+              (data:any)=> {
+                  swal.fire({
+                    title: 'Bom trabalho!',
+                    text: 'Notificação removida com sucesso',
+                    type: 'success',
+                    width: 350
+                  })
+              },
+              error => {
+                  this.service.handleErrors(error);
+                  console.log(error);
+        });
+      } 
     })
   }
 
