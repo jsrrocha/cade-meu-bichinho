@@ -84,7 +84,7 @@ export class AppComponent implements OnInit {
   dateFilter = null;
   userLoggedId = null;
   classLostPet = false;
-  pets: Object = [];
+  pets = [];
   petUserId;
   petTotal = 0;
 
