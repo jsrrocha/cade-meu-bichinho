@@ -57,7 +57,7 @@
             <!-- Specie selection-->
             <mat-button-toggle-group class=specie #speciegroup="matButtonToggleGroup" formControlName="specie">
               <mat-button-toggle  checked matTooltip="Busco todos">
-                <img  class="png-icon" src="../assets/icons/bothspecies.png">
+                <img  class="png-icon" src="../assets/icons/all.png">
               </mat-button-toggle>
 
               <mat-button-toggle value=0 matTooltip="Busco só cachorros">
@@ -73,7 +73,7 @@
     
             <mat-button-toggle-group class=sex #sexgroup="matButtonToggleGroup"  formControlName="sex">
               <mat-button-toggle  checked matTooltip="Busco todos">
-                <img  class="png-icon" src="../assets/icons/bothsex.png">
+                <img  class="png-icon" src="../assets/icons/all.png">
               </mat-button-toggle>
               <mat-button-toggle value=0 matTooltip="Busco só machos">
                 <img  class="png-icon" src="../assets/icons/male.png">
@@ -164,13 +164,16 @@
       </div>
   
       <!-- Pet results -->
-      <div class="search-results" *ngIf="searching">
+      <mat-card *ngIf="searching && pets.length == 0" class="pet-list-empty">
+          <span  >Não existem pets com esses filtros</span>
+      </mat-card> 
+
+      <div class="search-results" *ngIf="pets.length > 0">   
         
-        <div class="results" *ngIf="!showSelectedResult">
+        <div *ngIf="!showSelectedResult">
           <mat-selection-list #petList  (selectionChange)="inSelectedResult($event,petList.selectedOptions.selected)" class="list-pets" >
-
+    
             <mat-list-option  class="item-list-pets" *ngFor="let pet of pets" [value]='pet' matTooltip="Clique ver mais informações ou postar um comentário">
-
   		        <h3 class="name-pet">{{pet.name}}</h3>
   	          
               <span mat-line class="specie-pet">{{pet.specie}}</span>
@@ -220,7 +223,7 @@
               "petBelongsToUser" (click)="openDialogRemovePet()" matTooltip="Remover pet">
                 <mat-icon>delete</mat-icon>
               </button>
-              <button mat-icon-button class="edit" *ngIf="petBelongsToUser" (click)="openDialogLogin()" matTooltip="Editar">
+              <button mat-icon-button class="edit" *ngIf="petBelongsToUser" (click)="openDialogPetEdition()" matTooltip="Editar">
                 <mat-icon>edit</mat-icon>
               </button>
               <button mat-icon-button class="comment" (click)="openDialogComment()" matTooltip="Clique para postar um comentário">
@@ -254,7 +257,7 @@
 
   <!-- Notification of comment -->
   <div *ngIf="this.cookieService.get('logged')=='true'">
-    <button mat-icon-button class="notification-button notification" (click)="openNotifications()">
+    <button mat-icon-button class="notification-button notification" (click)="getNotifications()">
       <mat-icon>notification_important</mat-icon>
       <span>Notificações</span>
     </button>
@@ -262,17 +265,20 @@
 
   <div class="notification-list" *ngIf="showNotifications">
     <div class="card-list" >
+    
     <mat-card class="notification-card" *ngFor="let notif of notifications" >
-
       <mat-card-content >
-       <p> <b>{{notif.userName}}</b> comentou na postagem do <b>{{notif.specie}} {{notif.name}}</b> que foi <b>{{notif.lostPet == "true" ? "perdido" : "encontrado"}} em {{notif.date | date:'dd/MM/yyy'}}: </b></p>
+       <p> O <b>{{notif.specie}} {{notif.name}}</b> que foi <b>{{notif.lostPet == "true" ? "perdido" : "encontrado"}} em {{notif.date | date:'dd/MM/yyy'}} </b> recebeu um comentário! *0* </p>
+       <p> <b>{{notif.userName}}</b> comentou na postagem: </p>
        <br />
        <p>{{notif.comment}}</p>
        <br />
-       O telefone de contato do {{notif.userName}} é: {{notif.userPhone}} e {{notif.userPhoneWithWhats == "true" ? "possui" : "não possui"}} whats
+       <p *ngIf="notif.link !- ''">Link: {{notif.link}}</p> 
+       
+       O telefone de contato de <b>{{notif.userName}}</b> é: <b>{{notif.userPhone}}</b> e <b>{{notif.userPhoneWithWhats == "true" ? "possui" : "não possui"}}</b> whats.
       </mat-card-content> 
 
-      <button class="notification-delete" mat-icon-button (click)="deleteNotification(notif.id)" *ngIf="this.cookieService.get('userName') !='Admin global'" >
+      <button class="notification-delete" mat-icon-button (click)="deleteNotification(notif.id)" *ngIf="this.cookieService.get('userName') !='Admin global'" matTooltip="Remova uma notificação">
         <mat-icon >delete</mat-icon>
       </button>
 

@@ -67,7 +67,7 @@ export class AppComponent implements OnInit {
   showFilters = true;
   showSelectedResult = false; 
   searching = false;
-  existPets = false; 
+
   showNotifications = false;
   petBelongsToUser = false;
   
@@ -87,15 +87,13 @@ export class AppComponent implements OnInit {
   pets: Object = [];
   petUserId;
   petTotal = 0;
-  isNormalUser = true;
 
   //For edit pet
   petId;
   petName;
   petDescription;
-  petPhone;
+  petPhone; 
   petPhoneWithWhats;
-
 
   constructor(
     private mapsAPILoader: MapsAPILoader,
@@ -156,7 +154,7 @@ export class AppComponent implements OnInit {
           // set latitude, longitude and zoom
           this.lat = place.geometry.location.lat();
           this.lng = place.geometry.location.lng();
-          this.zoom = 16;
+          this.zoom = 15;
           
           //set to search! if is NULL find ALL places.
           this.latitude = this.lat;
@@ -182,9 +180,7 @@ export class AppComponent implements OnInit {
 
     this.setDateOfDayInPicker();
     this.getPetCounting();  
-
-    //inicialize cookies 
-    //(Problema: quando o user atualizar a página se desloga..)
+    
     //this.cookieService.put('token',"");
     //this.cookieService.put('refreshToken',"");
     //this.cookieService.put('expiresIn',"");
@@ -194,8 +190,8 @@ export class AppComponent implements OnInit {
     //this.cookieService.put('userName',"");
     //this.cookieService.put('userPhone',"");
     //this.cookieService.put('UserPhoneWithWhats',"");
+    
     this.cookieService.put('petId',"");
-
   }
 
 
@@ -313,65 +309,78 @@ export class AppComponent implements OnInit {
   }
   
   logoutUser(){
-      this.service.logoutUser().subscribe(
-      (data:any)=> {
-          this.cookieService.put('token',null);
-          this.cookieService.put('refreshToken',null);
-          this.cookieService.put('expiresIn',null);
+    swal.fire({
+      title: 'Você realmente deseja deslogar?',
+      type: 'warning',
+      width: 350,
+      showCancelButton: true,
+      confirmButtonText: 'OK',
+      cancelButtonText: 'Cancelar',
+      reverseButtons: true
+      }).then((result) => { 
+      
+      if (result.value) {
+        this.service.logoutUser().subscribe(
+        (data:any)=> {
+            this.cookieService.put('token',null);
+            this.cookieService.put('refreshToken',null);
+            this.cookieService.put('expiresIn',null);
 
-          this.cookieService.put('userLoggedId',null);
-          this.cookieService.put('userName',null);
-          this.cookieService.put('userPhone',null);
-          this.cookieService.put('UserPhoneWithWhats',null);
-          this.cookieService.put('logged',"false"); 
-      },
-      error => {
-          console.log(error);
-      });  
+            this.cookieService.put('userLoggedId',null);
+            this.cookieService.put('userName',null);
+            this.cookieService.put('userPhone',null);
+            this.cookieService.put('UserPhoneWithWhats',null);
+            this.cookieService.put('logged',"false"); 
+            this.showNotifications = false; 
+        },
+        error => {
+            console.log(error);
+        });  
+      } 
+    })
   }
 
   getPetSearch(){
-      this.searching = true;
 
-      if(!this.formFilterPet.checkedAllDates.value){
-         this.serializedDate = new FormControl((this.datePicker.value).toISOString());
-         //console.log(this.serializedDate);
-         
-         this.dateFilter = this.serializedDate.value;
-      }else{
-         this.dateFilter = null;
-      }
-      
-      if(this.formFilterPet.myPosts.value !=null
-         && this.cookieService.get('userLoggedId') != null){
-        this.userLoggedId = this.cookieService.get('userLoggedId');
-      } 
-      
-      //COLOCAR LATITUDE/LONG
-      let pet = {
-         "specie": this.formFilterPet.specie.value,
-         "sex": this.formFilterPet.sex.value,
-         "furColor": this.formFilterPet.furColor.value,
-         "lifeStage": this.formFilterPet.lifeStage.value,
-         "description" : this.formFilterPet.description.value,
-         "lostPet" : this.formFilterPet.type.value,
-         "date" : this.dateFilter,
-         "latitude": this.latitude,
-         "longitude": this.longitude,
-         "userId": this.userLoggedId
-      }
-      console.log(pet); 
+    if(!this.formFilterPet.checkedAllDates.value){
+      this.serializedDate = new FormControl((this.datePicker.value).toISOString());
+       
+      this.dateFilter = this.serializedDate.value;
+    }else{
+      this.dateFilter = null;
+    }
+    
+    if(this.formFilterPet.myPosts.value !=null
+       && this.cookieService.get('userLoggedId') != null){
+      this.userLoggedId = this.cookieService.get('userLoggedId');
+    } 
 
-      this.service.petSearch(pet).subscribe(
-      (data:any)=> {
-          //console.log(data); 
-          this.pets = data;
-          this.existPets = true; 
-      },
-      error => {
-          this.service.handleErrors(error);
-          console.log(error);
-      });        
+    let pet = {
+      "specie": this.formFilterPet.specie.value,
+      "sex": this.formFilterPet.sex.value,
+      "furColor": this.formFilterPet.furColor.value,
+      "lifeStage": this.formFilterPet.lifeStage.value,
+      "description" : this.formFilterPet.description.value,
+      "lostPet" : this.formFilterPet.type.value,
+      "date" : this.dateFilter,
+      "latitude": this.latitude,
+      "longitude": this.longitude,
+      "userId": this.userLoggedId
+    }
+    console.log(pet);
+
+    this.service.petSearch(pet).subscribe(
+    (data:any)=> {
+        //console.log(data); 
+        this.pets = data; 
+        this.searching = true;        
+    },
+    error => {
+        this.service.handleErrors(error);
+        console.log(error); 
+    }); 
+
+        
   }
 
   getNotifications(){
@@ -380,23 +389,31 @@ export class AppComponent implements OnInit {
       this.service.getCommentsWithNotificationsActiveByUserReceived(    +this.cookieService.get('userLoggedId'))
         .subscribe( 
           (data:any)=> {
-              //console.log(data); 
+              console.log(data); 
+              if(data.length == 0){
+                //this.existNotifications = false;
+                
+                this.showNotifications = false; 
+                swal.fire({
+                  title: 'Você não possui notificações',
+                  type: 'warning',
+                  width: 350
+                })  
+              }else{
+                //this.existNotifications = true;
+
+                if(this.showNotifications){  
+                  this.showNotifications = false; 
+                }else{
+                  this.showNotifications = true; 
+                }
+              }
               this.notifications = data;
           },
           error => {
               console.log(error);
       });
     }
-  }
-
-  openNotifications() { 
-    if(this.showNotifications){  
-      this.showNotifications = false; 
-    }else{
-     this.showNotifications = true; 
-    }
-
-    this.getNotifications();
   }
 
   deleteNotification(id){
@@ -415,6 +432,7 @@ export class AppComponent implements OnInit {
         this.service.removeNotification(id)
             .subscribe(
               (data:any)=> {
+                  this.getNotifications();
                   swal.fire({
                     title: 'Bom trabalho!',
                     text: 'Notificação removida com sucesso',
@@ -477,7 +495,7 @@ export class AppComponent implements OnInit {
 
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
-    dialogConfig.width = '230px';
+    dialogConfig.width = '270px';
     dialogConfig.height = '330px';  
     this.dialog.open(LoginModalComponent, dialogConfig);
   }
@@ -506,6 +524,9 @@ export class AppComponent implements OnInit {
     dialogConfig.autoFocus = true;
     dialogConfig.width = '250px';
     dialogConfig.height = '200px';  
+    
+    dialogConfig.data = this.petId;
+
     this.dialog.open(RemovePetModalComponent, dialogConfig);
   }
 }

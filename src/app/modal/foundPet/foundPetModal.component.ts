@@ -87,8 +87,7 @@ export class FoundPetModalComponent implements OnInit{
       photoSrc: ['',Validators.required]   
     }); 
   }
-
-
+  
   ngOnInit() {
     let center = { 
       lat: this.lat, 
@@ -195,14 +194,6 @@ export class FoundPetModalComponent implements OnInit{
        return 'Telefone possui digitos faltando';
     } 
   } 
-
-  petSubmit(){
-    if(this.edition){
-      this.editPet();
-    }else{
-      this.addPet();
-    }
-  }
 
   addPet(){
     if(this.formPetFound.valid){

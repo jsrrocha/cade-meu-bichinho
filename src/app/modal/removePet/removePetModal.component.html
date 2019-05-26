@@ -1,18 +1,21 @@
-    <div mat-dialog-content class="remove">
-      <form [formGroup]="formRemove"  (submit)="removePet()">
-        <h2 mat-dialog-title>Remover pet</h2> 
-        
-        <label>Motivo da remoção</label>
-        <mat-radio-group class="reason" formControlName="reason">
-          <mat-radio-button checked value="0">Pet já está com os donos</mat-radio-button>
-          <mat-radio-button value="1">Quero tirar do sistema</mat-radio-button>
-        </mat-radio-group>
 
-        <div mat-dialog-actions>
-          <button mat-button (click)="close()">Fechar</button>
-          <button mat-button >Salvar</button>
-        </div> 
-      </form>
-  </div>
+<div mat-dialog-content class="remove">
+  <form [formGroup]="formRemove">
+    <h2 mat-dialog-title>Remover pet</h2> 
+    
+    <label>Motivo da remoção:</label>
+    <br />  
+    <br />  
+    <mat-radio-group class="reason" formControlName="reason">
+      <mat-radio-button checked value="0">Pet já está com os donos</mat-radio-button>
+      <mat-radio-button value="1">Quero tirar do sistema</mat-radio-button>
+    </mat-radio-group>
+
+    <div mat-dialog-actions class="actions">
+      <button mat-raised-button color="primary" class=button type="submit" (click)="removePet()">Salvar</button>
+      <button mat-raised-button class="button" (click)="close()">Cancelar</button>
+    </div> 
+  </form>
+</div>
     
 

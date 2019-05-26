@@ -93,6 +93,7 @@ export class CommentModalComponent {
          "userPhoneWithWhats" :  this.phoneWithWhats,
          "date" : this.date.value,
          "comment" : this.form.comment.value,
+         "link": this.form.link.value,
          "idPet": this.petData.petId, 
          "idReceived": this.petData.petUserId, //OBRIGATÓRIO
       }

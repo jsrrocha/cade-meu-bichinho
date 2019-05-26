@@ -1,25 +1,32 @@
 
 .remove{
   display: inline-block; 
-  max-height: 200px; 
-}
+  height: 100%; 
+  
+  .mat-dialog-title{
+        margin: 0 0 8px;
+        text-align: center;
+        color: #673ab7;
+  }
+  
+  .form-style{
+  width: 180px !important;
+  } 
 
-.form-style{
-   width: 180px !important;
-}
+  .mat-input-element::placeholder {
+  color: black;  
+  }
 
-.mat-dialog-title{
-  margin: 0 0 10px;
-  text-align: center;
-  font: 400 18px Roboto,"Helvetica Neue",sans-serif; 
-}
-
-.mat-dialog-content{
-  max-height: inherit; 
-}
-
-.mat-input-element::placeholder {
-    color: black; 
+  //Buttons
+  .actions{
+      min-height: 25px !important;
+      margin-bottom: 0px !important;
+      display: block;
+  }
+  .button{
+      float: right;
+      margin: 5px 0 0 8px;
+  }
 }
 
  

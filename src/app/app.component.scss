@@ -151,6 +151,20 @@
 
 
 /* Results of search */
+
+.pet-list-empty{
+    position:relative;
+    z-index: 2;
+    background-color:#feb5b5;
+    margin-bottom: 5px;
+    padding: 10px !important;
+
+    span{
+      font-weight: bold ;
+      font-size: 16px ;
+    }
+  }
+
 .search-results {
   width: 100%;
   border-radius: 5px;
@@ -160,6 +174,9 @@
   padding: 5px;
   margin-top: 10px;
   box-sizing: border-box;
+
+  
+
   .list-pets{
     width: 100%;
     display: block;
@@ -179,7 +196,7 @@
   .mat-list-text {
     position: relative;
   }
-  
+
   .name-pet{
      display: block ;
      padding-bottom:2px ;
@@ -399,7 +416,7 @@
   font-weight: bold;
   position: fixed;
   z-index: 2;
-  right: 50px;
+  right: 15px;
   width: inherit !important;
   height: inherit !important;
   background: #FFF;
@@ -417,7 +434,7 @@
   font-weight: bold;
   position: fixed;
   z-index: 2;
-  right: 50px;
+  right: 15px;
   width: inherit !important;
   height: inherit !important;
   background: #FFF;
@@ -435,7 +452,7 @@
   font-weight: bold;
   position: fixed;
   z-index: 2;
-  right: 150px;
+  right: 110px;
   width: inherit !important;
   height: inherit !important;
   background: #FFF;
@@ -453,9 +470,9 @@
   z-index: 2;
   top:66px;
   right:10px;
-  width: 340px;
-  height: 345px;
-  background-color:#f5efff;
+  width: 300px;
+  height: 360px;
+  background-color:#d0b5fc;
   border-radius: 4px;
   padding: 5px;
   box-sizing: border-box;
@@ -466,37 +483,35 @@
   content: '';
   position: absolute;
   top: 0;
-  left:81%;
+  left:50%;
   width: 0;
   height: 0;
   border: 15px solid transparent;
-  border-bottom-color: #f5efff;
+  border-bottom-color: #d0b5fc;
   border-top: 0;
   margin-left: -15px;
   margin-top: -15px;
-
 }
 
 .card-list{
   overflow-y: auto;
   height: 345px;
   border-radius: 4px;
-
+  
 }
 
 .notification-card{
   position:relative;
   z-index: 2;
   width: 93%;
-  background-color: transparent;
+  background-color:white;
   margin-bottom: 5px;
   max-height: 200px;
   padding: 10px !important;
 }
 
-notification-delete{
-  width: 30px  !important;
-  height: 30px !important;
+.notification-delete{
+  margin-left: 225px !important;
 }
 
 /* In common */

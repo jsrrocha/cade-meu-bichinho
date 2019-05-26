@@ -107,15 +107,18 @@
     <!-- description insertion-->
     <textarea id="description" class ="description-field border-on" rows="2" cols="60" maxlength="500" wrap="hard"  formControlName="description" matInput placeholder="Faltou algo? Ele possui raça? Ele usa coleira? É castrado? Possui alguma caracteristica que o identifique?  Descreva aqui :)" ></textarea>
 
-    <!-- Local insertion(mockup)-->
-    <label readonly="edition" class="map-label">Onde ele foi encontrado? Arraste o marcador para o local no mapa:</label>
+    <!-- Local insertion-->
+    <label class="map-label">Onde ele foi encontrado? Arraste o marcador para o local no mapa:</label> 
     
-    <div  class="select-local"> 
+    <div class="select-local"> 
       <div id=streetviewMap #streetviewMap class="map-location"> </div>
     </div>    
 
     <div mat-dialog-actions class="actions">
-      <button mat-raised-button color="primary" class=button type="submit" (click)="petSubmit()">Cadastrar</button>
+      <button mat-raised-button color="primary" class=button  type="submit" *ngIf="!edition" (click)="addPet()" >Cadastrar</button>
+
+      <button mat-raised-button color="primary" class=button type="submit" *ngIf="edition" (click)="editPet()">Editar</button>
+      
       <button mat-raised-button class="button" (click)="close()">Cancelar</button> 
     </div>
   </form>

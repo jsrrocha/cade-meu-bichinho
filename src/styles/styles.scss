@@ -6,7 +6,8 @@
 
 /* Main */
 * {
-  font-family: Arial, sans-serif;
+  //font-family: Arial, sans-serif;
+  font-family: Roboto,"Helvetica Neue",sans-serif
 }
 mat-grid-tile {
   background: lightblue;
@@ -30,12 +31,14 @@ agm-map {
       border: 0;
     }
   }
-}
+} 
 
 /* Plus menu */
 .plus-menu {
   margin-bottom: 15px; 
-}
+  overflow-x: none;
+ 
+} 
 
 .plus-menu:after{
   content: ''; 

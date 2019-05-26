@@ -143,7 +143,6 @@ export class LoginModalComponent {
         this.cookieService.put('expiresIn',data.expires_in);
     },
     error => {
-        this.service.handleErrors(error);
         console.error(error);
     });
   }

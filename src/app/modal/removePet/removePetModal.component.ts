@@ -11,7 +11,6 @@ import {DateAdapter, MAT_DATE_FORMATS,MAT_DATE_LOCALE} from '@angular/material/c
 // Components
 import { ServiceComponent } from '../../service.component';
 
-
 @Component({
   selector: 'removePet-modal',
   templateUrl: './removePetModal.component.html',
@@ -27,6 +26,8 @@ export class RemovePetModalComponent {
     private dialogRef: MatDialogRef<RemovePetModalComponent>,
     private formBuilder: FormBuilder,
     private service: ServiceComponent,
+    @Inject(MAT_DIALOG_DATA) 
+    private petId: any, 
     ){
 
     this.formRemove = this.formBuilder.group({
@@ -40,7 +41,8 @@ export class RemovePetModalComponent {
   removePet(){ 
     if(this.formRemove.valid){    
       console.log(this.form.reason.value);    
-      this.service.addComment(null).subscribe(
+      this.service.removePet(+this.petId,
+      this.form.reason.value).subscribe(
         (data:any)=> {
           console.log(data);
           this.dialogRef.close();

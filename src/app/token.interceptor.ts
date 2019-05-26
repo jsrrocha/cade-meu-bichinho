@@ -14,25 +14,26 @@ export class TokenInterceptor implements HttpInterceptor {
     public login: LoginModalComponent,
     public cookieService: CookieService){}
 
-  expiresIn;
+  expiresIn; 
   expireTime;
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-
+    
     if(this.cookieService.get('expiresIn') != null 
-      && this.cookieService.get('expireTime')){
+      && this.cookieService.get('expireTime') !=null){
       this.expiresIn = parseInt(this.cookieService.get('expiresIn'));
       this.expireTime = parseInt(this.cookieService.get('expireTime'));
-
+      
       if(new Date().getTime() >= this.expireTime){ 
-        console.log("PASSOU AQ");       
+        console.log("REFRESH TOKEN");       
         this.expireTime = new Date().getTime() + this.expiresIn * 1000;
         this.cookieService.put('expireTime',
         this.expireTime.toString());
 
         this.login.refreshAccessAuth();
       }
-    }   
+    } 
+
     var authToken = "";
     if(this.cookieService.get('token') != null){
       authToken = this.cookieService.get('token');
@@ -44,5 +45,4 @@ export class TokenInterceptor implements HttpInterceptor {
     });
     return next.handle(request);
   }
-
 }
