@@ -6,6 +6,8 @@
     <!-- Name insertion-->
     <mat-form-field  class="form-style">
       <input  matInput formControlName="name" required placeholder="Nome do pet">
+
+      <mat-error *ngIf="formPetFound.controls.name.invalid">{{getErrorMessage()}}</mat-error>
     </mat-form-field>
 
     <!-- Specie selection-->
@@ -23,6 +25,8 @@
     <!-- Upload photo-->
     <mat-form-field  class="form-style">
       <input readonly required id="input-photo-src" formControlName="photoSrc" class="input-photo-src" matInput placeholder="Insira uma foto dele" />
+      <mat-error *ngIf="formPetFound.controls.photoSrc.invalid">{{getErrorMessage()}}</mat-error>
+
       <input  id="input-photo" type="file" style="display: none;" (change)="onFileSelected($event)" />
       <label matSuffix for="input-photo">
          <mat-icon  matTooltip="Clique para escolher">cloud_upload</mat-icon>
@@ -66,7 +70,7 @@
     <mat-form-field id="ess" class="form-style">   
       <input matInput formControlName="phone" placeholder="Telefone c/ DDD" required>
       
-      <mat-error *ngIf="formPetFound.controls.phone.invalid">{{getPhoneErrorMessage()}}</mat-error>
+      <mat-error *ngIf="formPetFound.controls.phone.invalid">{{getErrorMessage()}}</mat-error>
       
       <mat-button-toggle (click)="isPhoneWithWhats()" matSuffix matTooltip="Marque se o telefone possui whats">
         <img  class="whats-png-icon" src="../assets/icons/whats.png">

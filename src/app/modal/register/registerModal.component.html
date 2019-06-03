@@ -12,11 +12,15 @@
       <!-- Email insertion-->
       <mat-form-field class="form-style">
         <input matInput formControlName="email" required placeholder="Seu email">
+
+        <mat-error *ngIf="formRegister.controls.email.invalid">{{getErrorMessage()}}</mat-error>
       </mat-form-field>
 
       <!-- Password insertion-->
       <mat-form-field class="form-style">
         <input matInput type="password" formControlName="password" required placeholder="Cadastre uma senha">
+
+        <mat-error *ngIf="formRegister.controls.password.invalid">{{getErrorMessage()}}</mat-error>
       </mat-form-field>
 
       <br />
@@ -25,14 +29,12 @@
       <mat-form-field class="form-style">
         <input matInput formControlName="phone" placeholder="Telefone c/ DDD" required>
 
-        <mat-error *ngIf="formRegister.controls.phone.invalid">{{getPhoneErrorMessage()}}</mat-error>
+        <mat-error *ngIf="formRegister.controls.phone.invalid">{{getErrorMessage()}}</mat-error>
 
         <mat-button-toggle (click)="isPhoneWithWhats()" matSuffix matTooltip="Marque se o telefone possui whats">
             <img  class="whats-png-icon" src="../assets/icons/whats.png">
         </mat-button-toggle>
       </mat-form-field> 
-
-      
       
       <div mat-dialog-actions class="actions">
        <button mat-raised-button color="primary" class=button type="submit" (click)="addUser()">Cadastrar</button>

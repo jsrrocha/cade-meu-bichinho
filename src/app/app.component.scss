@@ -219,21 +219,20 @@
      font-size: 12px ;
   }
   .description-pet{
-    font-size:12px  !important;
     top: 2px;
-    height: 55px  !important;
-    width: 260px !important;
-    white-space: normal !important;
-    padding-top:5px !important;
-    overflow-wrap: break-word;
-    word-wrap: break-word;
+    max-height: 30px;  
+    width: 220px; 
+    padding-top:5px;
+
+    h6{
+      font-size: 12px;
+    }
 
   }
   .date-pet-found{
-    font-size: 12px ;
-    padding-top: 3px ;
-
-    color: green ;
+    font-size: 12px;
+    padding-top: 3px;
+    color: green;
   }
   .date-pet-lost{
     font-size: 12px ;
@@ -301,20 +300,18 @@
   }
 
   .description-pet-selected{
-    border:solid 1px rgba(197, 197, 197, 0.42);
+    //border:solid 1px rgba(197, 197, 197, 0.42);
     width: 100% ;
-    height: 100px;
+    height: 120px;
     max-height: 150px;  
     margin-bottom: 10px;
     margin-top: 10px;
-
 
     h6{
       font-size: 12px ;
       white-space: normal ; 
       overflow-wrap: break-word;
       word-wrap: break-word;
-
     }
   }
 
@@ -328,37 +325,38 @@
 
   .card-result-options {
     .delete{
+      position:relative;
       width: 40px;
       height:40px;
       float: right;
-      top: 30px;
+      //top: 30px;
       left: 10px;
     }
     
     .edit{
+      position:relative;
       width: 40px;
       height:40px;
       float: right;
-      top: 30px;
+      //top: 30px;
       left: 10px;
-      //margin-right: -10px;
     }
 
     .comment{
+      position:relative;
       width: 40px;
       height:40px;
       float: right;
-      top: 30px;
+      //top: 30px;
       left: 10px;
-      //margin-right: -10px;
     }
    
-    
     .back{
+      position:relative;
       width: 40px;
       height:40px;
       float: left;
-      top: 30px;
+      //top: 30px;
       left: -10px;
     }
   }

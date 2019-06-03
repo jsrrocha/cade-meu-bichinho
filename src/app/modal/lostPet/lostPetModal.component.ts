@@ -136,7 +136,8 @@ export class LostPetModalComponent implements OnInit{
       this.setDateOfDayInPick();
             
       //Set user logged(if exist)
-      if(this.cookieService.get('logged') != null){
+      if(this.cookieService.get('logged') != undefined
+         && this.cookieService.get('logged') != null){
         this.form.phone.setValue(this.cookieService.get('userPhone'));
         this.phoneWithWhats = !!this.cookieService.get('UserPhoneWithWhats'); 
       }
@@ -172,21 +173,26 @@ export class LostPetModalComponent implements OnInit{
     myReader.readAsDataURL(file); 
   }
 
-  getPhoneErrorMessage() {
+  getErrorMessage() {
     if(this.form.phone.hasError('required')){
        return 'Preencha com seu telefone';
     }else if(this.form.phone.hasError('pattern')){
        return 'Campo aceita somente números';
     }else if(this.form.phone.hasError('minlength')){
        return 'Telefone possui digitos faltando';
-    } 
+    }else if(this.form.name.hasError('required')){
+       return 'Preencha com o nome do pet';
+    }else if(this.form.photoSrc.hasError('required')){
+       return 'Insira uma foto do pet';
+    }
   } 
 
-  addPet(){
+   addPet(){
     if(this.formPetLost.valid){
 
-      if(this.cookieService.get('userLoggedId') != ""){
-        this.userLoggedId = this.cookieService.get('userLoggedId');
+      var description = this.form.description.value;
+      if(description == ''){
+        description = "Sem informações adicionais"
       }
       if(this.photoData !=null){
         this.photoWithoutHeader64 = this.photoData.split(',')[1]; 
@@ -204,13 +210,14 @@ export class LostPetModalComponent implements OnInit{
          "longitude" : this.markerPet.getPosition().lng(),
          "phone" : this.form.phone.value,
          "phoneWithWhats" :  this.phoneWithWhats,
-         "description" : this.form.description.value,
+         "description" : description,
          "lostPet" : "true",
-         "userId": this.userLoggedId
+         "userId": this.cookieService.get('userLoggedId')
       }
-      //console.log(pet);
 
-      if(this.cookieService.get('userLoggedId') == ""){
+      if(this.cookieService.get('userLoggedId') == undefined 
+         || this.cookieService.get('userLoggedId') == null ){
+        
         this.dialogRef.close();
         swal.fire({
           type: 'warning',
@@ -221,9 +228,10 @@ export class LostPetModalComponent implements OnInit{
           this.openDialogLogin(pet);
         })
       }else{
+
         this.service.addPet(pet).subscribe(
           (data:any)=> { 
-              this.cookieService.put('petId',data.id);
+              //this.cookieService.put('petId',data.id);  ??
               this.dialogRef.close();
 
               swal.fire({

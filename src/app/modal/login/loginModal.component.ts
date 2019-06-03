@@ -43,9 +43,21 @@ export class LoginModalComponent {
     });
   }
 
-  get formControl() {
+  get form() {
     return this.formLogin.controls;
   }
+
+  getEmailErrorMessage() {
+    if(this.form.email.hasError('required')){
+       return 'Preencha com o seu email';
+    }
+  } 
+
+  getPassErrorMessage() {
+    if(this.form.password.hasError('required')){
+       return 'Preencha com a sua senha';
+    }
+  } 
 
   isPhoneWithWhats() { 
    if(this.phoneWithWhats){  
@@ -60,8 +72,8 @@ export class LoginModalComponent {
       this.cookieService.put('token',this.service.tokenForClient);
 
       this.service.authentication(
-        this.formControl.email.value,
-        this.formControl.password.value)
+        this.form.email.value,
+        this.form.password.value)
         .subscribe(
         (data:any)=> {
           //console.log(data);

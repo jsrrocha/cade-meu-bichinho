@@ -19,8 +19,11 @@ export class TokenInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     
-    if(this.cookieService.get('expiresIn') != null 
-      && this.cookieService.get('expireTime') !=null){
+    if(this.cookieService.get('expiresIn') != undefined
+       && this.cookieService.get('expiresIn') != null
+       && this.cookieService.get('expireTime') != undefined 
+       && this.cookieService.get('expireTime') !=null){
+
       this.expiresIn = parseInt(this.cookieService.get('expiresIn'));
       this.expireTime = parseInt(this.cookieService.get('expireTime'));
       
@@ -35,7 +38,8 @@ export class TokenInterceptor implements HttpInterceptor {
     } 
 
     var authToken = "";
-    if(this.cookieService.get('token') != null){
+    if(this.cookieService.get('token') != undefined
+        && this.cookieService.get('token') != null){
       authToken = this.cookieService.get('token');
     }
     request = request.clone({

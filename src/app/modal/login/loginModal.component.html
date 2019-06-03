@@ -4,11 +4,15 @@
     <!-- Email insertion-->
     <mat-form-field class="form-style">
       <input matInput formControlName="email" required placeholder="Seu email">
+
+      <mat-error *ngIf="formLogin.controls.email.invalid">{{getEmailErrorMessage()}}</mat-error>
     </mat-form-field>
 
     <!-- Password insertion-->
     <mat-form-field class="form-style">
       <input matInput type="password" formControlName="password" required placeholder="Sua senha">
+
+      <mat-error *ngIf="formLogin.controls.password.invalid">{{getPassErrorMessage()}}</mat-error>
     </mat-form-field>    
     <br />  
     <br />

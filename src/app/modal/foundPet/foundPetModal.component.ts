@@ -139,7 +139,8 @@ export class FoundPetModalComponent implements OnInit{
     this.setDateOfDayInPick();
     
     //Set user logged(if exist)
-    if(this.cookieService.get('logged') != null){
+    if(this.cookieService.get('logged') != undefined
+       && this.cookieService.get('logged') != null){
       this.form.phone.setValue(this.cookieService.get('userPhone'));
       this.phoneWithWhats = !!this.cookieService.get('UserPhoneWithWhats'); 
     }
@@ -165,6 +166,20 @@ export class FoundPetModalComponent implements OnInit{
     return this.formPetFound.controls;
   }
 
+  getErrorMessage() {
+    if(this.form.phone.hasError('required')){
+       return 'Preencha com seu telefone';
+    }else if(this.form.phone.hasError('pattern')){
+       return 'Campo aceita somente números';
+    }else if(this.form.phone.hasError('minlength')){
+       return 'Telefone possui digitos faltando';
+    }else if(this.form.name.hasError('required')){
+       return 'Preencha com o nome do pet';
+    }else if(this.form.photoSrc.hasError('required')){
+       return 'Insira uma foto do pet';
+    }
+  } 
+
   isPhoneWithWhats() { 
    if(this.phoneWithWhats){  
       this.phoneWithWhats = false; 
@@ -185,23 +200,14 @@ export class FoundPetModalComponent implements OnInit{
     myReader.readAsDataURL(file); 
   }
   
-  getPhoneErrorMessage() {
-    if(this.form.phone.hasError('required')){
-       return 'Preencha com seu telefone';
-    }else if(this.form.phone.hasError('pattern')){
-       return 'Campo aceita somente números';
-    }else if(this.form.phone.hasError('minlength')){
-       return 'Telefone possui digitos faltando';
-    } 
-  } 
-
+  
   addPet(){
     if(this.formPetFound.valid){
 
-      if(this.cookieService.get('userLoggedId') != ""){
-        this.userLoggedId = this.cookieService.get('userLoggedId');
+      var description = this.form.description.value;
+      if(description == ''){
+        description = "Sem informações adicionais"
       }
-      
       if(this.photoData !=null){
         this.photoWithoutHeader64 = this.photoData.split(',')[1]; 
       }
@@ -218,13 +224,14 @@ export class FoundPetModalComponent implements OnInit{
          "longitude" : this.markerPet.getPosition().lng(),
          "phone" : this.form.phone.value,
          "phoneWithWhats" :  this.phoneWithWhats,
-         "description" : this.form.description.value,
+         "description" : description,
          "lostPet" : "false",
-         "userId": this.userLoggedId
+         "userId": this.cookieService.get('userLoggedId')
       }
-      //console.log(pet);
 
-      if(this.cookieService.get('userLoggedId') == ""){
+      if(this.cookieService.get('userLoggedId') == undefined 
+         || this.cookieService.get('userLoggedId') == null ){
+        
         this.dialogRef.close();
         swal.fire({
           type: 'warning',
@@ -235,9 +242,10 @@ export class FoundPetModalComponent implements OnInit{
           this.openDialogLogin(pet);
         })
       }else{
+
         this.service.addPet(pet).subscribe(
           (data:any)=> { 
-              this.cookieService.put('petId',data.id);
+              //this.cookieService.put('petId',data.id);  ??
               this.dialogRef.close();
 
               swal.fire({
@@ -261,16 +269,21 @@ export class FoundPetModalComponent implements OnInit{
       if(this.photoData !=null){
         this.photoWithoutHeader64 = this.photoData.split(',')[1]; 
       }
+      var description = this.form.description.value;
+      if(description == ''){
+        description = "Sem informações adicionais"
+      }
+
       let pet = {
          "id": this.petEdition.petId,
          "name": this.form.name.value, 
          "photo" : this.photoWithoutHeader64, 
          "phone" : this.form.phone.value,
          "phoneWithWhats" :  this.phoneWithWhats,
-         "description" : this.form.description.value
+         "description" : description
       }
       //console.log(pet);
-      
+
       this.service.editPet(pet).subscribe(
           (data:any)=> {
               this.dialogRef.close();
@@ -315,5 +328,4 @@ export class FoundPetModalComponent implements OnInit{
         } 
     })
   }
-
 }

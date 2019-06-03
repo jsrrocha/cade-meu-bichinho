@@ -110,8 +110,8 @@ export class ServiceComponent {
     }else if(error.status == 0){
       swal.fire({
         type: 'error',
-        title: 'Oops...',
-        text: 'Sistema está fora do ar',
+        title: 'Oops...Sistema está fora do ar',
+        text: 'Mande email para: cademeubichinho02@outlook.com',
         width: 350
       })
     }else if(error.error.error_description == "Invalid refresh token: "){

@@ -120,7 +120,6 @@ export class AppComponent implements OnInit {
       description: [null],
       checkedAllDates: [true, Validators.required], 
     }); 
-
   }
 
   ngOnInit() {
@@ -181,16 +180,6 @@ export class AppComponent implements OnInit {
     this.setDateOfDayInPicker();
     this.getPetCounting();  
     
-    //this.cookieService.put('token',"");
-    //this.cookieService.put('refreshToken',"");
-    //this.cookieService.put('expiresIn',"");
-
-    //this.cookieService.put('logged',"false");
-    //this.cookieService.put('userLoggedId',"");
-    //this.cookieService.put('userName',"");
-    //this.cookieService.put('userPhone',"");
-    //this.cookieService.put('UserPhoneWithWhats',"");
-    
     this.cookieService.put('petId',"");
   }
 
@@ -249,6 +238,9 @@ export class AppComponent implements OnInit {
    this.petPhone = v[0].value.phone;
    this.petPhoneWithWhats = v[0].value.phonewithWhats;
    this.petUserId = v[0].value.userId;
+   this.lat = v[0].value.latitude;
+   this.lng = v[0].value.longitude;
+   this.zoom = 15;
 
    if(this.petUserId == this.cookieService.get('userLoggedId')){
       this.petBelongsToUser = true;
@@ -278,6 +270,7 @@ export class AppComponent implements OnInit {
    }else{
      (<HTMLInputElement>document.getElementById('resultDate')).textContent = 
      "Encontrado dia " + this.dateFinal;
+     this.classLostPet = false; 
    }
 
    //Description
@@ -351,7 +344,8 @@ export class AppComponent implements OnInit {
     }
     
     if(this.formFilterPet.myPosts.value !=null
-       && this.cookieService.get('userLoggedId') != null){
+       && this.cookieService.get('userLoggedId') != null
+       && this.cookieService.get('userLoggedId') != undefined){
       this.userLoggedId = this.cookieService.get('userLoggedId');
     } 
 
@@ -384,7 +378,8 @@ export class AppComponent implements OnInit {
   }
 
   getNotifications(){
-    if(this.cookieService.get('userLoggedId') != null){
+    if(this.cookieService.get('userLoggedId') != undefined
+       && this.cookieService.get('userLoggedId') != null){
       
       this.service.getCommentsWithNotificationsActiveByUserReceived(    +this.cookieService.get('userLoggedId'))
         .subscribe( 
