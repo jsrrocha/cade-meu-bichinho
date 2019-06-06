@@ -221,25 +221,49 @@ export class AppComponent implements OnInit {
     }
   } 
 
-  inSelectedResult(e,v) {
+
+  inSelectedResult(e,petSelect) {
     this.showFilters=false; 
     this.showSelectedResult = true; 
+    console.log(petSelect); 
+   
+    let pet = {};
+    if(petSelect[0] != undefined){
+      pet = {
+        "id": petSelect[0].value.id,
+        "name": petSelect[0].value.name, 
+        "description" : petSelect[0].value.description,
+        "phone" : petSelect[0].value.phone,
+        "phoneWithWhats" : petSelect[0].value.phoneWithWhats,
+        "userId": petSelect[0].value.userId,
+        "latitude" : petSelect[0].value.latitude,
+        "longitude" : petSelect[0].value.longitude,
+        "lostPet" : petSelect[0].value.lostPet,
+        "date" : petSelect[0].value.date,
+        "photo": petSelect[0].value.photo,
+        "userName": petSelect[0].value.userName,  
+        "specie": petSelect[0].value.specie,
+        "sex": petSelect[0].value.sex
+      } 
+    }else{
+      pet = petSelect;
+    }
 
     setTimeout(()=>{  
-      this.fillResult(v); 
-    }, 60); 
+      this.fillResult(pet); 
+    }, 30); 
   }
 
-  fillResult(v){
+  fillResult(pet){
    
-   this.petId = v[0].value.id;
-   this.petName = v[0].value.name;
-   this.petDescription = v[0].value.description;
-   this.petPhone = v[0].value.phone;
-   this.petPhoneWithWhats = v[0].value.phonewithWhats;
-   this.petUserId = v[0].value.userId;
-   this.lat = v[0].value.latitude;
-   this.lng = v[0].value.longitude;
+   this.petId = pet.id;
+   this.petName = pet.name;
+   this.petDescription = pet.description;
+   this.petPhone = pet.phone;
+   this.petPhoneWithWhats = pet.phonewithWhats;
+   this.petUserId = pet.userId;
+   this.lat = pet.latitude;
+   this.lng = pet.longitude;
    this.zoom = 15;
 
    if(this.petUserId == this.cookieService.get('userLoggedId')){
@@ -254,15 +278,15 @@ export class AppComponent implements OnInit {
  
    //Specie
    (<HTMLInputElement>document.getElementById('resultSpecie')).textContent = 
-   v[0].value.specie;
+   pet.specie;
    
    //Sex
    (<HTMLInputElement>document.getElementById('resultSex')).textContent = 
-   v[0].value.sex;
+   pet.sex;
    
    //Type and Date
-   this.dateFinal = moment(v[0].value.date).format('DD/MM/YYYY');
-   if(v[0].value.lostPet == "true"){
+   this.dateFinal = moment(pet.date).format('DD/MM/YYYY');
+   if(pet.lostPet == "true"){
      (<HTMLInputElement>document.getElementById('resultDate')).textContent = 
      "Perdido dia " + this.dateFinal;
      
@@ -278,19 +302,19 @@ export class AppComponent implements OnInit {
    this.petDescription;
 
    //Photo
-   this.path = "data:image/png;base64," + v[0].value.photo;
+   this.path = "data:image/png;base64," + pet.photo;
    (<HTMLInputElement>document.getElementById('resultPhoto')).src = this.path;
    
    //Username
    var userName = (<HTMLInputElement>document.getElementById('resultUserName')).textContent = 
-   v[0].value.userName + ".";
+   pet.userName + ".";
 
    //Phone
    var userPhone = (<HTMLInputElement>document.getElementById('resultPhone')).textContent = 
    this.petPhone;
 
    //Phone With Whats
-   if(v[0].value.phonewithWhats = "true"){
+   if(pet.phonewithWhats = "true"){
       var withWhats = (<HTMLInputElement>document.getElementById('resultWithWhats')).textContent;
       withWhats = " Ou mande Whatsapp " + this.petPhoneWithWhats;
    }
@@ -362,6 +386,7 @@ export class AppComponent implements OnInit {
       "userId": this.userLoggedId
     }
     console.log(pet);
+    console.log(this.formFilterPet.type.value);
 
     this.service.petSearch(pet).subscribe(
     (data:any)=> {
@@ -501,7 +526,7 @@ export class AppComponent implements OnInit {
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
     dialogConfig.width = '380px';
-    dialogConfig.height = '400px'; 
+    dialogConfig.height = '500px'; 
 
     let petSelected = {
          "petId": this.petId,

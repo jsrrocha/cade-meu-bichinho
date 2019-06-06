@@ -80,19 +80,27 @@ export class CommentModalComponent {
     return this.formComment.controls;
   }
 
-  getErrorMessage() {
+  getPhoneErrorMessage() {
     if(this.form.phone.hasError('required')){
        return 'Preencha com seu telefone';
     }else if(this.form.phone.hasError('pattern')){
        return 'Campo aceita somente números';
     }else if(this.form.phone.hasError('minlength')){
        return 'Telefone possui digitos faltando';
-    }else if(this.form.name.hasError('required')){
-       return 'Preencha com o nome do pet';
-    }else if(this.form.comment.hasError('required')){
-       return 'Preencha com o comentário';
     }
   } 
+
+  getNameErrorMessage(){
+    if(this.form.name.hasError('required')){
+       return 'Preencha o nome do pet';
+    }
+  }
+
+  getCommentErrorMessage(){
+    if(this.form.comment.hasError('required')){
+       return 'Preencha o comentário';
+    }
+  }
 
   isPhoneWithWhats() { 
    if(this.phoneWithWhats){  

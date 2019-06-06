@@ -474,7 +474,7 @@
   border-radius: 4px;
   padding: 5px;
   box-sizing: border-box;
-  overflow: none;
+  overflow-y: auto;
 }
 
 .notification-list:after{
@@ -492,7 +492,6 @@
 }
 
 .card-list{
-  overflow-y: auto;
   height: 345px;
   border-radius: 4px;
   

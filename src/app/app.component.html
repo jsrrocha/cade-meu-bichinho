@@ -201,16 +201,9 @@
           <h3 mat-line [class.date-pet-found]="classLostPet==false"
           [class.date-pet-lost]="classLostPet==true" id="resultDate"></h3>
           
-          <!-- other
-            <textarea readonly id="resultDescription" class ="description-pet-selected" rows="2" cols="60" maxlength="200" wrap="hard" matInput></textarea>
-          <div mat-line class="description-pet">{{pet.description}}</div>
-           -->
-
-           <div class="description-pet-selected">
+          <div class="description-pet-selected">
            <h6 mat-line id="resultDescription"></h6>
           </div>
-
-         
 
           <div class="img-pet-selected">
             <img id="resultPhoto"/>
@@ -312,7 +305,7 @@
 
   <!-- Mapa -->
   <agm-map  [latitude]="lat" [longitude]="lng" [zoom]="zoom" [streetViewControlOptions]="streetViewControlOptions" [zoomControlOptions]="zoomControlOptions">
-    <agm-overlay *ngFor="let pet of pets" [latitude]="pet.latitude" [longitude]="pet.longitude">
+    <agm-overlay *ngFor="let pet of pets" [latitude]="pet.latitude" [longitude]="pet.longitude" (markerClick) = "inSelectedResult($event,pet)">
       <div >
         <img class="png-icon-map" src="{{'data:image/png;base64,'+ pet.photo}}" />
       </div>

@@ -9,8 +9,8 @@ import swal from 'sweetalert2';
 
 export class ServiceComponent {
 
-  backendUrl = "http://localhost:8086/";
-  //backendUrl = "https://cademeubichinho02.herokuapp.com/";
+  //backendUrl = "http://localhost:8086/";
+  backendUrl = "https://cademeubichinho02.herokuapp.com/";
 
   tokenForClient = "Basic Z2xvYmFsOjEyMzQ1Ng==";
 
@@ -112,7 +112,7 @@ export class ServiceComponent {
         type: 'error',
         title: 'Oops...Sistema está fora do ar',
         text: 'Mande email para: cademeubichinho02@outlook.com',
-        width: 350
+        width: 400
       })
     }else if(error.error.error_description == "Invalid refresh token: "){
       //Ignora!
@@ -120,8 +120,8 @@ export class ServiceComponent {
       swal.fire({
         type: 'error',
         title: 'Oops... Algo deu errado',
-        text: 'Tente novamente',
-        width: 350
+        text: 'Tente novamente ou mande email para: cademeubichinho02@outlook.com',
+        width: 400
       })
     }
   }  
