@@ -15,8 +15,6 @@
   z-index: 2;
   box-shadow: 1px 2px 5px #CCC;
   border-radius: 70px 4px 4px 70px;
-  width: 100%;
-  max-width: 360px;
   img {
     max-width: 60px;
     float: left;
@@ -25,7 +23,7 @@
   }
   form {
     box-sizing: border-box;
-    width: calc(100% - 30px);
+    width: 320px;
     height: 60px;
     float: left;
     background: #FFF;
@@ -46,15 +44,13 @@
 
 .search-container {
   position: absolute;
-  z-index: 5;
+  z-index: 3;
   width: 380px;
-  max-width: 100%;
   padding: 80px 10px 10px 10px;
-  box-sizing: border-box;
 }
 .filter-container {
   position: absolute;
-  z-index: 4;
+  z-index: 2;
   border-radius: 0 4px 4px 0;
   box-shadow: 1px 2px 5px #CCC;
   width: 380px;
@@ -74,7 +70,7 @@
   .filter-option-group {
     background: #fff;
     border-radius: 4px;
-    padding: 5px 5px 30px 5px;
+    padding: 5px 5px 15px 5px;
   }
   .filter-option {
     margin: 10px 5px 0 5px;
@@ -96,13 +92,9 @@
       margin-right: 5px;
     }
 
-    .button {
+    .button{
       float: right;
-      bottom: 15px;
-    }
-    .button:first-child {
-      float: left;
-      padding: 0;
+      bottom: 30px;
     }
   }
 
@@ -114,12 +106,12 @@
 
   .label-together{
     margin: 10px 0 4px 5px;
-    label{
+    label{ 
       font-size: 11px;
       color: #808086;
       margin-right: 130px;
-    }
-  }
+    } 
+  } 
 
   .filter-together{
     margin: 4px 0 4px 5px;
@@ -127,11 +119,13 @@
       margin-right: 5px;
     }
   }
+
   .specie{
     margin-right: 20px;
   }
+
   .date{
-    margin-left: 15px;
+   margin-right: 15px;
   }
 }
 
@@ -148,7 +142,7 @@
 }
 
 .png-icon{
-  border-radius: 50%;
+  border-radius: 50%; 
   width: 45px;
   height: 40px;
   background-color: white;
@@ -181,7 +175,7 @@
   margin-top: 10px;
   box-sizing: border-box;
 
-
+  
 
   .list-pets{
     width: 100%;
@@ -214,7 +208,7 @@
   .specie-pet{
      display: inline ;
      padding-bottom:5px ;
-     padding-right: 5px ;
+     padding-right: 5px ; 
      font-weight: bold ;
      font-size: 12px ;
   }
@@ -226,8 +220,8 @@
   }
   .description-pet{
     top: 2px;
-    max-height: 30px;
-    width: 220px;
+    max-height: 30px;  
+    width: 220px; 
     padding-top:5px;
 
     h6{
@@ -249,8 +243,8 @@
   .img-pet{
     position:absolute;
     max-width: 100px;
-    max-height: 90px;
-    right: 0;
+    max-height: 90px; 
+    right: 0; 
     top: 0;
     z-index: 2;
     margin: 10px 0;
@@ -278,12 +272,12 @@
      padding-right:5px ;
      font-weight: bold ;
      font-size: 16px ;
-
+ 
   }
   .specie-pet-selected{
      display: inline ;
      padding-bottom:5px ;
-     padding-right: 5px ;
+     padding-right: 5px ; 
      font-weight: bold ;
      font-size: 12px ;
   }
@@ -293,7 +287,7 @@
      font-weight: bold ;
      font-size: 12px ;
   }
-
+  
   .img-pet-selected{
      margin: 0 auto;
      text-align: center;
@@ -309,13 +303,13 @@
     //border:solid 1px rgba(197, 197, 197, 0.42);
     width: 100% ;
     height: 120px;
-    max-height: 150px;
+    max-height: 150px;  
     margin-bottom: 10px;
     margin-top: 10px;
 
     h6{
       font-size: 12px ;
-      white-space: normal ;
+      white-space: normal ; 
       overflow-wrap: break-word;
       word-wrap: break-word;
     }
@@ -323,7 +317,7 @@
 
   .msg-contact-user{
     font-size: 12px ;
-
+  
   }
   .msg-style{
      font-weight: bold;
@@ -338,7 +332,7 @@
       //top: 30px;
       left: 10px;
     }
-
+    
     .edit{
       position:relative;
       width: 40px;
@@ -356,7 +350,7 @@
       //top: 30px;
       left: 10px;
     }
-
+   
     .back{
       position:relative;
       width: 40px;
@@ -379,7 +373,7 @@
 
 /* Plus menu button */
 .plus-menu-button {
-  position: absolute;
+  position: fixed;
   right: 60px;
   bottom: 20px;
   z-index: 3;
@@ -420,7 +414,7 @@
   font-weight: bold;
   position: fixed;
   z-index: 2;
-  right: 10px;
+  right: 15px;
   width: inherit !important;
   height: inherit !important;
   background: #FFF;
@@ -456,7 +450,7 @@
   font-weight: bold;
   position: fixed;
   z-index: 2;
-  right: 105px;
+  right: 110px;
   width: inherit !important;
   height: inherit !important;
   background: #FFF;
@@ -474,20 +468,20 @@
   z-index: 2;
   top:66px;
   right:10px;
-  width: 340px;
-  height: 345px;
+  width: 300px;
+  height: 360px;
   background-color:#d0b5fc;
   border-radius: 4px;
   padding: 5px;
   box-sizing: border-box;
-  overflow: none;
+  overflow-y: auto;
 }
 
 .notification-list:after{
   content: '';
   position: absolute;
   top: 0;
-  left: calc(50% + 25px);
+  left:50%;
   width: 0;
   height: 0;
   border: 15px solid transparent;
@@ -498,10 +492,9 @@
 }
 
 .card-list{
-  overflow-y: auto;
   height: 345px;
   border-radius: 4px;
-
+  
 }
 
 .notification-card{
@@ -532,57 +525,9 @@ mat-button-toggle, .mat-button-toggle-appearance-standard{
   border-left: none;
 }
 
-/**
- * Media queries
- */
 @media only screen and (max-width : 480px) {
-  .search-local {
-    width: calc(100% - 15px);
-    max-width: calc(100% - 20px);
-  }
-  .filter-container {
-    width: 378px;
-    .png-icon {
-      width: 36px;
-      height: 36px;
-    }
-    .specie {
-      margin-right: 5px;
-    }
-    .filter-option {
-      .mat-button-toggle, .mat-radio-button {
-        margin-right: 4px;
-      }
-    }
-  }
-  .notification-button, .login-button, .logout-button {
-    font-size: 11px;
-    top: 78px;
-    line-height: 30px;
-    padding-left: 2px;
-  }
-  .notification-button {
-    right: 85px;
-  }
-  .notification-list {
-    max-width: calc(100% - 20px);
-    top: 125px;
-  }
-  .plus-menu-button{
-    left: 15px;
-    right: auto;
-  }
-  .footer-info {
-    display: none;
-  }
-}
-
-@media only screen and (max-width : 320px) {
-  .filter-container {
-    width: 320px;
-  }
   .search-container {
-    width: calc(100%);
+    width: calc(100% - 20px);
     form {
       width: calc(100% - 30px);
     }
@@ -607,7 +552,7 @@ mat-button-toggle, .mat-button-toggle-appearance-standard{
       <agm-info-window>
         <strong>Oi eu sou um dog perdido!</strong>
       </agm-info-window>
-    </agm-marker>
+    </agm-marker> 
 
 <!-- Pagination of results of search -->
           <mat-paginator class="pagination-pets" [length]="100"
@@ -617,5 +562,5 @@ mat-button-toggle, .mat-button-toggle-appearance-standard{
 
           <button class="search-local" mat-button matSuffix  matTooltip="Clique para mostrar busca" (click)="getPetSearch()">
             <img src="../assets/logo.png" alt="Cade meu pet?" />
-        </button>
+        </button> 
     */
