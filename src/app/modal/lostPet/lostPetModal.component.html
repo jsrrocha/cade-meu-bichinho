@@ -8,7 +8,7 @@
     <mat-form-field  class="form-style">
       <input  matInput formControlName="name" required placeholder="Nome do pet">
 
-      <mat-error *ngIf="formPetLost.controls.name.invalid">{{getErrorMessage()}}</mat-error>
+      <mat-error *ngIf="formPetLost.controls.name.invalid">{{getNameErrorMessage()}}</mat-error>
     </mat-form-field>
 
     <!-- Specie selection-->
@@ -27,7 +27,7 @@
     <mat-form-field  class="form-style">
       <input readonly required id="input-photo-src" formControlName="photoSrc" class="input-photo-src" matInput placeholder="Insira uma foto dele" />
       
-      <mat-error *ngIf="formPetLost.controls.photoSrc.invalid">{{getErrorMessage()}}</mat-error>
+      <mat-error *ngIf="formPetLost.controls.photoSrc.invalid">{{getPhotoErrorMessage()}}</mat-error>
 
       <input  id="input-photo" type="file" style="display: none;" (change)="onFileSelected($event)" />
       <label matSuffix for="input-photo">
@@ -71,7 +71,7 @@
     <!-- Phone insertion-->
     <mat-form-field class="form-style">
       <input matInput formControlName="phone" placeholder="Telefone c/ DDD" required>
-      <mat-error *ngIf="formPetLost.controls.phone.invalid">{{getErrorMessage()}}</mat-error>
+      <mat-error *ngIf="formPetLost.controls.phone.invalid">{{getPhoneErrorMessage()}}</mat-error>
 
       <mat-button-toggle (click)="isPhoneWithWhats()" matSuffix matTooltip="Marque se o telefone possui whats">
         <img  class="whats-png-icon" src="../assets/icons/whats.png">

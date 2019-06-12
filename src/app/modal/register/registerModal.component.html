@@ -6,6 +6,8 @@
       <!-- Name insertion-->
       <mat-form-field  class="form-style"> 
        <input matInput formControlName="name" required placeholder="Seu nome">
+
+        <mat-error *ngIf="formRegister.controls.email.invalid">{{getNameErrorMessage()}}</mat-error>
       </mat-form-field> 
       <br />
 
@@ -13,14 +15,14 @@
       <mat-form-field class="form-style">
         <input matInput formControlName="email" required placeholder="Seu email">
 
-        <mat-error *ngIf="formRegister.controls.email.invalid">{{getErrorMessage()}}</mat-error>
+        <mat-error *ngIf="formRegister.controls.email.invalid">{{getEmailErrorMessage()}}</mat-error>
       </mat-form-field>
 
       <!-- Password insertion-->
       <mat-form-field class="form-style">
         <input matInput type="password" formControlName="password" required placeholder="Cadastre uma senha">
 
-        <mat-error *ngIf="formRegister.controls.password.invalid">{{getErrorMessage()}}</mat-error>
+        <mat-error *ngIf="formRegister.controls.password.invalid">{{getPassErrorMessage()}}</mat-error>
       </mat-form-field>
 
       <br />
@@ -29,7 +31,7 @@
       <mat-form-field class="form-style">
         <input matInput formControlName="phone" placeholder="Telefone c/ DDD" required>
 
-        <mat-error *ngIf="formRegister.controls.phone.invalid">{{getErrorMessage()}}</mat-error>
+        <mat-error *ngIf="formRegister.controls.phone.invalid">{{getPhoneErrorMessage()}}</mat-error>
 
         <mat-button-toggle (click)="isPhoneWithWhats()" matSuffix matTooltip="Marque se o telefone possui whats">
             <img  class="whats-png-icon" src="../assets/icons/whats.png">

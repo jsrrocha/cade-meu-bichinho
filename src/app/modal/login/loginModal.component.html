@@ -1,24 +1,31 @@
-<div mat-dialog-content class = "login" id="login-content">
+<div mat-dialog-content class = "login" id="login-content"> 
   <form [formGroup]="formLogin" >
-    <h2 mat-dialog-title>Login</h2>
+    <h2 mat-dialog-title>Login</h2>  
     <!-- Email insertion-->
     <mat-form-field class="form-style">
       <input matInput formControlName="email" required placeholder="Seu email">
+
       <mat-error *ngIf="formLogin.controls.email.invalid">{{getEmailErrorMessage()}}</mat-error>
     </mat-form-field>
 
     <!-- Password insertion-->
     <mat-form-field class="form-style">
       <input matInput type="password" formControlName="password" required placeholder="Sua senha">
+
       <mat-error *ngIf="formLogin.controls.password.invalid">{{getPassErrorMessage()}}</mat-error>
-    </mat-form-field>
-
+    </mat-form-field>    
+    <br />  
+    <br />
     <a href="javascript:void(0)" (click)="openDialogRegisterNewPassword()">Esqueceu a senha</a>
+    <br />  
+    <br />
     <a href="javascript:void(0)" (click)="openDialogRegister()">Não possui cadastro? é rapidinho :)</a>
-
+    <br />  
+    <br />
     <div mat-dialog-actions class="actions">
       <button mat-raised-button color="primary" class=button type="submit" (click)="loginAuth()">Logar</button>
       <button mat-raised-button class="button" (click)="close()">Cancelar</button>
     </div>
   </form>
 </div>
+

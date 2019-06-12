@@ -176,8 +176,8 @@ export class LoginModalComponent {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
-    dialogConfig.width = '250px';
-    dialogConfig.height = '300px';  
+    dialogConfig.width = '300px';
+    dialogConfig.height = '400px';  
     this.dialog.open(RegisterNewPasswordModalComponent, dialogConfig);
   }
 

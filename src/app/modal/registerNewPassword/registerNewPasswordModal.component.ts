@@ -43,6 +43,34 @@ export class RegisterNewPasswordModalComponent {
     return this.formRegister.controls;
   }
 
+  getPhoneErrorMessage() {
+    if(this.form.phone.hasError('required')){
+       return 'Preencha com seu telefone';
+    }else if(this.form.phone.hasError('pattern')){
+       return 'Campo aceita somente números';
+    }else if(this.form.phone.hasError('minlength')){
+       return 'Telefone possui digitos faltando';
+    }
+  } 
+
+  getEmailErrorMessage() {
+    if(this.form.email.hasError('required')){
+       return 'Preencha com o seu email';
+    }
+  } 
+
+  getPassErrorMessage() {
+    if(this.form.newPassword.hasError('required')){
+       return 'Preencha com a nova senha';
+    }
+  } 
+
+  getConfirmPasswordErrorMessage() {
+    if(this.form.confirmPassword.hasError('required')){
+       return 'Preencha com a sua nova senha';
+    }
+  } 
+
   isPhoneWithWhats() { 
     if(this.phoneWithWhats){  
       this.phoneWithWhats = false; 
