@@ -3,7 +3,7 @@
   <!-- Search local-->
   <div class="search-container">
     <div class="search-local">
-      
+
       <img style="cursor: pointer; "src="../assets/logo.png" alt="Cade meu pet?" matTooltip="Clique para mostrar/esconder os filtros" (click)="showHiddenFilters()"  />
 
       <form [formGroup]="formLocal" >
@@ -19,14 +19,14 @@
           </button>
         </mat-form-field>
       </form>
-    </div> 
+    </div>
   </div>
 
   <!-- Search filter-->
-  <div class="filter-container" >
+  <div class="filter-container">
 
     <div class="filter-option-group" *ngIf="showFilters">
-      <form [formGroup]="formFilter"> 
+      <form [formGroup]="formFilter">
 
         <!-- Type selection-->
   	    <div class="filter-option">
@@ -39,7 +39,6 @@
   	    </div>
 
         <!-- Only my posts selection-->
-        
         <div class="filter-option">
           <label>Filtrar posts:</label>
           <mat-radio-group class="only-my" formControlName="myPosts">
@@ -47,12 +46,12 @@
             <mat-radio-button value="true">Somente meus posts</mat-radio-button>
           </mat-radio-group>
         </div>
-        
-        <div class="label-together"> 
+
+        <div class="label-together">
           <label>Espécie:</label>
           <label>Sexo:</label>
-        </div> 
-          
+        </div>
+
         <div class="filter-together">
           <!-- Specie selection-->
           <mat-button-toggle-group class=specie #speciegroup="matButtonToggleGroup" formControlName="specie">
@@ -62,15 +61,14 @@
 
             <mat-button-toggle value=0 matTooltip="Busco só cachorros">
               <img  class="png-icon" src="../assets/icons/blank.png">
-            </mat-button-toggle> 
+            </mat-button-toggle>
 
             <mat-button-toggle value=1 matTooltip="Busco só gatos">
               <img  class="png-icon" src="../assets/icons/veia.png">
-            </mat-button-toggle> 
+            </mat-button-toggle>
           </mat-button-toggle-group>
-    
+
           <!-- Sex selection-->
-  
           <mat-button-toggle-group class=sex #sexgroup="matButtonToggleGroup"  formControlName="sex">
             <mat-button-toggle  checked matTooltip="Busco todos">
               <img  class="png-icon" src="../assets/icons/all.png">
@@ -147,18 +145,20 @@
 
         <!-- Date selection-->
         <div class="filter-option">
-          <mat-checkbox checked formControlName="checkedAllDates" class ="date" #all >Todas as datas</mat-checkbox>
-
-          <mat-form-field class="form-datePicker"> 
+          <mat-form-field class="form-datePicker">
             <input matInput [readonly]="all.checked" [matDatepicker]="picker" [formControl]="datePicker" placeholder="Buscar pela data">
             <mat-datepicker-toggle matSuffix [disabled]="all.checked" [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
           </mat-form-field>
+          <mat-checkbox checked formControlName="checkedAllDates" class ="date" #all >Todas as datas</mat-checkbox>
         </div>
 
         <div class="filter-option">
+          <button mat-flat-button color="default" class="button" type="button" (click)="showHiddenFilters()" >
+            <mat-icon>arrow_back</mat-icon> Fechar filtros
+          </button>
           <button mat-raised-button color="primary" class="button" type="submit" (click)="getPetSearch()" >Filtrar</button>
-        </div> 
+        </div>
 
       </form>
     </div>
@@ -166,16 +166,16 @@
     <!-- Pet results -->
     <mat-card *ngIf="searching && pets.length == 0" class="pet-list-empty">
         <span  >Não existem pets com esses filtros</span>
-    </mat-card> 
+    </mat-card>
 
-    <div class="search-results" *ngIf="pets.length > 0">   
-      
+    <div class="search-results" *ngIf="pets.length > 0">
+
       <div *ngIf="!showSelectedResult">
         <mat-selection-list #petList  (selectionChange)="inSelectedResult($event,petList.selectedOptions.selected)" class="list-pets" >
-  
+
           <mat-list-option  class="item-list-pets" *ngFor="let pet of pets" [value]='pet' matTooltip="Clique ver mais informações ou postar um comentário">
 		        <h3 class="name-pet">{{pet.name}}</h3>
-	          
+
             <span mat-line class="specie-pet">{{pet.specie}}</span>
             <span mat-line class="sex-pet">{{pet.sex}}</span>
 
@@ -200,10 +200,17 @@
           <h3 mat-line id="resultSex" class="sex-pet-selected">""</h3>
           <h3 mat-line [class.date-pet-found]="classLostPet==false"
           [class.date-pet-lost]="classLostPet==true" id="resultDate"></h3>
-          
-          <div class="description-pet-selected">
+
+          <!-- other
+            <textarea readonly id="resultDescription" class ="description-pet-selected" rows="2" cols="60" maxlength="200" wrap="hard" matInput></textarea>
+          <div mat-line class="description-pet">{{pet.description}}</div>
+           -->
+
+           <div class="description-pet-selected">
            <h6 mat-line id="resultDescription"></h6>
           </div>
+
+
 
           <div class="img-pet-selected">
             <img id="resultPhoto"/>
@@ -218,7 +225,7 @@
             <span class ="msg-style" id="resultUserName" >""</span>
             <p><span>Ou você também pode mandar um comentário pelo botão abaixo. </span></p>
           </div>
-          
+
           <div class="card-result-options">
             <button mat-icon-button class="delete" *ngIf=
             "petBelongsToUser" (click)="openDialogRemovePet()" matTooltip="Remover pet">
@@ -266,7 +273,7 @@
 
   <div class="notification-list" *ngIf="showNotifications">
     <div class="card-list" >
-    
+
     <mat-card class="notification-card" *ngFor="let notif of notifications" >
       <mat-card-content >
        <p> O <b>{{notif.specie}} {{notif.name}}</b> que foi <b>{{notif.lostPet == "true" ? "perdido" : "encontrado"}} em {{notif.date | date:'dd/MM/yyy'}} </b> recebeu um comentário! *0* </p>
@@ -274,10 +281,10 @@
        <br />
        <p>{{notif.comment}}</p>
        <br />
-       <p *ngIf="notif.link !- ''">Link: {{notif.link}}</p> 
-       
+       <p *ngIf="notif.link !- ''">Link: {{notif.link}}</p>
+
        O telefone de contato de <b>{{notif.userName}}</b> é: <b>{{notif.userPhone}}</b> e <b>{{notif.userPhoneWithWhats == "true" ? "possui" : "não possui"}}</b> whats.
-      </mat-card-content> 
+      </mat-card-content>
 
       <button class="notification-delete" mat-icon-button (click)="deleteNotification(notif.id)" *ngIf="this.cookieService.get('userName') !='Admin global'" matTooltip="Remova uma notificação">
         <mat-icon >delete</mat-icon>
@@ -288,7 +295,7 @@
   </div>
 
   <!-- Plus button -->
-  
+
   <mat-menu #appMenu="matMenu" yPosition="above" class="plus-menu">
     <button mat-menu-item (click)="openDialogLostPet()">
       <mat-icon>add</mat-icon>
@@ -305,7 +312,7 @@
 
   <!-- Mapa -->
   <agm-map  [latitude]="lat" [longitude]="lng" [zoom]="zoom" [streetViewControlOptions]="streetViewControlOptions" [zoomControlOptions]="zoomControlOptions">
-    <agm-overlay *ngFor="let pet of pets" [latitude]="pet.latitude" [longitude]="pet.longitude" (markerClick) = "inSelectedResult($event,pet)">
+    <agm-overlay *ngFor="let pet of pets" [latitude]="pet.latitude" [longitude]="pet.longitude">
       <div >
         <img class="png-icon-map" src="{{'data:image/png;base64,'+ pet.photo}}" />
       </div>
@@ -331,4 +338,3 @@
 </div>
 
 <router-outlet></router-outlet>
-

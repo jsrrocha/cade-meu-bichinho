@@ -38,7 +38,7 @@ export class RegisterModalComponent {
          Validators.minLength(10),
          Validators.pattern('[0-9]+')]],
       email: ['', Validators.required],
-      password: ['',Validators.required]    
+      password: ['',Validators.required]   
     });
    
   }
@@ -55,31 +55,17 @@ export class RegisterModalComponent {
    }    
   }  
 
-  getNameErrorMessage() {
-    if(this.form.name.hasError('required')){
-       return 'Preencha com o seu nome';
-    }
-  } 
-
-  getPhoneErrorMessage() {
+  getErrorMessage() {
     if(this.form.phone.hasError('required')){
        return 'Preencha com seu telefone';
     }else if(this.form.phone.hasError('pattern')){
        return 'Campo aceita somente números';
     }else if(this.form.phone.hasError('minlength')){
        return 'Telefone possui digitos faltando';
-    }
-  } 
-
-  getEmailErrorMessage() {
-    if(this.form.email.hasError('required')){
-       return 'Preencha com o seu email';
-    }
-  } 
-
-  getPassErrorMessage() {
-    if(this.form.password.hasError('required')){
+    }else if(this.form.password.hasError('required')){
        return 'Preencha com a sua senha';
+    }else if(this.form.email.hasError('required')){
+       return 'Preencha com o seu email';
     }
   } 
 

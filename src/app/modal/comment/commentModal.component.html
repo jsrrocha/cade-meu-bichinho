@@ -6,7 +6,7 @@
     <mat-form-field  class="form-style">
       <input matInput formControlName="name" required placeholder="Nome">
 
-      <mat-error *ngIf="formComment.controls.name.invalid">{{getNameErrorMessage()}}</mat-error>
+      <mat-error *ngIf="formComment.controls.name.invalid">{{getErrorMessage()}}</mat-error>
     </mat-form-field>
 
     <!-- Date selection-->
@@ -20,7 +20,7 @@
     <mat-form-field class="form-style">
       <input matInput formControlName="phone" placeholder="Telefone c/ DDD" required>
 
-      <mat-error *ngIf="formComment.controls.phone.invalid">{{getPhoneErrorMessage()}}</mat-error>
+      <mat-error *ngIf="formComment.controls.phone.invalid">{{getErrorMessage()}}</mat-error>
 
       <mat-button-toggle (click)="isPhoneWithWhats()" matSuffix matTooltip="Marque se o telefone possui whats">
         <img  class="whats-png-icon" src="../assets/icons/whats.png">
@@ -33,12 +33,9 @@
     </mat-form-field>
 
     <!-- Comment insertion-->
-    <mat-form-field class ="comment">
-      <textarea matInput rows="4" cols="60" maxlength="254" wrap="hard" class ="border-on" formControlName="comment" placeholder="Viu esse pet? Descreva aqui :)"></textarea>
-      
+    <textarea matInput rows="4" cols="60" maxlength="254" wrap="hard" formControlName="comment" class ="border-on" placeholder="Viu esse pet? Descreva aqui :)"></textarea>
 
-      <mat-error *ngIf="formComment.controls.phone.invalid">{{getCommentErrorMessage()}}</mat-error>
-    </mat-form-field>
+     <mat-error *ngIf="formComment.controls.comment.invalid">{{getErrorMessage()}}</mat-error>
 
     <div mat-dialog-actions class="actions">
       <button mat-raised-button color="primary" class=button type="submit"  (click)="addComment()">Comentar</button>

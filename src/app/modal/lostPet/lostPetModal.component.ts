@@ -173,27 +173,19 @@ export class LostPetModalComponent implements OnInit{
     myReader.readAsDataURL(file); 
   }
 
-  getPhoneErrorMessage() {
+  getErrorMessage() {
     if(this.form.phone.hasError('required')){
        return 'Preencha com seu telefone';
     }else if(this.form.phone.hasError('pattern')){
        return 'Campo aceita somente números';
     }else if(this.form.phone.hasError('minlength')){
        return 'Telefone possui digitos faltando';
-    }
-  } 
-
-  getNameErrorMessage(){
-    if(this.form.name.hasError('required')){
+    }else if(this.form.name.hasError('required')){
        return 'Preencha com o nome do pet';
-    }
-  }
-
-  getPhotoErrorMessage(){
-    if(this.form.photoSrc.hasError('required')){
+    }else if(this.form.photoSrc.hasError('required')){
        return 'Insira uma foto do pet';
     }
-  }
+  } 
 
    addPet(){
     if(this.formPetLost.valid){

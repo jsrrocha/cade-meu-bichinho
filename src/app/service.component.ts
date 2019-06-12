@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpParams, 
+import {HttpClient, HttpParams,
         HttpHeaders} from '@angular/common/http';
-import swal from 'sweetalert2'; 
+import swal from 'sweetalert2';
 
 @Injectable({
   providedIn: 'root'
@@ -9,15 +9,15 @@ import swal from 'sweetalert2';
 
 export class ServiceComponent {
 
-  //backendUrl = "http://localhost:8086/";
-  backendUrl = "https://cademeubichinho02.herokuapp.com/";
+  backendUrl = "http://localhost:8086/";
+  //backendUrl = "https://cademeubichinho02.herokuapp.com/";
 
   tokenForClient = "Basic Z2xvYmFsOjEyMzQ1Ng==";
 
   constructor(private http: HttpClient) {}
 
   authentication(username:string,password:string){
-      const url = this.backendUrl + "oauth/token?grant_type=password&username="+ username +"&password=" + password;                                                       
+      const url = this.backendUrl + "oauth/token?grant_type=password&username="+ username +"&password=" + password;
       return this.http.post(url,null);
   }
 
@@ -110,9 +110,9 @@ export class ServiceComponent {
     }else if(error.status == 0){
       swal.fire({
         type: 'error',
-        title: 'Oops...Sistema está fora do ar',
-        text: 'Mande email para: cademeubichinho02@outlook.com',
-        width: 400
+        title: 'Ops... O sistema parece estar fora do ar',
+        text: 'Mande um e-mail para: cademeubichinho02@outlook.com',
+        width: 350
       })
     }else if(error.error.error_description == "Invalid refresh token: "){
       //Ignora!
@@ -120,9 +120,9 @@ export class ServiceComponent {
       swal.fire({
         type: 'error',
         title: 'Oops... Algo deu errado',
-        text: 'Tente novamente ou mande email para: cademeubichinho02@outlook.com',
-        width: 400
+        text: 'Tente novamente',
+        width: 350
       })
     }
-  }  
+  }
 }
