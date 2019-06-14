@@ -147,16 +147,22 @@
 
         <!-- Date selection-->
         <div class="filter-option">
-          <mat-checkbox checked formControlName="checkedAllDates" class ="date" #all >Todas as datas</mat-checkbox>
+          
 
           <mat-form-field class="form-datePicker"> 
             <input matInput [readonly]="all.checked" [matDatepicker]="picker" [formControl]="datePicker" placeholder="Buscar pela data">
             <mat-datepicker-toggle matSuffix [disabled]="all.checked" [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
           </mat-form-field>
+
+          <mat-checkbox checked formControlName="checkedAllDates" class ="date" #all >Todas as datas</mat-checkbox> 
         </div>
 
         <div class="filter-option">
+          <button mat-flat-button color="default" class="button" type="button" (click)="showHiddenFilters()" >
+            <mat-icon>arrow_back</mat-icon> Fechar filtros
+          </button>
+
           <button mat-raised-button color="primary" class="button" type="submit" (click)="getPetSearch()" >Filtrar</button>
         </div> 
 

@@ -14,14 +14,11 @@
 
       <mat-error *ngIf="formLogin.controls.password.invalid">{{getPassErrorMessage()}}</mat-error>
     </mat-form-field>    
-    <br />  
-    <br />
+   
     <a href="javascript:void(0)" (click)="openDialogRegisterNewPassword()">Esqueceu a senha</a>
-    <br />  
-    <br />
+  
     <a href="javascript:void(0)" (click)="openDialogRegister()">Não possui cadastro? é rapidinho :)</a>
-    <br />  
-    <br />
+   
     <div mat-dialog-actions class="actions">
       <button mat-raised-button color="primary" class=button type="submit" (click)="loginAuth()">Logar</button>
       <button mat-raised-button class="button" (click)="close()">Cancelar</button>

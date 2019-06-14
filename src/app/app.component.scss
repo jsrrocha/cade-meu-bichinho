@@ -15,6 +15,8 @@
   z-index: 2;
   box-shadow: 1px 2px 5px #CCC;
   border-radius: 70px 4px 4px 70px;
+  width: 100%;
+  max-width: 360px;
   img {
     max-width: 60px;
     float: left;
@@ -23,7 +25,7 @@
   }
   form {
     box-sizing: border-box;
-    width: 320px;
+    width: calc(100% - 30px);
     height: 60px;
     float: left;
     background: #FFF;
@@ -44,13 +46,15 @@
 
 .search-container {
   position: absolute;
-  z-index: 3;
+  z-index: 5;
   width: 380px;
+  max-width: 100%;
   padding: 80px 10px 10px 10px;
+  box-sizing: border-box;
 }
 .filter-container {
   position: absolute;
-  z-index: 2;
+  z-index: 4;
   border-radius: 0 4px 4px 0;
   box-shadow: 1px 2px 5px #CCC;
   width: 380px;
@@ -70,7 +74,7 @@
   .filter-option-group {
     background: #fff;
     border-radius: 4px;
-    padding: 5px 5px 15px 5px;
+    padding: 5px 5px 30px 5px;
   }
   .filter-option {
     margin: 10px 5px 0 5px;
@@ -92,9 +96,13 @@
       margin-right: 5px;
     }
 
-    .button{
+    .button {
       float: right;
-      bottom: 30px;
+      bottom: 15px;
+    }
+    .button:first-child {
+      float: left;
+      padding: 0;
     }
   }
 
@@ -125,7 +133,7 @@
   }
 
   .date{
-   margin-right: 15px;
+    margin-left: 15px;
   }
 }
 
@@ -373,7 +381,7 @@
 
 /* Plus menu button */
 .plus-menu-button {
-  position: fixed;
+  position: absolute;
   right: 60px;
   bottom: 20px;
   z-index: 3;
@@ -414,7 +422,7 @@
   font-weight: bold;
   position: fixed;
   z-index: 2;
-  right: 15px;
+  right: 10px;
   width: inherit !important;
   height: inherit !important;
   background: #FFF;
@@ -450,7 +458,7 @@
   font-weight: bold;
   position: fixed;
   z-index: 2;
-  right: 110px;
+  right: 105px;
   width: inherit !important;
   height: inherit !important;
   background: #FFF;
@@ -468,20 +476,20 @@
   z-index: 2;
   top:66px;
   right:10px;
-  width: 300px;
-  height: 360px;
+  width: 340px;
+  height: 345px;
   background-color:#d0b5fc;
   border-radius: 4px;
   padding: 5px;
   box-sizing: border-box;
-  overflow-y: auto;
+  overflow: none;
 }
 
 .notification-list:after{
   content: '';
   position: absolute;
   top: 0;
-  left:50%;
+  left: calc(50% + 25px);
   width: 0;
   height: 0;
   border: 15px solid transparent;
@@ -492,9 +500,10 @@
 }
 
 .card-list{
+  overflow-y: auto;
   height: 345px;
   border-radius: 4px;
-  
+
 }
 
 .notification-card{
@@ -525,9 +534,57 @@ mat-button-toggle, .mat-button-toggle-appearance-standard{
   border-left: none;
 }
 
+/**
+ * Media queries
+ */
 @media only screen and (max-width : 480px) {
+  .search-local {
+    width: calc(100% - 15px);
+    max-width: calc(100% - 20px);
+  }
+  .filter-container {
+    width: 378px;
+    .png-icon {
+      width: 36px;
+      height: 36px;
+    }
+    .specie {
+      margin-right: 5px;
+    }
+    .filter-option {
+      .mat-button-toggle, .mat-radio-button {
+        margin-right: 4px;
+      }
+    }
+  }
+  .notification-button, .login-button, .logout-button {
+    font-size: 11px;
+    top: 78px;
+    line-height: 30px;
+    padding-left: 2px;
+  }
+  .notification-button {
+    right: 85px;
+  }
+  .notification-list {
+    max-width: calc(100% - 20px);
+    top: 125px;
+  }
+  .plus-menu-button{
+    left: 15px;
+    right: auto;
+  }
+  .footer-info {
+    display: none;
+  }
+}
+
+@media only screen and (max-width : 320px) {
+  .filter-container {
+    width: 320px;
+  }
   .search-container {
-    width: calc(100% - 20px);
+    width: calc(100%);
     form {
       width: calc(100% - 30px);
     }

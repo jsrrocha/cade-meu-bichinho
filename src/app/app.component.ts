@@ -526,7 +526,7 @@ export class AppComponent implements OnInit {
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
     dialogConfig.width = '380px';
-    dialogConfig.height = '500px'; 
+    dialogConfig.height = '400px'; 
 
     let petSelected = {
          "petId": this.petId,

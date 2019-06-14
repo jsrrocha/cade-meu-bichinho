@@ -19,42 +19,55 @@ agm-map {
 
 /* Search places result */
 .pac-container {
-  width: 300px !important;
+  width: 305px !important;
   left: 65px !important;
   top: 70px !important;
   padding: 5px;
   border: 0;
-  box-shadow: none;
+  box-shadow: 0px 4px 3px 0px #CCC;
   .pac-item {
     padding: 8px 5px;
     &:first-child {
       border: 0;
     }
   }
-} 
+}
 
 /* Plus menu */
 .plus-menu {
-  margin-bottom: 15px; 
+  margin-bottom: 15px;
   overflow-x: none;
- 
-} 
+  &:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left:95%;
+    width: 0;
+    height: 0;
+    border: 15px solid transparent;
+    border-top-color: white;
+    border-bottom: 0;
+    margin-bottom: 4px;
+  }
+}
 
-.plus-menu:after{
-  content: ''; 
-  position: absolute; 
-  bottom: 0; 
-  left:95%; 
-  width: 0; 
-  height: 0; 
-  border: 15px solid transparent; 
-  border-top-color: white; 
-  border-bottom: 0; 
-  margin-bottom: 4px;
+/**
+ * Swal modal style
+ */
+.swal2-container {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  .swal2-confirm {
+    background-color: #673ab7 !important;
+  }
+  .swal2-title {
+    font-size: 22px !important;
+  }
+  .swal2-content {
+    font-size: 15px;
+  }
 }
 
 /*Just work here*/
-
 .mat-button-toggle-label-content{
   line-height: 0px !important;
   padding:0px !important
@@ -67,7 +80,7 @@ agm-map {
 .mat-datepicker-toggle-default-icon{
   width: 100% !important;
 }
-   
+
 .mat-form-field .mat-form-field-wrapper{
   padding-bottom:12px;
 }
@@ -111,15 +124,17 @@ agm-map {
 }
 
 @media only screen and (max-width:320px) { }
-@media only screen and (max-width:480px) { }
-
-
-@media only screen and (max-width : 600px) {
+@media only screen and (max-width:480px) {
   .pac-container {
-    width: calc(100% - 200px) !important;
+    width: calc(100% - 75px) !important;
   }
 }
 
+
+@media only screen and (max-width : 600px) {
+
+}
+
 @media only screen and (max-width:768px) { }
-@media only screen and (max-width:992px) { }  
+@media only screen and (max-width:992px) { }
 @media only screen and (max-width: 1382px){ }
