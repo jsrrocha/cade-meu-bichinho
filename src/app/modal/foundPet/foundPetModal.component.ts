@@ -39,19 +39,13 @@ export const MY_FORMATS = {
     {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},
     {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
   ],
-})
+}) 
 
 export class FoundPetModalComponent implements OnInit{  
 
   formPetFound: FormGroup;
-  date;
-  selectedSpecie= 0;
-  selectedSex= 0;
-  selectedLifeStage= 0;
-  selectedFurColor= 0; 
   photoData = null;
   photoWithoutHeader64 = null;
-  phoneWithWhats= false; 
   selectedImg= true;
   userLoggedId = null;
   edition = false;
@@ -84,7 +78,13 @@ export class FoundPetModalComponent implements OnInit{
         Validators.minLength(10),
         Validators.pattern('[0-9]+')]],
       description: [''],
-      photoSrc: ['',Validators.required]   
+      photoSrc: ['',Validators.required],
+      date: [new Date(),Validators.required], 
+      selectedSpecie: [Validators.required],
+      selectedSex: [Validators.required],
+      selectedFurColor: [Validators.required],
+      selectedLifeStage: [Validators.required],
+      phoneWithWhats: [false]
     }); 
   }
   
@@ -136,13 +136,12 @@ export class FoundPetModalComponent implements OnInit{
       //console.log(marker.getPosition().lng());
     }
 
-    this.setDateOfDayInPick();
     
     //Set user logged(if exist)
     if(this.cookieService.get('logged') != undefined
        && this.cookieService.get('logged') != null){
       this.form.phone.setValue(this.cookieService.get('userPhone'));
-      this.phoneWithWhats = !!this.cookieService.get('UserPhoneWithWhats'); 
+      this.form.phoneWithWhats.setValue(!!this.cookieService.get('UserPhoneWithWhats')); 
     }
     
     //If is pet edition set fields
@@ -153,14 +152,11 @@ export class FoundPetModalComponent implements OnInit{
       this.form.description.setValue(this.petEdition.petDescription);
       this.form.phone.setValue(this.petEdition.petPhone);
       this.form.photoSrc.setValue("imagemPet.jpg");
-      this.phoneWithWhats = this.petEdition.petPhoneWithWhats;
+      this.form.phoneWithWhats.setValue(this.petEdition.petPhoneWithWhats);
     }
   }
 
-  setDateOfDayInPick(){
-    this.date = new FormControl(new Date());
-    var serializedDate = new FormControl((new Date()).toISOString());
-  }
+
 
   get form() {
     return this.formPetFound.controls;
@@ -188,12 +184,10 @@ export class FoundPetModalComponent implements OnInit{
     }
   }
 
-  isPhoneWithWhats() { 
-   if(this.phoneWithWhats){  
-      this.phoneWithWhats = false; 
-   }else{
-     this.phoneWithWhats = true; 
-   }    
+  getDateErrorMessage(){
+    if(this.form.date.hasError('required')){
+       return 'Insira a data do encontro';
+    }
   }
 
   onFileSelected(event){
@@ -222,20 +216,21 @@ export class FoundPetModalComponent implements OnInit{
 
       let pet = {
          "name": this.form.name.value, 
-         "specie": this.selectedSpecie,
-         "sex": this.selectedSex,
-         "furColor": this.selectedFurColor,
-         "lifeStage": this.selectedLifeStage,
+         "specie": this.form.selectedSpecie.value,
+         "sex": this.form.selectedSex.value, 
+         "furColor": this.form.selectedFurColor.value,
+         "lifeStage": this.form.selectedLifeStage.value,
          "photo" : this.photoWithoutHeader64, 
-         "date" : this.date.value,
+         "date" : this.form.date.value,
          "latitude" : this.markerPet.getPosition().lat(),
          "longitude" : this.markerPet.getPosition().lng(),
          "phone" : this.form.phone.value,
-         "phoneWithWhats" :  this.phoneWithWhats,
+         "phoneWithWhats" :  this.form.phoneWithWhats.value,
          "description" : description,
          "lostPet" : "false",
          "userId": this.cookieService.get('userLoggedId')
       }
+      console.log(pet);
 
       if(this.cookieService.get('userLoggedId') == undefined 
          || this.cookieService.get('userLoggedId') == null ){
@@ -287,7 +282,7 @@ export class FoundPetModalComponent implements OnInit{
          "name": this.form.name.value, 
          "photo" : this.photoWithoutHeader64, 
          "phone" : this.form.phone.value,
-         "phoneWithWhats" :  this.phoneWithWhats,
+         "phoneWithWhats" :  this.form.phoneWithWhats.value,
          "description" : description
       }
       //console.log(pet);

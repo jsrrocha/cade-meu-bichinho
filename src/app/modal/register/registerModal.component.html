@@ -27,16 +27,19 @@
 
       <br />
 
-      <!-- Phone insertion-->
-      <mat-form-field class="form-style">
+      <!-- Phone insertion--> 
+      <mat-form-field id="ess" class="form-style">   
         <input matInput formControlName="phone" placeholder="Telefone c/ DDD" required>
-
+        
         <mat-error *ngIf="formRegister.controls.phone.invalid">{{getPhoneErrorMessage()}}</mat-error>
-
-        <mat-button-toggle (click)="isPhoneWithWhats()" matSuffix matTooltip="Marque se o telefone possui whats">
-            <img  class="whats-png-icon" src="../assets/icons/whats.png">
+        
+        
+        <mat-button-toggle matSuffix matTooltip="Marque se o telefone possui whats">
+          <mat-slide-toggle formControlName="phoneWithWhats" color="warn" ></mat-slide-toggle> 
         </mat-button-toggle>
-      </mat-form-field> 
+        <img  matSuffix class="whats-png-icon" src="../assets/icons/whats.png"> 
+       
+      </mat-form-field>
       
       <div mat-dialog-actions class="actions">
        <button mat-raised-button color="primary" class=button type="submit" (click)="addUser()">Cadastrar</button>

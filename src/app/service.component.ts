@@ -74,7 +74,7 @@ export class ServiceComponent {
   }
 
   removePet(id:number,reason:number){
-      const url = this.backendUrl + "remove/" + id + "/reason/" + reason;
+      const url = this.backendUrl + "pet/remove/" + id + "/reason/" + reason;
       return this.http.post(url,null);
   }
 
@@ -95,7 +95,9 @@ export class ServiceComponent {
   }
 
   handleErrors(error: any){
+    console.log("CHAMA");
     if(error.error.errorMessage != undefined){
+     
       swal.fire({
         type: 'error',
         title: error.error.errorMessage,
@@ -108,6 +110,7 @@ export class ServiceComponent {
         width: 350
       })
     }else if(error.status == 0){
+     
       swal.fire({
         type: 'error',
         title: 'Oops...Sistema está fora do ar',
@@ -116,6 +119,21 @@ export class ServiceComponent {
       })
     }else if(error.error.error_description == "Invalid refresh token: "){
       //Ignora!
+    }else if(error.error.error != undefined){
+      
+      swal.fire({
+        type: 'error',
+        title: 'Não existe esse serviço',
+        width: 350
+      })  
+
+    }else if(error.error != undefined){
+      
+      swal.fire({
+        type: 'error',
+        title: error.error,
+        width: 350
+      })
     }else{
       swal.fire({
         type: 'error',

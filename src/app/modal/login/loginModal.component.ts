@@ -139,6 +139,7 @@ export class LoginModalComponent {
         })
       },
       error => {
+        this.service.handleErrors(error);
         console.log(error);
     }); 
   }

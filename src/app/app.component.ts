@@ -11,6 +11,7 @@ import { CookieService } from 'ngx-cookie';
 import { AgmOverlays } from "agm-overlays";
 import * as moment from 'moment';
 import swal from 'sweetalert2'; 
+import { Router, RouterModule } from '@angular/router';
 
 //material
 import { MatDialog, MatDialogConfig,MatRadioModule,MatNativeDateModule,MatDividerModule,
@@ -102,7 +103,8 @@ export class AppComponent implements OnInit {
     private service: ServiceComponent,
     private formBuilder: FormBuilder,
     private formBuilder2: FormBuilder,
-    public cookieService: CookieService
+    public cookieService: CookieService,
+    private router: Router
     ){
   
     this.formLocal = this.formBuilder.group({
@@ -141,6 +143,7 @@ export class AppComponent implements OnInit {
 
       // Set input autocomplete
       autocomplete.addListener('place_changed', () => {
+        
         this.ngZone.run(() => {
           // get the place result
           let place: google.maps.places.PlaceResult = autocomplete.getPlace();
@@ -334,11 +337,12 @@ export class AppComponent implements OnInit {
       confirmButtonText: 'OK',
       cancelButtonText: 'Cancelar',
       reverseButtons: true
-      }).then((result) => { 
+      }).then((result) => {  
       
       if (result.value) {
         this.service.logoutUser().subscribe(
         (data:any)=> {
+            location.reload(); 
             this.cookieService.put('token',null);
             this.cookieService.put('refreshToken',null);
             this.cookieService.put('expiresIn',null);
@@ -526,7 +530,7 @@ export class AppComponent implements OnInit {
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
     dialogConfig.width = '380px';
-    dialogConfig.height = '400px'; 
+    dialogConfig.height = '480px';  
 
     let petSelected = {
          "petId": this.petId,

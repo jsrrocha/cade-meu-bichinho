@@ -22,8 +22,6 @@ import { TokenInterceptor } from '../../token.interceptor';
 export class RegisterModalComponent { 
 
   formRegister: FormGroup;
-  
-  phoneWithWhats=false; 
 
   constructor(
     private dialogRef: MatDialogRef<RegisterModalComponent>,
@@ -38,7 +36,8 @@ export class RegisterModalComponent {
          Validators.minLength(10),
          Validators.pattern('[0-9]+')]],
       email: ['', Validators.required],
-      password: ['',Validators.required]    
+      password: ['',Validators.required],
+      phoneWithWhats: [false]    
     });
    
   }
@@ -46,14 +45,6 @@ export class RegisterModalComponent {
   get form() {
     return this.formRegister.controls;
   }
-
-  isPhoneWithWhats() { 
-   if(this.phoneWithWhats){  
-      this.phoneWithWhats = false; 
-   }else{
-     this.phoneWithWhats = true; 
-   }    
-  }  
 
   getNameErrorMessage() {
     if(this.form.name.hasError('required')){
@@ -88,7 +79,7 @@ export class RegisterModalComponent {
       let user = {
          "name": this.form.name.value, 
          "phone" : this.form.phone.value,
-         "phoneWithWhats" :  this.phoneWithWhats,
+         "phoneWithWhats" :  this.form.phoneWithWhats.value,
          "email" : this.form.email.value,
          "password" : this.form.password.value
       }

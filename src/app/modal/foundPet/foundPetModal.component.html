@@ -11,9 +11,9 @@
     </mat-form-field>
 
     <!-- Specie selection-->
-    <mat-button-toggle-group class=group [(value)]="selectedSpecie" #speciegroup="matButtonToggleGroup">
+    <mat-button-toggle-group class=group formControlName="selectedSpecie" #speciegroup="matButtonToggleGroup">
       
-      <mat-button-toggle class=group-button [value]="0"  matTooltip="Meu pet é um cachorro">
+      <mat-button-toggle class=group-button [value]="0" matTooltip="Meu pet é um cachorro">
         <img  class="select-png-icon" src="../assets/icons/blank.png">
       </mat-button-toggle>
 
@@ -34,8 +34,8 @@
     </mat-form-field>
 
     <!-- Sex selection-->
-    <mat-button-toggle-group class=group [(value)]="selectedSex"  #sexgroup="matButtonToggleGroup" >
-      <mat-button-toggle class=group-button [value]="0" checked matTooltip="Ele é macho">
+    <mat-button-toggle-group class=group formControlName="selectedSex"  #sexgroup="matButtonToggleGroup" >
+      <mat-button-toggle class=group-button [value]="0" matTooltip="Ele é macho">
         <img  class="select-png-icon" src="../assets/icons/male.png">
       </mat-button-toggle>
 
@@ -46,14 +46,16 @@
 
     <!-- Date selection-->
     <mat-form-field readonly="edition" class="form-style">
-      <input matInput [matDatepicker]="picker" [formControl]="date" placeholder="Data de encontro" >
+      <input matInput [matDatepicker]="picker" formControlName="date" placeholder="Data do encontro" >
       <mat-datepicker-toggle matSuffix [for]="picker" matTooltip="Selecione a data"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
+
+      <mat-error *ngIf="formPetFound.controls.date.invalid">{{getDateErrorMessage()}}</mat-error>
     </mat-form-field>
 
     <!-- Life stage selection-->
-    <mat-button-toggle-group id="life-stage" class="group" [(value)]="selectedLifeStage"  #lifegroup="matButtonToggleGroup" >
-      <mat-button-toggle class=group-button [value]="0" checked matTooltip="Ele é filhote">
+    <mat-button-toggle-group id="life-stage" class="group" formControlName="selectedLifeStage"  #lifegroup="matButtonToggleGroup" >
+      <mat-button-toggle class=group-button [value]="0"  matTooltip="Ele é filhote">
         <img  class="select-png-icon" src="../assets/icons/puppy.png">
       </mat-button-toggle>
 
@@ -72,14 +74,17 @@
       
       <mat-error *ngIf="formPetFound.controls.phone.invalid">{{getPhoneErrorMessage()}}</mat-error>
       
-      <mat-button-toggle (click)="isPhoneWithWhats()" matSuffix matTooltip="Marque se o telefone possui whats">
-        <img  class="whats-png-icon" src="../assets/icons/whats.png">
+      
+      <mat-button-toggle matSuffix matTooltip="Marque se o telefone possui whats">
+        <mat-slide-toggle formControlName="phoneWithWhats" color="warn" ></mat-slide-toggle> 
       </mat-button-toggle>
+      <img  matSuffix class="whats-png-icon" src="../assets/icons/whats.png"> 
+       
     </mat-form-field>
 
     <!-- Fur color selection-->
-    <mat-button-toggle-group id="fur-color" class=group [(value)]="selectedFurColor"  #colorgroup="matButtonToggleGroup" >
-      <mat-button-toggle class=group-button [value]="0" checked matTooltip="A cor é parecida com branco">
+    <mat-button-toggle-group id="fur-color" class=group formControlName="selectedFurColor"  #colorgroup="matButtonToggleGroup" >
+      <mat-button-toggle class=group-button [value]="0"  matTooltip="A cor é parecida com branco">
         <img  class="color-png-icon" src="../assets/icons/dogbranco.png">
       </mat-button-toggle>
 

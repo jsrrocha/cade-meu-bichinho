@@ -8,7 +8,7 @@
 
       <form [formGroup]="formLocal" >
         <mat-form-field class="search-field">
-          <input matInput placeholder="Busque o pet pelo local" class="form-control" #search formControlName="searchValue">
+          <input matInput placeholder="Clique no logo ou busque  o pet pelo local" #search formControlName="searchValue" matTooltip="Pesquise aqui o pet pelo local">
 
           <button mat-button mat-icon-button  matSuffix matTooltip="Pesquisar"  aria-label="Search" >
             <mat-icon>search</mat-icon>
@@ -148,16 +148,16 @@
         <!-- Date selection-->
         <div class="filter-option">
           
-
+          <mat-checkbox checked formControlName="checkedAllDates" class ="date" #all >Todas as datas</mat-checkbox> 
           <mat-form-field class="form-datePicker"> 
+            
             <input matInput [readonly]="all.checked" [matDatepicker]="picker" [formControl]="datePicker" placeholder="Buscar pela data">
+            
             <mat-datepicker-toggle matSuffix [disabled]="all.checked" [for]="picker"></mat-datepicker-toggle>
+            
             <mat-datepicker #picker></mat-datepicker>
           </mat-form-field>
-
-          <mat-checkbox checked formControlName="checkedAllDates" class ="date" #all >Todas as datas</mat-checkbox> 
         </div>
-
         <div class="filter-option">
           <button mat-flat-button color="default" class="button" type="button" (click)="showHiddenFilters()" >
             <mat-icon>arrow_back</mat-icon> Fechar filtros

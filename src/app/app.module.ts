@@ -50,7 +50,8 @@ import {
    MatListModule,
    MatPaginatorModule,
    MAT_DIALOG_DATA,
-   MatDialogRef
+   MatDialogRef,
+   MatSlideToggleModule,
    
 
  } from '@angular/material';
@@ -94,6 +95,7 @@ import {
     MatListModule,
     MatPaginatorModule,
     ScrollDispatchModule,
+    MatSlideToggleModule,
     // map
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyClNvzWYjAplvnnhCGHaXzVEiV6KGEHYSQ',
