@@ -1,6 +1,6 @@
 /// <reference types="@types/googlemaps" />
 
-import { Component, ElementRef, NgZone, OnInit, ViewChild,AfterViewInit } from '@angular/core';
+import { Component, ElementRef, NgZone, OnInit, ViewChild,AfterViewInit ,ChangeDetectorRef} from '@angular/core';
 import { MapsAPILoader } from '@agm/core';
 import {ScrollDispatchModule} from '@angular/cdk/scrolling';
 import {DomSanitizer} from '@angular/platform-browser';;
@@ -10,7 +10,7 @@ import {FormBuilder,FormControl, FormGroup,Validators} from '@angular/forms';
 import { CookieService } from 'ngx-cookie';
 import { AgmOverlays } from "agm-overlays";
 import * as moment from 'moment';
-import swal from 'sweetalert2'; 
+import swal from 'sweetalert2';
 import { Router, RouterModule } from '@angular/router';
 
 //material
@@ -23,7 +23,7 @@ import { FoundPetModalComponent } from './modal/foundPet/foundPetModal.component
 import { LoginModalComponent } from './modal/login/loginModal.component';
 import { CommentModalComponent } from './modal/comment/commentModal.component';
 import { ServiceComponent } from './service.component';
-import { RemovePetModalComponent } from './modal/removePet/removePetModal.component'; 
+import { RemovePetModalComponent } from './modal/removePet/removePetModal.component';
 
 export const MY_FORMATS = {
   parse: {
@@ -46,7 +46,7 @@ export const MY_FORMATS = {
     {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
   ],
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, AfterViewInit{
   title = 'tcc';
 
   //Map
@@ -59,22 +59,23 @@ export class AppComponent implements OnInit {
   zoomControlOptions: object = {};
   @ViewChild('search')
   public searchElementRef: ElementRef;
-  
+
   //Forms
   formLocal: FormGroup;
   formFilter: FormGroup;
 
   //Flags nIf
   showFilters = true;
-  showSelectedResult = false; 
+  showSelectedResult = false;
   searching = false;
 
   showNotifications = false;
   petBelongsToUser = false;
-  
+
   //Others
   latitude = null;
   longitude = null;
+  appLoading = false;
   datePicker;
   serializedDate;
   path = "";
@@ -93,7 +94,7 @@ export class AppComponent implements OnInit {
   petId;
   petName;
   petDescription;
-  petPhone; 
+  petPhone;
   petPhoneWithWhats;
 
   constructor(
@@ -104,9 +105,10 @@ export class AppComponent implements OnInit {
     private formBuilder: FormBuilder,
     private formBuilder2: FormBuilder,
     public cookieService: CookieService,
-    private router: Router
+    private router: Router,
+    private cd: ChangeDetectorRef
     ){
-  
+
     this.formLocal = this.formBuilder.group({
       searchValue: [''],
     });
@@ -114,14 +116,14 @@ export class AppComponent implements OnInit {
     this.formFilter = this.formBuilder2.group({
       type: [null, Validators.required],
       myPosts: [null, Validators.required],
-              
+
       specie: [null, Validators.required],
       lifeStage: [null,Validators.required],
       sex: [null,Validators.required],
       furColor: [null,Validators.required],
       description: [null],
-      checkedAllDates: [true, Validators.required], 
-    }); 
+      checkedAllDates: [false,Validators.required],
+    });
   }
 
   ngOnInit() {
@@ -143,7 +145,7 @@ export class AppComponent implements OnInit {
 
       // Set input autocomplete
       autocomplete.addListener('place_changed', () => {
-        
+
         this.ngZone.run(() => {
           // get the place result
           let place: google.maps.places.PlaceResult = autocomplete.getPlace();
@@ -157,17 +159,17 @@ export class AppComponent implements OnInit {
           this.lat = place.geometry.location.lat();
           this.lng = place.geometry.location.lng();
           this.zoom = 15;
-          
+
           //set to search! if is NULL find ALL places.
           this.latitude = this.lat;
-          this.longitude = this.lng; 
+          this.longitude = this.lng;
 
 	        // show filters
           document.querySelector('.filter-container').classList.add("active");
-          
+
           //Atualize list of pets!
           this.getPetSearch();
-          
+
         });
       });
 
@@ -181,9 +183,15 @@ export class AppComponent implements OnInit {
     });
 
     this.setDateOfDayInPicker();
-    this.getPetCounting();  
-    
+    this.getPetCounting();
+
     this.cookieService.put('petId',"");
+  }
+
+  ngAfterViewInit() {
+    console.log("CAIU AQUI!!")
+    this.formFilterPet.checkedAllDates.setValue(true);
+    this.cd.detectChanges();
   }
 
 
@@ -194,11 +202,11 @@ export class AppComponent implements OnInit {
   getPetCounting(){
       this.service.getPetCounting().subscribe(
       (data:any)=> {
-          //console.log(data); 
+          //console.log(data);
           this.petTotal = data;
       },
       error => {
-          console.log(error); 
+          console.log(error);
       });
   }
 
@@ -206,11 +214,11 @@ export class AppComponent implements OnInit {
     return this.formFilter.controls;
   }
 
-  clearLocal() { 
+  clearLocal() {
     this.formLocal.controls.searchValue.setValue('');
     this.latitude = null;
-    this.longitude = null; 
-    
+    this.longitude = null;
+
     //Atualize list of pets!
     this.getPetSearch();
   }
@@ -222,19 +230,19 @@ export class AppComponent implements OnInit {
     }else{
       document.querySelector('.filter-container').classList.add("active");
     }
-  } 
+  }
 
 
   inSelectedResult(e,petSelect) {
-    this.showFilters=false; 
-    this.showSelectedResult = true; 
-    console.log(petSelect); 
-   
+    this.showFilters=false;
+    this.showSelectedResult = true;
+    console.log(petSelect);
+
     let pet = {};
     if(petSelect[0] != undefined){
       pet = {
         "id": petSelect[0].value.id,
-        "name": petSelect[0].value.name, 
+        "name": petSelect[0].value.name,
         "description" : petSelect[0].value.description,
         "phone" : petSelect[0].value.phone,
         "phoneWithWhats" : petSelect[0].value.phoneWithWhats,
@@ -244,21 +252,21 @@ export class AppComponent implements OnInit {
         "lostPet" : petSelect[0].value.lostPet,
         "date" : petSelect[0].value.date,
         "photo": petSelect[0].value.photo,
-        "userName": petSelect[0].value.userName,  
+        "userName": petSelect[0].value.userName,
         "specie": petSelect[0].value.specie,
         "sex": petSelect[0].value.sex
-      } 
+      }
     }else{
       pet = petSelect;
     }
 
-    setTimeout(()=>{  
-      this.fillResult(pet); 
-    }, 30); 
+    setTimeout(()=>{
+      this.fillResult(pet);
+    }, 30);
   }
 
   fillResult(pet){
-   
+
    this.petId = pet.id;
    this.petName = pet.name;
    this.petDescription = pet.description;
@@ -276,44 +284,44 @@ export class AppComponent implements OnInit {
    }
 
    //Name
-   (<HTMLInputElement>document.getElementById('resultName')).textContent = 
+   (<HTMLInputElement>document.getElementById('resultName')).textContent =
    this.petName;
- 
+
    //Specie
-   (<HTMLInputElement>document.getElementById('resultSpecie')).textContent = 
+   (<HTMLInputElement>document.getElementById('resultSpecie')).textContent =
    pet.specie;
-   
+
    //Sex
-   (<HTMLInputElement>document.getElementById('resultSex')).textContent = 
+   (<HTMLInputElement>document.getElementById('resultSex')).textContent =
    pet.sex;
-   
+
    //Type and Date
    this.dateFinal = moment(pet.date).format('DD/MM/YYYY');
    if(pet.lostPet == "true"){
-     (<HTMLInputElement>document.getElementById('resultDate')).textContent = 
+     (<HTMLInputElement>document.getElementById('resultDate')).textContent =
      "Perdido dia " + this.dateFinal;
-     
-     this.classLostPet = true; 
+
+     this.classLostPet = true;
    }else{
-     (<HTMLInputElement>document.getElementById('resultDate')).textContent = 
+     (<HTMLInputElement>document.getElementById('resultDate')).textContent =
      "Encontrado dia " + this.dateFinal;
-     this.classLostPet = false; 
+     this.classLostPet = false;
    }
 
    //Description
-   (<HTMLInputElement>document.getElementById('resultDescription')).textContent = 
+   (<HTMLInputElement>document.getElementById('resultDescription')).textContent =
    this.petDescription;
 
    //Photo
    this.path = "data:image/png;base64," + pet.photo;
    (<HTMLInputElement>document.getElementById('resultPhoto')).src = this.path;
-   
+
    //Username
-   var userName = (<HTMLInputElement>document.getElementById('resultUserName')).textContent = 
+   var userName = (<HTMLInputElement>document.getElementById('resultUserName')).textContent =
    pet.userName + ".";
 
    //Phone
-   var userPhone = (<HTMLInputElement>document.getElementById('resultPhone')).textContent = 
+   var userPhone = (<HTMLInputElement>document.getElementById('resultPhone')).textContent =
    this.petPhone;
 
    //Phone With Whats
@@ -324,10 +332,10 @@ export class AppComponent implements OnInit {
   }
 
   hiddenSelectedResult(){
-    this.showSelectedResult = false; 
-    this.showFilters= true; 
+    this.showSelectedResult = false;
+    this.showFilters= true;
   }
-  
+
   logoutUser(){
     swal.fire({
       title: 'Você realmente deseja deslogar?',
@@ -337,12 +345,12 @@ export class AppComponent implements OnInit {
       confirmButtonText: 'OK',
       cancelButtonText: 'Cancelar',
       reverseButtons: true
-      }).then((result) => {  
-      
+      }).then((result) => {
+
       if (result.value) {
         this.service.logoutUser().subscribe(
         (data:any)=> {
-            location.reload(); 
+            location.reload();
             this.cookieService.put('token',null);
             this.cookieService.put('refreshToken',null);
             this.cookieService.put('expiresIn',null);
@@ -351,31 +359,32 @@ export class AppComponent implements OnInit {
             this.cookieService.put('userName',null);
             this.cookieService.put('userPhone',null);
             this.cookieService.put('UserPhoneWithWhats',null);
-            this.cookieService.put('logged',"false"); 
-            this.showNotifications = false; 
+            this.cookieService.put('logged',"false");
+            this.showNotifications = false;
         },
         error => {
             console.log(error);
-        });  
-      } 
+        });
+      }
     })
   }
 
   getPetSearch(){
+    this.appLoading = true;
 
     if(!this.formFilterPet.checkedAllDates.value){
       this.serializedDate = new FormControl((this.datePicker.value).toISOString());
-       
+
       this.dateFilter = this.serializedDate.value;
     }else{
       this.dateFilter = null;
     }
-    
+
     if(this.formFilterPet.myPosts.value !=null
        && this.cookieService.get('userLoggedId') != null
        && this.cookieService.get('userLoggedId') != undefined){
       this.userLoggedId = this.cookieService.get('userLoggedId');
-    } 
+    }
 
     let pet = {
       "specie": this.formFilterPet.specie.value,
@@ -394,42 +403,43 @@ export class AppComponent implements OnInit {
 
     this.service.petSearch(pet).subscribe(
     (data:any)=> {
-        //console.log(data); 
-        this.pets = data; 
-        this.searching = true;        
+        //console.log(data);
+        this.pets = data;
+        this.searching = true;
+        this.appLoading = false;
     },
     error => {
         this.service.handleErrors(error);
-        console.log(error); 
-    }); 
+        console.log(error);
+    });
 
-        
+
   }
 
   getNotifications(){
     if(this.cookieService.get('userLoggedId') != undefined
        && this.cookieService.get('userLoggedId') != null){
-      
+
       this.service.getCommentsWithNotificationsActiveByUserReceived(    +this.cookieService.get('userLoggedId'))
-        .subscribe( 
+        .subscribe(
           (data:any)=> {
-              console.log(data); 
+              console.log(data);
               if(data.length == 0){
                 //this.existNotifications = false;
-                
-                this.showNotifications = false; 
+
+                this.showNotifications = false;
                 swal.fire({
                   title: 'Você não possui notificações',
                   type: 'warning',
                   width: 350
-                })  
+                })
               }else{
                 //this.existNotifications = true;
 
-                if(this.showNotifications){  
-                  this.showNotifications = false; 
+                if(this.showNotifications){
+                  this.showNotifications = false;
                 }else{
-                  this.showNotifications = true; 
+                  this.showNotifications = true;
                 }
               }
               this.notifications = data;
@@ -450,8 +460,8 @@ export class AppComponent implements OnInit {
       confirmButtonText: 'OK',
       cancelButtonText: 'Cancelar',
       reverseButtons: true
-      }).then((result) => { 
-      
+      }).then((result) => {
+
       if (result.value) {
         this.service.removeNotification(id)
             .subscribe(
@@ -468,7 +478,7 @@ export class AppComponent implements OnInit {
                   this.service.handleErrors(error);
                   console.log(error);
         });
-      } 
+      }
     })
   }
 
@@ -479,7 +489,7 @@ export class AppComponent implements OnInit {
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
     dialogConfig.width = '520px';
-    dialogConfig.height = '585px'; 
+    dialogConfig.height = '585px';
 
     this.dialog.open(LostPetModalComponent, dialogConfig);
   }
@@ -520,17 +530,17 @@ export class AppComponent implements OnInit {
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
     dialogConfig.width = '270px';
-    dialogConfig.height = '330px';  
+    dialogConfig.height = '330px';
     this.dialog.open(LoginModalComponent, dialogConfig);
   }
 
-  openDialogComment() { 
+  openDialogComment() {
     const dialogConfig = new MatDialogConfig();
 
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
     dialogConfig.width = '380px';
-    dialogConfig.height = '480px';  
+    dialogConfig.height = '480px';
 
     let petSelected = {
          "petId": this.petId,
@@ -547,8 +557,8 @@ export class AppComponent implements OnInit {
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
     dialogConfig.width = '250px';
-    dialogConfig.height = '200px';  
-    
+    dialogConfig.height = '200px';
+
     dialogConfig.data = this.petId;
 
     this.dialog.open(RemovePetModalComponent, dialogConfig);

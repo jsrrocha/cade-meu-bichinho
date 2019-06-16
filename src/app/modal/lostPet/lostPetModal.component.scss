@@ -5,9 +5,9 @@
     border-radius: 0px;
     border:none;
     overflow: visible !important;
-    margin-left: 12px;
+    margin-left: 5px;
     float: left;
-    margin-top: 5px;
+    margin-bottom: 6px;
   }
   .group-button{
     border-radius: 50%;
@@ -18,8 +18,9 @@
     width: 180px !important;
     float: left;
     clear: left;
+    font-size: 13px;
   }
- 
+
   .mat-dialog-title{
     margin: 0 0 8px;
     text-align: center;
@@ -34,8 +35,8 @@
   }
   .select-png-icon{
     border-radius: 50%;
-    width: 45px;
-    height: 45px;
+    width: 40px;
+    height: 40px;
     background-color: white;
   }
   .whats-png-icon{
@@ -46,13 +47,13 @@
   }
   .color-png-icon{
     border-radius: 50%;
-    width: 32px;
-    height: 32px;
+    width: 30px;
+    height: 30px;
     background-color: white;
   }
 
   #fur-color{
-   margin-left: 13px;
+   margin-left: 5px;
   }
 
   .border-on{
@@ -65,10 +66,12 @@
 
   .description-field{
     width: 100%;
-    padding: 3px;
-    margin: 8px 0 3px 0;
-    font-size: 14px;
+    padding: 5px;
+    margin: 8px 0 10px 0;
+    font-size: 13px;
+    border-radius: 4px;
     box-sizing: border-box;
+    min-height: 60px;
     &::placeholder{
       color: black;
     }
@@ -76,11 +79,11 @@
   .map-label {
     display: block;
     margin-bottom: 8px;
-    font-size: 15px;
+    font-size: 13px;
   }
 
   .map-location {
-    position: relative; 
+    position: relative;
     width: 100%;
     height: 165px;
     z-index:2;
@@ -95,5 +98,37 @@
     float: right;
     margin: 5px 0 0 8px;
   }
+  .form-left {
+    width: 45%;
+  }
+  .form-right {
+    width: 55%;
+  }
+  .form-left, .form-right {
+    display: inline-grid;
+  }
 }
 
+@media only screen and (max-width : 630px) {
+  .add-lost-pet {
+    .mat-dialog-title {
+      font-size: 16px;
+    }
+    .group, #fur-color {
+      margin-left: 0;
+    }
+    .group-button {
+      margin-right: 1px;
+    }
+    .color-png-icon{
+      width: 24px;
+      height: 24px;
+    }
+    .form-left, .form-right {
+      width: 100%;
+    }
+    .description-field {
+      min-height: 75px;
+    }
+  }
+}
