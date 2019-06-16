@@ -4,7 +4,7 @@
   <div class="search-container">
     <div class="search-local">
 
-      <img style="cursor: pointer; "src="../assets/logo.png" alt="Cade meu pet?" matTooltip="Clique para mostrar/esconder os filtros" (click)="showHiddenFilters()"  />
+      <img style="cursor: pointer; "src="../assets/logo.png" alt="Cade meu pet?" matTooltip="Clique para mostrar/esconder o menu" (click)="showHiddenFilters()"  />
 
       <form [formGroup]="formLocal" >
         <mat-form-field class="search-field">
@@ -155,11 +155,11 @@
           </mat-form-field>
           <mat-checkbox formControlName="checkedAllDates" class ="date" #all >Todas as datas</mat-checkbox>
         </div>
-        <div class="filter-option">
-          <button mat-flat-button color="default" class="button" type="button" (click)="showHiddenFilters()" >
-            <mat-icon>arrow_back</mat-icon> Fechar filtros
-          </button>
 
+        <div class="filter-option">
+          <button mat-flat-button color="default" class="button-back" type="button" (click)="showHiddenFilters()" >
+            <mat-icon>keyboard_backspace</mat-icon>
+          </button>
           <button mat-raised-button color="primary" class="button" type="submit" (click)="getPetSearch()" >Filtrar</button>
         </div>
 
@@ -239,7 +239,9 @@
           </div>
         </mat-card >
       </div>
-
+      <button mat-icon-button color="default" class="button-back" type="button" (click)="showHiddenFilters()" >
+        <mat-icon>keyboard_backspace</mat-icon> Esconder menu
+      </button>
     </div>
   </div>
 
@@ -312,12 +314,7 @@
       <div >
         <img class="png-icon-map" src="{{'data:image/png;base64,'+ pet.photo}}" />
       </div>
-
-      <agm-info-window>
-        <strong>Eu sou o {{pet.name}} e {{pet.lostPet == "true" ? "estou perdido" : "fui encontrado"}}</strong>
-      </agm-info-window>
     </agm-overlay>
-
   </agm-map>
 
   <!-- Losts/Founds -->

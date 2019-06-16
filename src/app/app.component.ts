@@ -186,10 +186,13 @@ export class AppComponent implements OnInit, AfterViewInit{
     this.getPetCounting();
 
     this.cookieService.put('petId',"");
+
+    setTimeout(()=>{
+      this.logoutUserWithOutConfirmation();
+    }, 15 * 60 * 1000);
   }
 
   ngAfterViewInit() {
-    console.log("CAIU AQUI!!")
     this.formFilterPet.checkedAllDates.setValue(true);
     this.cd.detectChanges();
   }
@@ -232,7 +235,6 @@ export class AppComponent implements OnInit, AfterViewInit{
     }
   }
 
-
   inSelectedResult(e,petSelect) {
     this.showFilters=false;
     this.showSelectedResult = true;
@@ -266,7 +268,6 @@ export class AppComponent implements OnInit, AfterViewInit{
   }
 
   fillResult(pet){
-
    this.petId = pet.id;
    this.petName = pet.name;
    this.petDescription = pet.description;
@@ -348,6 +349,7 @@ export class AppComponent implements OnInit, AfterViewInit{
       }).then((result) => {
 
       if (result.value) {
+        this.appLoading = true;
         this.service.logoutUser().subscribe(
         (data:any)=> {
             location.reload();
@@ -361,12 +363,40 @@ export class AppComponent implements OnInit, AfterViewInit{
             this.cookieService.put('UserPhoneWithWhats',null);
             this.cookieService.put('logged',"false");
             this.showNotifications = false;
+            this.appLoading = false;
         },
         error => {
             console.log(error);
         });
       }
     })
+  }
+
+  logoutUserWithOutConfirmation(){
+    console.log("CHAMOU DESLOG")
+    if(this.cookieService.get('userLoggedId') != null
+       && this.cookieService.get('userLoggedId') != undefined){
+
+          this.service.logoutUser().subscribe(
+          (data:any)=> {
+              location.reload();
+              this.cookieService.put('token',null);
+              this.cookieService.put('refreshToken',null);
+              this.cookieService.put('expiresIn',null);
+
+              this.cookieService.put('userLoggedId',null);
+              this.cookieService.put('userName',null);
+              this.cookieService.put('userPhone',null);
+              this.cookieService.put('UserPhoneWithWhats',null);
+              this.cookieService.put('logged',"false");
+              this.showNotifications = false;
+          },
+          error => {
+              console.log(error);
+          });
+    }else{
+      setTimeout(()=>{ this.logoutUserWithOutConfirmation(); }, 15 * 60 * 1000);
+    }
   }
 
   getPetSearch(){

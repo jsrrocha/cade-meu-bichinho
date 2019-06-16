@@ -38,7 +38,6 @@
 
         <mat-error *ngIf="formPetFound.controls.phone.invalid">{{getPhoneErrorMessage()}}</mat-error>
 
-
         <mat-button-toggle matSuffix matTooltip="Marque se o telefone possui whats">
           <mat-slide-toggle formControlName="phoneWithWhats" color="warn" ></mat-slide-toggle>
         </mat-button-toggle>
@@ -50,7 +49,8 @@
     <!-- Right -->
     <div class="form-right">
       <!-- Specie selection-->
-      <mat-button-toggle-group class=group formControlName="selectedSpecie" #speciegroup="matButtonToggleGroup">
+
+      <mat-button-toggle-group required class=group formControlName="selectedSpecie" #speciegroup="matButtonToggleGroup">
 
         <mat-button-toggle class=group-button [value]="0" matTooltip="Meu pet é um cachorro">
           <img  class="select-png-icon" src="../assets/icons/blank.png">

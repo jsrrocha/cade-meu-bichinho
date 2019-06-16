@@ -7,39 +7,40 @@ import swal from 'sweetalert2';
 //material
 import { MAT_DIALOG_DATA, MatDialogRef,MatDialogConfig,MatDialog,
          MatButtonModule,MatButtonToggleModule,
-         MatIconModule,MatIconRegistry,MatTooltipModule} 
-         from '@angular/material'; 
+         MatIconModule,MatIconRegistry,MatTooltipModule}
+         from '@angular/material';
 
 // Components
-import { RegisterModalComponent } from '../../modal/register/registerModal.component';  
-import { RegisterNewPasswordModalComponent } from '../../modal/registerNewPassword/registerNewPasswordModal.component'; 
+import { RegisterModalComponent } from '../../modal/register/registerModal.component';
+import { RegisterNewPasswordModalComponent } from '../../modal/registerNewPassword/registerNewPasswordModal.component';
 import { ServiceComponent } from '../../service.component';
-import { TokenInterceptor } from '../../token.interceptor';   
+import { TokenInterceptor } from '../../token.interceptor';
 
 @Component({
   selector: 'login-modal',
   templateUrl: './loginModal.component.html',
   styleUrls: ['./loginModal.component.scss']
 })
-export class LoginModalComponent { 
+export class LoginModalComponent {
 
   formLogin: FormGroup;
-  phoneWithWhats=false; 
+  phoneWithWhats=false;
   logged = false;
+  appLoading = false;
 
   constructor(
     private dialogRef: MatDialogRef<LoginModalComponent>,
     private formBuilder: FormBuilder,
     private service: ServiceComponent,
-    private dialog: MatDialog, 
+    private dialog: MatDialog,
     private cookieService:CookieService,
-    
-    @Inject(MAT_DIALOG_DATA) 
-    private pet: any, 
+
+    @Inject(MAT_DIALOG_DATA)
+    private pet: any,
     ){
     this.formLogin = this.formBuilder.group({
       email: ['', Validators.required],
-      password: ['',Validators.required]   
+      password: ['',Validators.required]
     });
   }
 
@@ -51,23 +52,24 @@ export class LoginModalComponent {
     if(this.form.email.hasError('required')){
        return 'Preencha com o seu email';
     }
-  } 
+  }
 
   getPassErrorMessage() {
     if(this.form.password.hasError('required')){
        return 'Preencha com a sua senha';
     }
-  } 
+  }
 
-  isPhoneWithWhats() { 
-   if(this.phoneWithWhats){  
-      this.phoneWithWhats = false; 
+  isPhoneWithWhats() {
+   if(this.phoneWithWhats){
+      this.phoneWithWhats = false;
    }else{
-     this.phoneWithWhats = true; 
-   }    
-  }  
+     this.phoneWithWhats = true;
+   }
+  }
 
   loginAuth(){
+    this.appLoading = true;
     if(this.formLogin.valid){
       this.cookieService.put('token',this.service.tokenForClient);
 
@@ -80,12 +82,13 @@ export class LoginModalComponent {
           this.cookieService.put('token','Bearer ' + data.access_token);
           this.cookieService.put('refreshToken',data.refresh_token);
           this.cookieService.put('expiresIn',data.expires_in);
-          var expireTime = new Date().getTime() +  data.expires_in * 1000;  
+          var expireTime = new Date().getTime() +  data.expires_in * 1000;
           this.cookieService.put('expireTime',expireTime.toString());
-          
+
           //Save user in cookies and save pet if is necessary
           this.getUserLoggedInAndSavePet(); //if ERROR NO SAVEPET?
-        }, 
+          this.appLoading = false;
+        },
         error => {
           this.service.handleErrors(error);
           console.log(error);
@@ -96,9 +99,9 @@ export class LoginModalComponent {
   getUserLoggedInAndSavePet(){
     this.service.getUserLoggedIn().subscribe(
       (data:any)=> {
-        console.log(data); 
-        console.log(this.cookieService.get('logged'));  
-        
+        console.log(data);
+        console.log(this.cookieService.get('logged'));
+
         if(data != null){
           this.cookieService.put('logged','true');
           this.cookieService.put('userLoggedId',data.id);
@@ -127,7 +130,7 @@ export class LoginModalComponent {
 
   savePet(pet:any){
     this.service.addPet(pet).subscribe(
-      (data:any)=> { 
+      (data:any)=> {
         this.cookieService.put('petId',data.id);
         this.dialogRef.close();
 
@@ -141,7 +144,7 @@ export class LoginModalComponent {
       error => {
         this.service.handleErrors(error);
         console.log(error);
-    }); 
+    });
   }
 
   refreshAccessAuth(){
@@ -149,14 +152,13 @@ export class LoginModalComponent {
     this.service.refreshToken(this.cookieService.get('refreshToken'))
     .subscribe(
     (data:any)=> {
-        //console.log(data);
-
+        console.log("dat" + data);
         this.cookieService.put('token','Bearer ' + data.access_token);
         this.cookieService.put('refreshToken',data.refresh_token);
         this.cookieService.put('expiresIn',data.expires_in);
     },
     error => {
-        console.error(error);
+        console.error("erro ref" + error);
     });
   }
 
@@ -167,7 +169,7 @@ export class LoginModalComponent {
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
     dialogConfig.width = '250px';
-    dialogConfig.height = '350px'; 
+    dialogConfig.height = '350px';
     this.dialog.open(RegisterModalComponent, dialogConfig);
   }
 
@@ -178,7 +180,7 @@ export class LoginModalComponent {
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
     dialogConfig.width = '300px';
-    dialogConfig.height = '400px';  
+    dialogConfig.height = '400px';
     this.dialog.open(RegisterNewPasswordModalComponent, dialogConfig);
   }
 
@@ -191,11 +193,11 @@ export class LoginModalComponent {
         confirmButtonText: 'OK',
         cancelButtonText: 'Cancelar',
         reverseButtons: true
-        }).then((result) => { 
-        
+        }).then((result) => {
+
         if (result.value) {
           this.dialogRef.close();
-        } 
+        }
     })
   }
 
