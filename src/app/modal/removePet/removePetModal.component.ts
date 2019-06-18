@@ -21,6 +21,8 @@ import { ServiceComponent } from '../../service.component';
 export class RemovePetModalComponent {
   formRemove: FormGroup;
   phoneWithWhats=false; 
+  updateListOfPets = false;
+
 
   constructor(
     private dialogRef: MatDialogRef<RemovePetModalComponent>,
@@ -31,7 +33,8 @@ export class RemovePetModalComponent {
     ){
 
     this.formRemove = this.formBuilder.group({
-      reason: [0, Validators.required]    });
+      reason: [0, Validators.required]    
+    });
   }
 
   get form() {
@@ -39,24 +42,24 @@ export class RemovePetModalComponent {
   }
 
   removePet(){ 
+    
     if(this.formRemove.valid){    
-      console.log(this.form.reason.value);    
-      this.service.removePet(+this.petId,
-      this.form.reason.value).subscribe(
-        (data:any)=> {
-          console.log(data);
-          this.dialogRef.close();
-          swal.fire({
-            title: 'Bom trabalho!',
-            text: 'Pet foi removido com sucesso',
-            type: 'success',
-            width: 350
-          })
-        },
-        error => {
-            this.service.handleErrors(error);
-            console.log(error);
-        });
+      this.service.removePet(+this.petId,this.form.reason.value)
+        .subscribe(
+          
+          (data:any)=> {
+            swal.fire({
+              title: 'Bom trabalho!',
+              text: 'Pet foi removido com sucesso',
+              type: 'success',
+              width: 350
+            })
+            this.dialogRef.close(true); 
+          },
+          error => {
+              this.service.handleErrors(error);
+              console.log(error);
+          });
     }
   }
   
@@ -72,7 +75,7 @@ export class RemovePetModalComponent {
       }).then((result) => { 
       
       if (result.value) {
-        this.dialogRef.close();
+        this.dialogRef.close(false);
       } 
     })
   }

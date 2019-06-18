@@ -51,8 +51,7 @@ export class LostPetModalComponent implements OnInit{
   selectedLifeStage= 0;
   selectedFurColor= 0; 
   photoData = null;
-  photoWithoutHeader64 = null;
-  phoneWithWhats= false; 
+  photoWithoutHeader64 = null; 
   selectedImg= true;
   userLoggedId = null;
   edition = false;
@@ -81,6 +80,7 @@ export class LostPetModalComponent implements OnInit{
         [Validators.required,
         Validators.minLength(10),
         Validators.pattern('[0-9]+')]],
+      phoneWithWhats: [false],
       description: [''],
       photoSrc: ['',Validators.required]   
     });
@@ -139,7 +139,7 @@ export class LostPetModalComponent implements OnInit{
       if(this.cookieService.get('logged') != undefined
          && this.cookieService.get('logged') != null){
         this.form.phone.setValue(this.cookieService.get('userPhone'));
-        this.phoneWithWhats = !!this.cookieService.get('UserPhoneWithWhats'); 
+        this.form.phoneWithWhats.setValue(!!this.cookieService.get('UserPhoneWithWhats')); 
       }
   }
 
@@ -150,14 +150,6 @@ export class LostPetModalComponent implements OnInit{
   setDateOfDayInPick(){
     this.date = new FormControl(new Date());
     var serializedDate = new FormControl((new Date()).toISOString());
-  }
-
-  isPhoneWithWhats() { 
-   if(this.phoneWithWhats){  
-      this.phoneWithWhats = false; 
-   }else{
-     this.phoneWithWhats = true; 
-   }    
   }
 
   onFileSelected(event){
@@ -217,7 +209,7 @@ export class LostPetModalComponent implements OnInit{
          "latitude" : this.markerPet.getPosition().lat(),
          "longitude" : this.markerPet.getPosition().lng(),
          "phone" : this.form.phone.value,
-         "phoneWithWhats" :  this.phoneWithWhats,
+         "phoneWithWhats" :  this.form.phoneWithWhats.value,
          "description" : description,
          "lostPet" : "true",
          "userId": this.cookieService.get('userLoggedId')

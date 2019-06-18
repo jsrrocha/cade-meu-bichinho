@@ -43,13 +43,6 @@ export const MY_FORMATS = {
 
 export class FoundPetModalComponent implements OnInit{
 
-  formPetFound: FormGroup;
-  photoData = null;
-  photoWithoutHeader64 = null;
-  selectedImg= true;
-  userLoggedId = null;
-  edition = false;
-
   //Map
   @Input() lat: number = -30.0513678; // default Porto Alegre
   @Input() lng: number = -51.2160819; // default Porto Alegre
@@ -57,6 +50,18 @@ export class FoundPetModalComponent implements OnInit{
   latPet;
   lngPet;
   markerPet;
+
+  //Others
+  formPetFound: FormGroup;
+  photoData = null;
+  photoWithoutHeader64 = null;
+  selectedImg= true;
+  userLoggedId = null;
+  edition = false;
+  petTotal = 0;
+  appLoading = false;
+  startTime = new Date().getTime(); 
+  endTime;
 
   constructor(
     private dialogRef: MatDialogRef<FoundPetModalComponent>,
@@ -77,14 +82,14 @@ export class FoundPetModalComponent implements OnInit{
         [Validators.required,
         Validators.minLength(10),
         Validators.pattern('[0-9]+')]],
+      phoneWithWhats: [false],
       description: [''],
       photoSrc: ['',Validators.required],
       date: [new Date(),Validators.required],
-      selectedSpecie: [Validators.required],
-      selectedSex: [Validators.required],
-      selectedFurColor: [Validators.required],
-      selectedLifeStage: [Validators.required],
-      phoneWithWhats: [false]
+      selectedSpecie: [null,Validators.required],
+      selectedSex: [null,Validators.required],
+      selectedFurColor: [null,Validators.required],
+      selectedLifeStage: [null,Validators.required]
     });
   }
 
@@ -145,23 +150,65 @@ export class FoundPetModalComponent implements OnInit{
     }
 
     //If is pet edition set fields
-    console.log(this.petEdition);
     if(this.petEdition !=null){
-      this.edition = true;
-      this.form.name.setValue(this.petEdition.petName);
-      this.form.description.setValue(this.petEdition.petDescription);
-      this.form.phone.setValue(this.petEdition.petPhone);
-      this.form.photoSrc.setValue("imagemPet.jpg");
-      this.form.phoneWithWhats.setValue(this.petEdition.petPhoneWithWhats);
+      this.fillPetEdition();
     }
+     
   }
-
-
 
   get form() {
     return this.formPetFound.controls;
   }
 
+  fillPetEdition(){
+    this.edition = true;
+    this.form.name
+      .setValue(this.petEdition.petName);
+    
+    this.form.selectedSpecie
+      .setValue(this.petEdition.petSpecie);
+    console.log(this.form.selectedSpecie.value);
+    this.form.selectedSex
+      .setValue(this.petEdition.petSex);
+    this.form.selectedLifeStage
+      .setValue(this.petEdition.petLifeStage);
+    this.form.selectedFurColor
+      .setValue(this.petEdition.petFurColor);
+
+    this.form.description
+      .setValue(this.petEdition.petDescription);
+    this.form.phone
+      .setValue(this.petEdition.petPhone);
+    this.form.photoSrc
+      .setValue("imagemPet.jpg");
+    this.form.phoneWithWhats
+      .setValue(this.petEdition.petPhoneWithWhats);
+  }
+
+  onFileSelected(event){
+    const target= event.target as HTMLInputElement;
+    var file: File = (target.files as FileList)[0];
+    this.form.photoSrc.setValue(file.name);
+
+    var myReader:FileReader = new FileReader();
+    myReader.onloadend = (e) => {
+      this.photoData = myReader.result;
+    }
+    myReader.readAsDataURL(file);
+  }
+
+  getPetCounting(){
+      this.service.getPetCounting().subscribe(
+      (data:any)=> {
+          
+          this.petTotal = data;
+      },
+      error => {
+          console.log(error);
+      });
+  }
+
+  //Errors messages
   getPhoneErrorMessage() {
     if(this.form.phone.hasError('required')){
        return 'Preencha com seu telefone';
@@ -191,28 +238,35 @@ export class FoundPetModalComponent implements OnInit{
   }
 
   getSpecieErrorMessage(){
-       console.log("AQQ");
-       return 'Selecione a espécie do pet';
-
+    if(this.form.selectedSpecie.hasError('required')){
+      return 'Selecione a espécie do pet';
+    }   
   }
 
-  onFileSelected(event){
-    const target= event.target as HTMLInputElement;
-    var file: File = (target.files as FileList)[0];
-    this.form.photoSrc.setValue(file.name);
-
-    var myReader:FileReader = new FileReader();
-    myReader.onloadend = (e) => {
-      this.photoData = myReader.result;
-    }
-    myReader.readAsDataURL(file);
+  getSexErrorMessage(){
+    if(this.form.selectedSex.hasError('required')){
+      return 'Selecione o sexo do pet';
+    }   
   }
 
+  getFurColorErrorMessage(){
+    if(this.form.selectedFurColor.hasError('required')){
+      return 'Selecione a cor do pelo do pet';
+    }   
+  }
+
+  getLifeStageErrorMessage(){
+    if(this.form.selectedLifeStage.hasError('required')){
+      return 'Selecione o estágio de vida do pet';
+    }   
+  }
 
   addPet(){
-    console.log(this.form.selectedSpecie.parent.valid);
-    if(this.formPetFound.valid ){
 
+
+    this.getSpecieErrorMessage();
+    
+    if(this.formPetFound.valid ){        
       var description = this.form.description.value;
       if(description == ''){
         description = "Sem informações adicionais"
@@ -220,7 +274,6 @@ export class FoundPetModalComponent implements OnInit{
       if(this.photoData !=null){
         this.photoWithoutHeader64 = this.photoData.split(',')[1];
       }
-
       let pet = {
          "name": this.form.name.value,
          "specie": this.form.selectedSpecie.value,
@@ -237,12 +290,12 @@ export class FoundPetModalComponent implements OnInit{
          "lostPet" : "false",
          "userId": this.cookieService.get('userLoggedId')
       }
-      console.log(pet);
+      //console.log(pet);
 
       if(this.cookieService.get('userLoggedId') == undefined
          || this.cookieService.get('userLoggedId') == null ){
 
-        this.dialogRef.close();
+        this.dialogRef.close(false);
         swal.fire({
           type: 'warning',
           title: 'Faça login para cadastrar o pet',
@@ -252,26 +305,36 @@ export class FoundPetModalComponent implements OnInit{
           this.openDialogLogin(pet);
         })
       }else{
-
         this.service.addPet(pet).subscribe(
           (data:any)=> {
-              //this.cookieService.put('petId',data.id);  ??
-              this.dialogRef.close();
+              this.getPetCounting();
 
               swal.fire({
                 title: 'Bom trabalho!',
                 text: 'Pet cadastrado com sucesso',
                 type: 'success',
                 width: 350
+              }).then(() => {
+                
+                this.endTime = new Date().getTime();
+                var secondsDiff = (this.endTime - this.startTime) 
+                / 1000;
+                console.log(secondsDiff);
+                
+                let result = {
+                  "petTotal": this.petTotal,
+                  "update": true
+                }
+                this.dialogRef.close(result);
               })
           },
           error => {
+              this.appLoading = false;
               this.service.handleErrors(error);
               console.log(error);
         });
       }
     }
-
   }
 
   editPet(){
@@ -293,12 +356,12 @@ export class FoundPetModalComponent implements OnInit{
          "phoneWithWhats" :  this.form.phoneWithWhats.value,
          "description" : description
       }
-      //console.log(pet);
+      //console.log(pet); 
 
       this.service.editPet(pet).subscribe(
           (data:any)=> {
-              this.dialogRef.close();
-               swal.fire({
+              this.dialogRef.close(true);
+              swal.fire({
                 title: 'Bom trabalho!',
                 text: 'Pet editado com sucesso',
                 type: 'success',
@@ -313,7 +376,7 @@ export class FoundPetModalComponent implements OnInit{
   }
 
   openDialogLogin(pet:any) {
-    console.log(pet);
+    
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
@@ -321,7 +384,13 @@ export class FoundPetModalComponent implements OnInit{
     dialogConfig.height = '350px';
     dialogConfig.data = pet;
 
-    this.dialog.open(LoginModalComponent, dialogConfig);
+    let dialogRef = this.dialog.open(LoginModalComponent, dialogConfig);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        this.getPetCounting();  
+      }
+    }); 
   }
 
   close() {
@@ -335,7 +404,7 @@ export class FoundPetModalComponent implements OnInit{
         reverseButtons: true
       }).then((result) => {
         if (result.value) {
-          this.dialogRef.close();
+          this.dialogRef.close(false);
         }
     })
   }

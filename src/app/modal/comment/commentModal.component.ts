@@ -38,7 +38,6 @@ export const MY_FORMATS = {
 export class CommentModalComponent {
   formComment: FormGroup;
   date;
-  phoneWithWhats= false;
   user:any; 
   userSendId = null;
 
@@ -56,8 +55,10 @@ export class CommentModalComponent {
         [Validators.required,
         Validators.minLength(10),
         Validators.pattern('[0-9]+')]],
+      phoneWithWhats: [false],
       comment: ['', Validators.required],
-      link: ['']
+      link: [''],
+
     });
 
     this.setDateOfDayInPick();
@@ -67,7 +68,7 @@ export class CommentModalComponent {
        && this.cookieService.get('logged') != null){
       this.form.name.setValue(this.cookieService.get('userName'));
       this.form.phone.setValue(this.cookieService.get('userPhone'));
-      this.phoneWithWhats = !!this.cookieService.get('UserPhoneWithWhats'); 
+      this.form.phoneWithWhats.setValue(!!this.cookieService.get('UserPhoneWithWhats'));
     }  
   }
 
@@ -102,20 +103,13 @@ export class CommentModalComponent {
     }
   }
 
-  isPhoneWithWhats() { 
-   if(this.phoneWithWhats){  
-      this.phoneWithWhats = false; 
-   }else{
-     this.phoneWithWhats = true; 
-   }    
-  }
 
   addComment(){  
     if(this.formComment.valid){      
       let comment = {
          "userName": this.form.name.value, 
          "userPhone" : this.form.phone.value,
-         "userPhoneWithWhats" :  this.phoneWithWhats,
+         "userPhoneWithWhats" :  this.form.phoneWithWhats.value,
          "date" : this.date.value,
          "comment" : this.form.comment.value,
          "link": this.form.link.value,

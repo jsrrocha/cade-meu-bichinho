@@ -169,6 +169,8 @@
 
 
 
+
+
 /* Results of search */
 
 .pet-list-empty{
@@ -382,15 +384,25 @@
   }
 }
 
-//map
-.png-icon-map{
+//map 
+.png-icon-found-map{
   border-radius: 50%;
   border: 2px;
-  border-color:red;
   width: 50px;
   height: 50px;
-  box-shadow: 1px 1px 3px 0px #673ab7;
+  box-shadow: 1px 1px 3px 0px green;
+} 
+
+.png-icon-lost-map{  
+  border-radius: 50%;
+  border: 2px;
+ 
+  width: 50px;
+  height: 50px;
+  box-shadow: 1px 1px 3px 0px red;
 }
+ 
+
 
 /* Plus menu button */
 .plus-menu-button {

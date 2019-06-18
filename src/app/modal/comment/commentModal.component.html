@@ -22,9 +22,11 @@
 
       <mat-error *ngIf="formComment.controls.phone.invalid">{{getPhoneErrorMessage()}}</mat-error>
 
-      <mat-button-toggle (click)="isPhoneWithWhats()" matSuffix matTooltip="Marque se o telefone possui whats">
-        <img  class="whats-png-icon" src="../assets/icons/whats.png">
+      <mat-button-toggle matSuffix matTooltip="Marque se o telefone possui whats">
+         <mat-slide-toggle formControlName="phoneWithWhats" color="warn" ></mat-slide-toggle>
       </mat-button-toggle>
+      <img  class="whats-png-icon" src="../assets/icons/whats.png">
+      
     </mat-form-field>
     
     <!-- Link insertion-->

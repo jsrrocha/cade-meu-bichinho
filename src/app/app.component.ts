@@ -46,7 +46,7 @@ export const MY_FORMATS = {
     {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
   ],
 })
-export class AppComponent implements OnInit, AfterViewInit{
+export class AppComponent implements OnInit{
   title = 'tcc';
 
   //Map
@@ -68,7 +68,6 @@ export class AppComponent implements OnInit, AfterViewInit{
   showFilters = true;
   showSelectedResult = false;
   searching = false;
-
   showNotifications = false;
   petBelongsToUser = false;
 
@@ -88,14 +87,22 @@ export class AppComponent implements OnInit, AfterViewInit{
   classLostPet = false;
   pets = [];
   petUserId;
-  petTotal = 0;
+  petTotal;
+  updateListOfPets = false; 
 
   //For edit pet
   petId;
   petName;
+  petSpecie;
+  petSex;
+  petFurColor;
+  petLifeStage;
   petDescription;
   petPhone;
   petPhoneWithWhats;
+
+
+
 
   constructor(
     private mapsAPILoader: MapsAPILoader,
@@ -122,7 +129,7 @@ export class AppComponent implements OnInit, AfterViewInit{
       sex: [null,Validators.required],
       furColor: [null,Validators.required],
       description: [null],
-      checkedAllDates: [false,Validators.required],
+      checkedAllDates: [true,Validators.required],
     });
   }
 
@@ -167,7 +174,7 @@ export class AppComponent implements OnInit, AfterViewInit{
 	        // show filters
           document.querySelector('.filter-container').classList.add("active");
 
-          //Atualize list of pets!
+          //Update list of pets!
           this.getPetSearch();
 
         });
@@ -183,7 +190,7 @@ export class AppComponent implements OnInit, AfterViewInit{
     });
 
     this.setDateOfDayInPicker();
-    this.getPetCounting();
+    //this.getPetCounting();
 
     this.cookieService.put('petId',"");
 
@@ -192,25 +199,8 @@ export class AppComponent implements OnInit, AfterViewInit{
     }, 15 * 60 * 1000);
   }
 
-  ngAfterViewInit() {
-    this.formFilterPet.checkedAllDates.setValue(true);
-    this.cd.detectChanges();
-  }
-
-
   setDateOfDayInPicker(){
     this.datePicker = new FormControl(new Date());
-  }
-
-  getPetCounting(){
-      this.service.getPetCounting().subscribe(
-      (data:any)=> {
-          //console.log(data);
-          this.petTotal = data;
-      },
-      error => {
-          console.log(error);
-      });
   }
 
   get formFilterPet() {
@@ -222,7 +212,7 @@ export class AppComponent implements OnInit, AfterViewInit{
     this.latitude = null;
     this.longitude = null;
 
-    //Atualize list of pets!
+    //Update list of pets!
     this.getPetSearch();
   }
 
@@ -238,7 +228,9 @@ export class AppComponent implements OnInit, AfterViewInit{
   inSelectedResult(e,petSelect) {
     this.showFilters=false;
     this.showSelectedResult = true;
-    console.log(petSelect);
+    console.log("ANTES" + petSelect);
+        console.log(petSelect);
+
 
     let pet = {};
     if(petSelect[0] != undefined){
@@ -256,7 +248,11 @@ export class AppComponent implements OnInit, AfterViewInit{
         "photo": petSelect[0].value.photo,
         "userName": petSelect[0].value.userName,
         "specie": petSelect[0].value.specie,
-        "sex": petSelect[0].value.sex
+        "specieNumber": petSelect[0].value.specieNumber,
+        "sex": petSelect[0].value.sex,
+        "sexNumber": petSelect[0].value.sexNumber,
+        "lifeStageNumber": petSelect[0].value.lifeStageNumber,
+        "furColorNumber": petSelect[0].value.furColorNumber
       }
     }else{
       pet = petSelect;
@@ -268,15 +264,21 @@ export class AppComponent implements OnInit, AfterViewInit{
   }
 
   fillResult(pet){
+   console.log("SELECIONADO ");
+   console.log(pet);
    this.petId = pet.id;
    this.petName = pet.name;
+   this.petSpecie = pet.specieNumber;
+   this.petSex = pet.sexNumber;
+   this.petFurColor = pet.furColorNumber; 
+   this.petLifeStage = pet.lifeStageNumber; 
    this.petDescription = pet.description;
    this.petPhone = pet.phone;
    this.petPhoneWithWhats = pet.phonewithWhats;
    this.petUserId = pet.userId;
    this.lat = pet.latitude;
    this.lng = pet.longitude;
-   this.zoom = 15;
+   this.zoom = 16;
 
    if(this.petUserId == this.cookieService.get('userLoggedId')){
       this.petBelongsToUser = true;
@@ -326,7 +328,7 @@ export class AppComponent implements OnInit, AfterViewInit{
    this.petPhone;
 
    //Phone With Whats
-   if(pet.phonewithWhats = "true"){
+   if(pet.phonewithWhats == "true"){
       var withWhats = (<HTMLInputElement>document.getElementById('resultWithWhats')).textContent;
       withWhats = " Ou mande Whatsapp " + this.petPhoneWithWhats;
    }
@@ -352,7 +354,6 @@ export class AppComponent implements OnInit, AfterViewInit{
         this.appLoading = true;
         this.service.logoutUser().subscribe(
         (data:any)=> {
-            location.reload();
             this.cookieService.put('token',null);
             this.cookieService.put('refreshToken',null);
             this.cookieService.put('expiresIn',null);
@@ -364,8 +365,11 @@ export class AppComponent implements OnInit, AfterViewInit{
             this.cookieService.put('logged',"false");
             this.showNotifications = false;
             this.appLoading = false;
+            this.getPetSearch();
         },
         error => {
+            this.appLoading = false;
+            this.service.handleErrors(error);
             console.log(error);
         });
       }
@@ -390,6 +394,7 @@ export class AppComponent implements OnInit, AfterViewInit{
               this.cookieService.put('UserPhoneWithWhats',null);
               this.cookieService.put('logged',"false");
               this.showNotifications = false;
+              this.getPetSearch();
           },
           error => {
               console.log(error);
@@ -428,22 +433,19 @@ export class AppComponent implements OnInit, AfterViewInit{
       "longitude": this.longitude,
       "userId": this.userLoggedId
     }
-    console.log(pet);
-    console.log(this.formFilterPet.type.value);
 
     this.service.petSearch(pet).subscribe(
     (data:any)=> {
-        //console.log(data);
+        console.log(data);
         this.pets = data;
         this.searching = true;
         this.appLoading = false;
     },
     error => {
+        this.appLoading = false;
         this.service.handleErrors(error);
         console.log(error);
     });
-
-
   }
 
   getNotifications(){
@@ -453,7 +455,7 @@ export class AppComponent implements OnInit, AfterViewInit{
       this.service.getCommentsWithNotificationsActiveByUserReceived(    +this.cookieService.get('userLoggedId'))
         .subscribe(
           (data:any)=> {
-              console.log(data);
+              //console.log(data);
               if(data.length == 0){
                 //this.existNotifications = false;
 
@@ -481,7 +483,7 @@ export class AppComponent implements OnInit, AfterViewInit{
   }
 
   deleteNotification(id){
-    console.log(id);
+    //console.log(id);
     swal.fire({
       title: 'Você realmente deseja remover a notificação?',
       type: 'warning',
@@ -521,7 +523,14 @@ export class AppComponent implements OnInit, AfterViewInit{
     dialogConfig.width = '520px';
     dialogConfig.height = '585px';
 
-    this.dialog.open(LostPetModalComponent, dialogConfig);
+    let dialogRef = this.dialog.open(LostPetModalComponent, dialogConfig);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        this.getPetSearch();
+        this.hiddenSelectedResult(); 
+      }
+    }); 
   }
 
   openDialogFoundPet() {
@@ -531,7 +540,18 @@ export class AppComponent implements OnInit, AfterViewInit{
     dialogConfig.autoFocus = true;
     dialogConfig.width = '520px';
     dialogConfig.height = '585px'
-    this.dialog.open(FoundPetModalComponent, dialogConfig);
+    let dialogRef = this.dialog.open(FoundPetModalComponent, dialogConfig);
+
+    dialogRef.afterClosed().subscribe(result => {
+      
+      if(result.petTotal != undefined){
+        this.petTotal = result.petTotal;
+      }
+      if(result.update){
+         this.getPetSearch();
+         this.hiddenSelectedResult();  
+      }
+    }); 
   }
 
   openDialogPetEdition() {
@@ -545,13 +565,24 @@ export class AppComponent implements OnInit, AfterViewInit{
     let petEdition = {
          "petId": this.petId,
          "petName": this.petName,
+         "petSpecie": this.petSpecie,
+         "petSex": this.petSex,
+         "petFurColor": this.petFurColor,
+         "petLifeStage": this.petLifeStage,
          "petDescription": this.petDescription,
          "petPhone": this.petPhone,
          "petPhoneWithWhats": this.petPhoneWithWhats
     }
     dialogConfig.data = petEdition;
+    
+    let dialogRef = this.dialog.open(FoundPetModalComponent, dialogConfig);
 
-    this.dialog.open(FoundPetModalComponent, dialogConfig);
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        this.getPetSearch();
+        this.hiddenSelectedResult(); 
+      }
+    });
   }
 
   openDialogLogin() {
@@ -561,7 +592,10 @@ export class AppComponent implements OnInit, AfterViewInit{
     dialogConfig.autoFocus = true;
     dialogConfig.width = '270px';
     dialogConfig.height = '330px';
+    console.log("CHAMA AQ");
+
     this.dialog.open(LoginModalComponent, dialogConfig);
+
   }
 
   openDialogComment() {
@@ -577,7 +611,6 @@ export class AppComponent implements OnInit, AfterViewInit{
          "petUserId": this.petUserId
     }
     dialogConfig.data = petSelected;
-
     this.dialog.open(CommentModalComponent, dialogConfig);
   }
 
@@ -588,9 +621,16 @@ export class AppComponent implements OnInit, AfterViewInit{
     dialogConfig.autoFocus = true;
     dialogConfig.width = '250px';
     dialogConfig.height = '200px';
+    dialogConfig.data = this.petId; 
 
-    dialogConfig.data = this.petId;
+    let dialogRef = this.dialog.open(RemovePetModalComponent, dialogConfig);  
 
-    this.dialog.open(RemovePetModalComponent, dialogConfig);
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        this.getPetSearch();
+        this.hiddenSelectedResult(); 
+      }
+    });   
   }
+
 }

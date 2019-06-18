@@ -60,14 +60,6 @@ export class LoginModalComponent {
     }
   }
 
-  isPhoneWithWhats() {
-   if(this.phoneWithWhats){
-      this.phoneWithWhats = false;
-   }else{
-     this.phoneWithWhats = true;
-   }
-  }
-
   loginAuth(){
     this.appLoading = true;
     if(this.formLogin.valid){
@@ -90,6 +82,7 @@ export class LoginModalComponent {
           this.appLoading = false;
         },
         error => {
+          this.appLoading = false;
           this.service.handleErrors(error);
           console.log(error);
         });
@@ -99,9 +92,7 @@ export class LoginModalComponent {
   getUserLoggedInAndSavePet(){
     this.service.getUserLoggedIn().subscribe(
       (data:any)=> {
-        console.log(data);
-        console.log(this.cookieService.get('logged'));
-
+   
         if(data != null){
           this.cookieService.put('logged','true');
           this.cookieService.put('userLoggedId',data.id);
@@ -109,7 +100,7 @@ export class LoginModalComponent {
           this.cookieService.put('userPhone',data.phone);
           this.cookieService.put('userPhoneWithWhats',data.phoneWithWhats);
 
-          this.dialogRef.close();
+          this.dialogRef.close(false); 
           swal.fire({
             title: 'Bom trabalho!',
             text: 'Login realizado com sucesso',
@@ -132,7 +123,7 @@ export class LoginModalComponent {
     this.service.addPet(pet).subscribe(
       (data:any)=> {
         this.cookieService.put('petId',data.id);
-        this.dialogRef.close();
+        this.dialogRef.close(true);
 
         swal.fire({
           title: 'Bom trabalho!',
@@ -152,7 +143,7 @@ export class LoginModalComponent {
     this.service.refreshToken(this.cookieService.get('refreshToken'))
     .subscribe(
     (data:any)=> {
-        console.log("dat" + data);
+        
         this.cookieService.put('token','Bearer ' + data.access_token);
         this.cookieService.put('refreshToken',data.refresh_token);
         this.cookieService.put('expiresIn',data.expires_in);
@@ -163,7 +154,7 @@ export class LoginModalComponent {
   }
 
   openDialogRegister() {
-    this.dialogRef.close();
+    this.dialogRef.close(false);
 
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true;
@@ -174,7 +165,7 @@ export class LoginModalComponent {
   }
 
   openDialogRegisterNewPassword() {
-    this.dialogRef.close();
+    this.dialogRef.close(false);
 
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true;
@@ -196,7 +187,7 @@ export class LoginModalComponent {
         }).then((result) => {
 
         if (result.value) {
-          this.dialogRef.close();
+          this.dialogRef.close(false);
         }
     })
   }

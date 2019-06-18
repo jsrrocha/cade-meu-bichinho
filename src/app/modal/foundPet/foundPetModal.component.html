@@ -33,7 +33,7 @@
       </mat-form-field>
 
       <!-- Phone insertion-->
-      <mat-form-field id="ess" class="form-style">
+      <mat-form-field class="form-style">
         <input matInput formControlName="phone" placeholder="Telefone c/ DDD" required>
 
         <mat-error *ngIf="formPetFound.controls.phone.invalid">{{getPhoneErrorMessage()}}</mat-error>
@@ -48,8 +48,8 @@
 
     <!-- Right -->
     <div class="form-right">
+      
       <!-- Specie selection-->
-
       <mat-button-toggle-group required class=group formControlName="selectedSpecie" #speciegroup="matButtonToggleGroup">
 
         <mat-button-toggle class=group-button [value]="0" matTooltip="Meu pet é um cachorro">
@@ -60,6 +60,9 @@
             <img  class="select-png-icon" src="../assets/icons/veia.png">
         </mat-button-toggle>
       </mat-button-toggle-group>
+      <mat-error class ="group-error" *ngIf="formPetFound.controls.selectedSpecie.invalid">{{getSpecieErrorMessage()}}</mat-error> 
+      
+
 
       <!-- Sex selection-->
       <mat-button-toggle-group class=group formControlName="selectedSex"  #sexgroup="matButtonToggleGroup" >
@@ -70,7 +73,10 @@
         <mat-button-toggle class=group-button [value]="1" matTooltip="Ela é fêmea">
           <img  class="select-png-icon" src="../assets/icons/female.png">
         </mat-button-toggle>
+
       </mat-button-toggle-group>
+      <mat-error class ="group-error" *ngIf="formPetFound.controls.selectedSex.invalid">{{getSexErrorMessage()}}</mat-error> 
+
 
       <!-- Life stage selection-->
       <mat-button-toggle-group id="life-stage" class="group" formControlName="selectedLifeStage"  #lifegroup="matButtonToggleGroup" >
@@ -86,6 +92,7 @@
           <img  class="select-png-icon" src="../assets/icons/old.png">
         </mat-button-toggle>
       </mat-button-toggle-group>
+      <mat-error class ="group-error" *ngIf="formPetFound.controls.selectedLifeStage.invalid">{{getLifeStageErrorMessage()}}</mat-error> 
 
       <!-- Fur color selection-->
       <mat-button-toggle-group id="fur-color" class=group formControlName="selectedFurColor"  #colorgroup="matButtonToggleGroup" >
@@ -117,6 +124,8 @@
           <img  class="color-png-icon" src="../assets/icons/dogcombolinhas.png">
         </mat-button-toggle>
       </mat-button-toggle-group>
+
+      <mat-error class ="group-error" *ngIf="formPetFound.controls.selectedFurColor.invalid">{{getFurColorErrorMessage()}}</mat-error> 
     </div>
 
     <!-- description insertion-->

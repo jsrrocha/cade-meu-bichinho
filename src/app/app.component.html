@@ -149,8 +149,12 @@
         <div class="filter-option">
           <mat-form-field class="form-datePicker">
 
-            <input matInput [readonly]="all.checked" [matDatepicker]="picker" [formControl]="datePicker" placeholder="Buscar pela data">
-            <mat-datepicker-toggle matSuffix [disabled]="all.checked" [for]="picker"></mat-datepicker-toggle>
+            <input matInput 
+            [readonly]="formFilter.controls.checkedAllDates.value" 
+            [matDatepicker]="picker" 
+            [formControl]="datePicker" placeholder="Buscar pela data">
+            
+            <mat-datepicker-toggle matSuffix [disabled]="formFilter.controls.checkedAllDates.value"  [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
           </mat-form-field>
           <mat-checkbox formControlName="checkedAllDates" class ="date" #all >Todas as datas</mat-checkbox>
@@ -237,7 +241,7 @@
               <mat-icon>arrow_back</mat-icon>
             </button>
           </div>
-        </mat-card >
+        </mat-card > 
       </div>
       <button mat-icon-button color="default" class="button-back" type="button" (click)="showHiddenFilters()" >
         <mat-icon>keyboard_backspace</mat-icon> Esconder menu
@@ -310,11 +314,15 @@
 
   <!-- Mapa -->
   <agm-map  [latitude]="lat" [longitude]="lng" [zoom]="zoom" [streetViewControlOptions]="streetViewControlOptions" [zoomControlOptions]="zoomControlOptions">
-    <agm-overlay *ngFor="let pet of pets" [latitude]="pet.latitude" [longitude]="pet.longitude" (markerClick) = "inSelectedResult($event,pet)">
+    <agm-overlay *ngFor="let pet of pets" [latitude]="pet.latitude" [longitude]="pet.longitude" (markerClick) = "inSelectedResult($event,pet)"> 
       <div >
-        <img class="png-icon-map" src="{{'data:image/png;base64,'+ pet.photo}}" />
-      </div>
-    </agm-overlay>
+        <img *ngIf="pet.lostPet == 'true'" class = "png-icon-lost-map"  
+          src="{{'data:image/png;base64,'+ pet.photo}}" />
+
+        <img *ngIf="pet.lostPet == 'false'" class = "png-icon-found-map"  
+          src="{{'data:image/png;base64,'+ pet.photo}}" /> 
+      </div> 
+    </agm-overlay> 
   </agm-map>
 
   <!-- Losts/Founds -->

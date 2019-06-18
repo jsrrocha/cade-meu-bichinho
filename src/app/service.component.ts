@@ -95,9 +95,7 @@ export class ServiceComponent {
   }
 
   handleErrors(error: any){
-    console.log("CHAMA");
     if(error.error.errorMessage != undefined){
-
       swal.fire({
         type: 'error',
         title: error.error.errorMessage,
@@ -120,7 +118,6 @@ export class ServiceComponent {
     }else if(error.error.error_description == "Invalid refresh token: "){
       //Ignora!
     }else if(error.error.error != undefined){
-
       swal.fire({
         type: 'error',
         title: 'Não existe esse serviço',
