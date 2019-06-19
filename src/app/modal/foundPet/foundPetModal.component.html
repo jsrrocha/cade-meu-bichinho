@@ -135,8 +135,11 @@
     <label class="map-label">Onde ele foi encontrado? Arraste o marcador para o local no mapa:</label>
 
     <div class="select-local">
-      <div id=streetviewMap #streetviewMap class="map-location"> </div>
-    </div>
+      <div *ngIf="!edition" id=streetviewMap #streetviewMap class="map-location">
+      </div> 
+
+      <div *ngIf="edition" id=streetviewMap #streetviewMap class="map-location-edit"> </div>  
+    </div> 
 
     <div mat-dialog-actions class="actions">
       <button mat-raised-button color="primary" class=button  type="submit" *ngIf="!edition" (click)="addPet()" >Cadastrar</button>

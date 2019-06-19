@@ -78,6 +78,10 @@ export class FoundPetModalComponent implements OnInit{
 
     this.formPetFound = this.formBuilder.group({
       name: ['Nome desconhecido', Validators.required],
+      selectedSpecie: [null,Validators.required],
+      selectedSex: [null,Validators.required],
+      selectedFurColor: [null,Validators.required],
+      selectedLifeStage: [null,Validators.required],
       phone: ['',
         [Validators.required,
         Validators.minLength(10),
@@ -85,27 +89,46 @@ export class FoundPetModalComponent implements OnInit{
       phoneWithWhats: [false],
       description: [''],
       photoSrc: ['',Validators.required],
-      date: [new Date(),Validators.required],
-      selectedSpecie: [null,Validators.required],
-      selectedSex: [null,Validators.required],
-      selectedFurColor: [null,Validators.required],
-      selectedLifeStage: [null,Validators.required]
+      date: [new Date(),Validators.required]
     });
   }
 
   ngOnInit() {
+    //If is pet edition set fields
+    if(this.petEdition !=null){
+      this.fillPetEdition();
+    }
+
+    //Set user logged(if exist)
+    if(this.cookieService.get('logged') != undefined
+       && this.cookieService.get('logged') != null){
+      this.form.phone.setValue(this.cookieService.get('userPhone'));
+      this.form.phoneWithWhats.setValue(!!this.cookieService.get('UserPhoneWithWhats'));
+    }
+    
+    setTimeout(()=>{
+      this.configureMap();
+    }, 30);
+  }
+
+  get form() {
+    return this.formPetFound.controls;
+  }
+
+  configureMap(){
     let center = {
       lat: this.lat,
       lng: this.lng
     };
 
-    var streetviewMap = (<HTMLInputElement>document.getElementById('streetviewMap'));
+    var streetviewMap = (<HTMLInputElement>document.getElementById('streetviewMap')); 
+    
     let map = new window['google'].maps.Map(
       streetviewMap,
       {
         center: center,
         zoom: this.zoom,
-        zoomControl: true,
+        zoomControl: true, 
         zoomControlOptions: {
           position: google.maps.ControlPosition.RIGHT_CENTER
         },
@@ -137,27 +160,9 @@ export class FoundPetModalComponent implements OnInit{
     marker.addListener('dragend',handleEvent);
 
     function handleEvent(event) {
-      //console.log(marker.getPosition().lat());
-      //console.log(marker.getPosition().lng());
+        //console.log(marker.getPosition().lat());
+        //console.log(marker.getPosition().lng());
     }
-
-
-    //Set user logged(if exist)
-    if(this.cookieService.get('logged') != undefined
-       && this.cookieService.get('logged') != null){
-      this.form.phone.setValue(this.cookieService.get('userPhone'));
-      this.form.phoneWithWhats.setValue(!!this.cookieService.get('UserPhoneWithWhats'));
-    }
-
-    //If is pet edition set fields
-    if(this.petEdition !=null){
-      this.fillPetEdition();
-    }
-     
-  }
-
-  get form() {
-    return this.formPetFound.controls;
   }
 
   fillPetEdition(){
@@ -262,8 +267,6 @@ export class FoundPetModalComponent implements OnInit{
   }
 
   addPet(){
-
-
     this.getSpecieErrorMessage();
     
     if(this.formPetFound.valid ){        
@@ -314,12 +317,16 @@ export class FoundPetModalComponent implements OnInit{
                 text: 'Pet cadastrado com sucesso',
                 type: 'success',
                 width: 350
-              }).then(() => {
+              }).then((resultTwo) => {
                 
                 this.endTime = new Date().getTime();
-                var secondsDiff = (this.endTime - this.startTime) 
+                var secondsDiff = +(this.endTime - this.startTime) 
                 / 1000;
+
+                var secondsFinal = this.adjustTwoDecimalPlaces('round', secondsDiff, -2);
+
                 console.log(secondsDiff);
+                console.log(secondsFinal);
                 
                 let result = {
                   "petTotal": this.petTotal,
@@ -351,12 +358,16 @@ export class FoundPetModalComponent implements OnInit{
       let pet = {
          "id": this.petEdition.petId,
          "name": this.form.name.value,
-         "photo" : this.photoWithoutHeader64,
+         "specie": this.form.selectedSpecie.value,
+         "sex": this.form.selectedSex.value,
+         "furColor": this.form.selectedFurColor.value,
+         "lifeStage": this.form.selectedLifeStage.value,
          "phone" : this.form.phone.value,
          "phoneWithWhats" :  this.form.phoneWithWhats.value,
+         "photo" : this.photoWithoutHeader64,
          "description" : description
       }
-      //console.log(pet); 
+      console.log(pet); 
 
       this.service.editPet(pet).subscribe(
           (data:any)=> {
@@ -407,5 +418,16 @@ export class FoundPetModalComponent implements OnInit{
           this.dialogRef.close(false);
         }
     })
+  }
+
+  adjustTwoDecimalPlaces(type, value, exp) {
+    value = +value;
+    exp = +exp;
+    
+    value = value.toString().split('e');
+    value = Math[type](+(value[0] + 'e' + (value[1] ? 
+                  (+value[1] - exp) : -exp)));
+    value = value.toString().split('e');
+    return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp));
   }
 }

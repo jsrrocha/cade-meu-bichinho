@@ -4,7 +4,7 @@
   <div class="search-container">
     <div class="search-local">
 
-      <img style="cursor: pointer; "src="../assets/logo.png" alt="Cade meu pet?" matTooltip="Clique para mostrar/esconder o menu" (click)="showHiddenFilters()"  />
+      <img style="cursor: pointer; "src="../assets/logo.png" alt="Cade meu pet?" matTooltip="Clique para mostrar/esconder o menu" (click)="showHiddenSearchMenu()"  />
 
       <form [formGroup]="formLocal" >
         <mat-form-field class="search-field">
@@ -161,10 +161,10 @@
         </div>
 
         <div class="filter-option">
-          <button mat-flat-button color="default" class="button-back" type="button" (click)="showHiddenFilters()" >
+          <button mat-flat-button color="default" class="button-back" type="button" (click)="showHiddenSearchMenu()" >
             <mat-icon>keyboard_backspace</mat-icon>
           </button>
-          <button mat-raised-button color="primary" class="button" type="submit" (click)="getPetSearch()" >Filtrar</button>
+          <button mat-raised-button color="primary" class="button" type="submit" (click)="petSearch()" >Filtrar</button>
         </div>
 
       </form>
@@ -243,7 +243,7 @@
           </div>
         </mat-card > 
       </div>
-      <button mat-icon-button color="default" class="button-back" type="button" (click)="showHiddenFilters()" >
+      <button mat-icon-button color="default" class="button-back" type="button" (click)="showHiddenSearchMenu()" >
         <mat-icon>keyboard_backspace</mat-icon> Esconder menu
       </button>
     </div>

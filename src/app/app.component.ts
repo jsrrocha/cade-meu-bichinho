@@ -89,6 +89,7 @@ export class AppComponent implements OnInit{
   petUserId;
   petTotal;
   updateListOfPets = false; 
+  searchMenuIsOpen;
 
   //For edit pet
   petId;
@@ -100,9 +101,6 @@ export class AppComponent implements OnInit{
   petDescription;
   petPhone;
   petPhoneWithWhats;
-
-
-
 
   constructor(
     private mapsAPILoader: MapsAPILoader,
@@ -171,11 +169,11 @@ export class AppComponent implements OnInit{
           this.latitude = this.lat;
           this.longitude = this.lng;
 
-	        // show filters
+	        // show filters 
           document.querySelector('.filter-container').classList.add("active");
 
           //Update list of pets!
-          this.getPetSearch();
+          this.petSearch();
 
         });
       });
@@ -190,10 +188,9 @@ export class AppComponent implements OnInit{
     });
 
     this.setDateOfDayInPicker();
-    //this.getPetCounting();
-
     this.cookieService.put('petId',"");
 
+    //Logout after 15 minutes
     setTimeout(()=>{
       this.logoutUserWithOutConfirmation();
     }, 15 * 60 * 1000);
@@ -213,24 +210,11 @@ export class AppComponent implements OnInit{
     this.longitude = null;
 
     //Update list of pets!
-    this.getPetSearch();
-  }
-
-  showHiddenFilters(){
-    if(document.querySelector('.filter-container').
-      classList.contains("active")) {
-        document.querySelector('.filter-container').classList.remove("active");
-    }else{
-      document.querySelector('.filter-container').classList.add("active");
-    }
+    this.petSearch();
   }
 
   inSelectedResult(e,petSelect) {
-    this.showFilters=false;
-    this.showSelectedResult = true;
-    console.log("ANTES" + petSelect);
-        console.log(petSelect);
-
+    this.showResult();
 
     let pet = {};
     if(petSelect[0] != undefined){
@@ -260,84 +244,104 @@ export class AppComponent implements OnInit{
 
     setTimeout(()=>{
       this.fillResult(pet);
-    }, 30);
+    }, 20);
   }
 
   fillResult(pet){
-   console.log("SELECIONADO ");
-   console.log(pet);
-   this.petId = pet.id;
-   this.petName = pet.name;
-   this.petSpecie = pet.specieNumber;
-   this.petSex = pet.sexNumber;
-   this.petFurColor = pet.furColorNumber; 
-   this.petLifeStage = pet.lifeStageNumber; 
-   this.petDescription = pet.description;
-   this.petPhone = pet.phone;
-   this.petPhoneWithWhats = pet.phonewithWhats;
-   this.petUserId = pet.userId;
-   this.lat = pet.latitude;
-   this.lng = pet.longitude;
-   this.zoom = 16;
+    console.log("SELECIONADO ");
+    console.log(pet);
+    
+    this.petId = pet.id;
+    this.petName = pet.name;
+    this.petSpecie = pet.specieNumber;
+    this.petSex = pet.sexNumber;
+    this.petFurColor = pet.furColorNumber; 
+    this.petLifeStage = pet.lifeStageNumber; 
+    this.petDescription = pet.description;
+    this.petPhone = pet.phone;
+    this.petPhoneWithWhats = pet.phonewithWhats;
+    this.petUserId = pet.userId;
+    this.lat = pet.latitude;
+    this.lng = pet.longitude;
+    this.zoom = 16;
 
-   if(this.petUserId == this.cookieService.get('userLoggedId')){
+    if(this.petUserId == this.cookieService.get('userLoggedId')){
       this.petBelongsToUser = true;
-   }else{
+    }else{
       this.petBelongsToUser = false;
-   }
+    }
 
-   //Name
-   (<HTMLInputElement>document.getElementById('resultName')).textContent =
-   this.petName;
+    //Name
+    (<HTMLInputElement>document.getElementById('resultName')).textContent =
+    this.petName;
 
-   //Specie
-   (<HTMLInputElement>document.getElementById('resultSpecie')).textContent =
-   pet.specie;
+    //Specie
+    (<HTMLInputElement>document.getElementById('resultSpecie')).textContent =
+    pet.specie;
 
-   //Sex
-   (<HTMLInputElement>document.getElementById('resultSex')).textContent =
-   pet.sex;
+    //Sex
+    (<HTMLInputElement>document.getElementById('resultSex')).textContent =
+    pet.sex;
 
-   //Type and Date
-   this.dateFinal = moment(pet.date).format('DD/MM/YYYY');
-   if(pet.lostPet == "true"){
-     (<HTMLInputElement>document.getElementById('resultDate')).textContent =
-     "Perdido dia " + this.dateFinal;
+    //Type and Date
+    this.dateFinal = moment(pet.date).format('DD/MM/YYYY');
+    if(pet.lostPet == "true"){
+      (<HTMLInputElement>document.getElementById('resultDate')).textContent =
+      "Perdido dia " + this.dateFinal;
 
-     this.classLostPet = true;
-   }else{
-     (<HTMLInputElement>document.getElementById('resultDate')).textContent =
-     "Encontrado dia " + this.dateFinal;
-     this.classLostPet = false;
-   }
+      this.classLostPet = true;
+    }else{
+      (<HTMLInputElement>document.getElementById('resultDate')).textContent =
+      "Encontrado dia " + this.dateFinal;
+       this.classLostPet = false;
+    }
 
-   //Description
-   (<HTMLInputElement>document.getElementById('resultDescription')).textContent =
-   this.petDescription;
+    //Description
+    (<HTMLInputElement>document.getElementById('resultDescription')).textContent =
+    this.petDescription;
 
-   //Photo
-   this.path = "data:image/png;base64," + pet.photo;
-   (<HTMLInputElement>document.getElementById('resultPhoto')).src = this.path;
+    //Photo
+    this.path = "data:image/png;base64," + pet.photo;
+    (<HTMLInputElement>document.getElementById('resultPhoto')).src = this.path;
 
-   //Username
-   var userName = (<HTMLInputElement>document.getElementById('resultUserName')).textContent =
-   pet.userName + ".";
+    //Username
+    var userName = (<HTMLInputElement>document.getElementById('resultUserName')).textContent =
+    pet.userName + ".";
 
-   //Phone
-   var userPhone = (<HTMLInputElement>document.getElementById('resultPhone')).textContent =
-   this.petPhone;
+    //Phone
+    var userPhone = (<HTMLInputElement>document.getElementById('resultPhone')).textContent =
+    this.petPhone;
 
-   //Phone With Whats
-   if(pet.phonewithWhats == "true"){
+    //Phone With Whats
+    if(pet.phonewithWhats == true){
       var withWhats = (<HTMLInputElement>document.getElementById('resultWithWhats')).textContent;
       withWhats = " Ou mande Whatsapp " + this.petPhoneWithWhats;
-   }
+    }
+  }
+
+  showHiddenSearchMenu(){
+    this.searchMenuIsOpen = document.querySelector('.filter-container').
+      classList.contains("active");
+    
+    if(this.searchMenuIsOpen) {
+        document.querySelector('.filter-container').classList.remove("active");
+        this.searchMenuIsOpen = false;
+    }else{
+      document.querySelector('.filter-container').classList.add("active");
+      this.searchMenuIsOpen = true;
+    }
+  }
+
+  showResult(){
+    this.showFilters=false;
+    this.showSelectedResult = true;
   }
 
   hiddenSelectedResult(){
-    this.showSelectedResult = false;
     this.showFilters= true;
+    this.showSelectedResult = false; 
   }
+
 
   logoutUser(){
     swal.fire({
@@ -365,7 +369,7 @@ export class AppComponent implements OnInit{
             this.cookieService.put('logged',"false");
             this.showNotifications = false;
             this.appLoading = false;
-            this.getPetSearch();
+            this.petSearch();
         },
         error => {
             this.appLoading = false;
@@ -394,7 +398,7 @@ export class AppComponent implements OnInit{
               this.cookieService.put('UserPhoneWithWhats',null);
               this.cookieService.put('logged',"false");
               this.showNotifications = false;
-              this.getPetSearch();
+              this.petSearch(); 
           },
           error => {
               console.log(error);
@@ -404,7 +408,7 @@ export class AppComponent implements OnInit{
     }
   }
 
-  getPetSearch(){
+  petSearch(){
     this.appLoading = true;
 
     if(!this.formFilterPet.checkedAllDates.value){
@@ -515,6 +519,21 @@ export class AppComponent implements OnInit{
   }
 
   /* Modal */
+
+  openDialogLogin() {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.width = '270px';
+    dialogConfig.height = '330px';
+    console.log("CHAMA AQ");
+
+    let dialogRef = this.dialog.open(LoginModalComponent, dialogConfig);
+    this.afterClosed(dialogRef);
+
+  }
+
   openDialogLostPet() {
     const dialogConfig = new MatDialogConfig();
 
@@ -525,12 +544,7 @@ export class AppComponent implements OnInit{
 
     let dialogRef = this.dialog.open(LostPetModalComponent, dialogConfig);
 
-    dialogRef.afterClosed().subscribe(result => {
-      if(result){
-        this.getPetSearch();
-        this.hiddenSelectedResult(); 
-      }
-    }); 
+    //this.afterClosed(dialogRef); //arrumar NAO É ESSE E SIM O DO FOUNDPET
   }
 
   openDialogFoundPet() {
@@ -539,7 +553,7 @@ export class AppComponent implements OnInit{
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
     dialogConfig.width = '520px';
-    dialogConfig.height = '585px'
+    dialogConfig.height = '590px'
     let dialogRef = this.dialog.open(FoundPetModalComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe(result => {
@@ -547,9 +561,10 @@ export class AppComponent implements OnInit{
       if(result.petTotal != undefined){
         this.petTotal = result.petTotal;
       }
+      
       if(result.update){
-         this.getPetSearch();
-         this.hiddenSelectedResult();  
+         this.petSearch();
+         this.hiddenSelectedResult();
       }
     }); 
   }
@@ -577,25 +592,21 @@ export class AppComponent implements OnInit{
     
     let dialogRef = this.dialog.open(FoundPetModalComponent, dialogConfig);
 
-    dialogRef.afterClosed().subscribe(result => {
-      if(result){
-        this.getPetSearch();
-        this.hiddenSelectedResult(); 
-      }
-    });
+    this.afterClosed(dialogRef); 
   }
 
-  openDialogLogin() {
+  openDialogRemovePet() {
     const dialogConfig = new MatDialogConfig();
 
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
-    dialogConfig.width = '270px';
-    dialogConfig.height = '330px';
-    console.log("CHAMA AQ");
+    dialogConfig.width = '250px';
+    dialogConfig.height = '200px';
+    dialogConfig.data = this.petId; 
 
-    this.dialog.open(LoginModalComponent, dialogConfig);
+    let dialogRef = this.dialog.open(RemovePetModalComponent, dialogConfig);  
 
+    this.afterClosed(dialogRef); 
   }
 
   openDialogComment() {
@@ -614,20 +625,10 @@ export class AppComponent implements OnInit{
     this.dialog.open(CommentModalComponent, dialogConfig);
   }
 
-  openDialogRemovePet() {
-    const dialogConfig = new MatDialogConfig();
-
-    dialogConfig.disableClose = true;
-    dialogConfig.autoFocus = true;
-    dialogConfig.width = '250px';
-    dialogConfig.height = '200px';
-    dialogConfig.data = this.petId; 
-
-    let dialogRef = this.dialog.open(RemovePetModalComponent, dialogConfig);  
-
+  afterClosed(dialogRef){
     dialogRef.afterClosed().subscribe(result => {
       if(result){
-        this.getPetSearch();
+        this.petSearch();
         this.hiddenSelectedResult(); 
       }
     });   

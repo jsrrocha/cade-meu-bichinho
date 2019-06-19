@@ -61,16 +61,17 @@ export class LoginModalComponent {
   }
 
   loginAuth(){
-    this.appLoading = true;
-    if(this.formLogin.valid){
-      this.cookieService.put('token',this.service.tokenForClient);
 
+    if(this.formLogin.valid){
+      this.appLoading = true;
+      
+      this.cookieService.put('token',this.service.tokenForClient);
       this.service.authentication(
         this.form.email.value,
         this.form.password.value)
         .subscribe(
         (data:any)=> {
-          //console.log(data);
+          
           this.cookieService.put('token','Bearer ' + data.access_token);
           this.cookieService.put('refreshToken',data.refresh_token);
           this.cookieService.put('expiresIn',data.expires_in);
@@ -78,7 +79,7 @@ export class LoginModalComponent {
           this.cookieService.put('expireTime',expireTime.toString());
 
           //Save user in cookies and save pet if is necessary
-          this.getUserLoggedInAndSavePet(); //if ERROR NO SAVEPET?
+          this.getUserLoggedInAndSavePet(); 
           this.appLoading = false;
         },
         error => {
@@ -99,18 +100,18 @@ export class LoginModalComponent {
           this.cookieService.put('userName',data.name);
           this.cookieService.put('userPhone',data.phone);
           this.cookieService.put('userPhoneWithWhats',data.phoneWithWhats);
-
-          this.dialogRef.close(false); 
-          swal.fire({
-            title: 'Bom trabalho!',
-            text: 'Login realizado com sucesso',
-            type: 'success',
-            width: 350
-          })
-
+          
           if(this.pet !=null){
             this.pet.userId = this.cookieService.get('userLoggedId');
             this.savePet(this.pet);
+          }else{
+            this.dialogRef.close(true); 
+            swal.fire({
+              title: 'Bom trabalho!',
+              text: 'Login realizado com sucesso',
+              type: 'success',
+              width: 350
+            })
           }
         }
       },
