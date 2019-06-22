@@ -313,7 +313,7 @@
   </button>
 
   <!-- Mapa -->
-  <agm-map  [latitude]="lat" [longitude]="lng" [zoom]="zoom" [streetViewControlOptions]="streetViewControlOptions" [zoomControlOptions]="zoomControlOptions">
+  <agm-map  [latitude]="lat" [longitude]="lng" [zoom]="zoom" [zoomControlOptions]="zoomControlOptions">
     <agm-overlay *ngFor="let pet of pets" [latitude]="pet.latitude" [longitude]="pet.longitude" (markerClick) = "inSelectedResult($event,pet)"> 
       <div >
         <img *ngIf="pet.lostPet == 'true'" class = "png-icon-lost-map"  
@@ -323,7 +323,7 @@
           src="{{'data:image/png;base64,'+ pet.photo}}" /> 
       </div> 
     </agm-overlay> 
-  </agm-map>
+  </agm-map> 
 
   <!-- Losts/Founds -->
   <mat-card class="footer-info">
