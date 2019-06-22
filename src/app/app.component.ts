@@ -52,11 +52,11 @@ export class AppComponent implements OnInit{
   //Map
   lat: number = -30.0513678; // default Porto Alegre
   lng: number = -51.2160819; // default Porto Alegre
-  zoom: number = 13;
+  zoom: number = 13; 
   searchControl: FormControl;
-  loading: boolean = true;
-  streetViewControlOptions: object = {};
   zoomControlOptions: object = {};
+  streetViewControl;
+  loading: boolean = true;
   @ViewChild('search')
   public searchElementRef: ElementRef;
 
@@ -70,6 +70,7 @@ export class AppComponent implements OnInit{
   searching = false;
   showNotifications = false;
   petBelongsToUser = false;
+  isAdmin = false;
 
   //Others
   latitude = null;
@@ -79,7 +80,6 @@ export class AppComponent implements OnInit{
   serializedDate;
   path = "";
   dateFinal;
-  phoneWithWhats= false; //ta sendo usado?
   userSendId = null;
   notifications: Object = [];
   dateFilter = null;
@@ -90,6 +90,8 @@ export class AppComponent implements OnInit{
   petTotal;
   updateListOfPets = false; 
   searchMenuIsOpen;
+  startTime;
+  endTime;
 
   //For edit pet
   petId;
@@ -132,14 +134,16 @@ export class AppComponent implements OnInit{
   }
 
   ngOnInit() {
-    let self = this;
-
+    let self = this; 
+    
     // get user geolocation
     navigator.geolocation.getCurrentPosition((position) => {
       self.lat = position.coords.latitude;
       self.lng = position.coords.longitude;
       self.loading = false;
     }, () => {}, { enableHighAccuracy: true });
+
+    self.streetViewControl = false;   
 
 
     // MAPS API loader
@@ -165,12 +169,14 @@ export class AppComponent implements OnInit{
           this.lng = place.geometry.location.lng();
           this.zoom = 15;
 
-          //set to search! if is NULL find ALL places.
+          //set to search! 
           this.latitude = this.lat;
           this.longitude = this.lng;
 
 	        // show filters 
           document.querySelector('.filter-container').classList.add("active");
+          this.startTime = new Date().getTime(); 
+
 
           //Update list of pets!
           this.petSearch();
@@ -179,12 +185,10 @@ export class AppComponent implements OnInit{
       });
 
       // Set map options
-      self.streetViewControlOptions = {
-        position: google.maps.ControlPosition.RIGHT_BOTTOM
-      }
       self.zoomControlOptions = {
         position: google.maps.ControlPosition.RIGHT_BOTTOM
       }
+      
     });
 
     this.setDateOfDayInPicker();
@@ -263,7 +267,7 @@ export class AppComponent implements OnInit{
     this.petUserId = pet.userId;
     this.lat = pet.latitude;
     this.lng = pet.longitude;
-    this.zoom = 16;
+    this.zoom = 17;
 
     if(this.petUserId == this.cookieService.get('userLoggedId')){
       this.petBelongsToUser = true;
@@ -326,9 +330,12 @@ export class AppComponent implements OnInit{
     if(this.searchMenuIsOpen) {
         document.querySelector('.filter-container').classList.remove("active");
         this.searchMenuIsOpen = false;
+
     }else{
       document.querySelector('.filter-container').classList.add("active");
       this.searchMenuIsOpen = true;
+
+      this.startTime = new Date().getTime(); 
     }
   }
 
@@ -351,13 +358,25 @@ export class AppComponent implements OnInit{
       showCancelButton: true,
       confirmButtonText: 'OK',
       cancelButtonText: 'Cancelar',
-      reverseButtons: true
+      reverseButtons: true 
       }).then((result) => {
 
       if (result.value) {
         this.appLoading = true;
+
+        if(this.startTime != undefined){
+          //calculate performance time
+          this.endTime = new Date().getTime();
+          var secondsDiff = +(this.endTime - this.startTime) / 1000;
+          this.service.savePerformanceTime(
+            secondsDiff,
+            1,
+            this.cookieService.get('userLoggedId'));
+        }
+        
         this.service.logoutUser().subscribe(
         (data:any)=> {
+            this.appLoading = false;
             this.cookieService.put('token',null);
             this.cookieService.put('refreshToken',null);
             this.cookieService.put('expiresIn',null);
@@ -368,8 +387,10 @@ export class AppComponent implements OnInit{
             this.cookieService.put('UserPhoneWithWhats',null);
             this.cookieService.put('logged',"false");
             this.showNotifications = false;
-            this.appLoading = false;
-            this.petSearch();
+            
+            if(this.searching){
+              this.petSearch(); 
+            } 
         },
         error => {
             this.appLoading = false;
@@ -398,7 +419,9 @@ export class AppComponent implements OnInit{
               this.cookieService.put('UserPhoneWithWhats',null);
               this.cookieService.put('logged',"false");
               this.showNotifications = false;
-              this.petSearch(); 
+              if(this.searching){
+                this.petSearch(); 
+              }    
           },
           error => {
               console.log(error);
@@ -456,12 +479,17 @@ export class AppComponent implements OnInit{
     if(this.cookieService.get('userLoggedId') != undefined
        && this.cookieService.get('userLoggedId') != null){
 
+      if(this.cookieService.get('userName') =='Admin global'){
+        this.isAdmin =true; 
+      }else{
+        this.isAdmin =false; 
+      }
+
       this.service.getCommentsWithNotificationsActiveByUserReceived(    +this.cookieService.get('userLoggedId'))
         .subscribe(
           (data:any)=> {
               //console.log(data);
               if(data.length == 0){
-                //this.existNotifications = false;
 
                 this.showNotifications = false;
                 swal.fire({
@@ -470,7 +498,6 @@ export class AppComponent implements OnInit{
                   width: 350
                 })
               }else{
-                //this.existNotifications = true;
 
                 if(this.showNotifications){
                   this.showNotifications = false;
@@ -481,13 +508,14 @@ export class AppComponent implements OnInit{
               this.notifications = data;
           },
           error => {
-              console.log(error);
+              console.log(error); 
       });
     }
   }
 
   deleteNotification(id){
     //console.log(id);
+
     swal.fire({
       title: 'Você realmente deseja remover a notificação?',
       type: 'warning',
@@ -527,11 +555,9 @@ export class AppComponent implements OnInit{
     dialogConfig.autoFocus = true;
     dialogConfig.width = '270px';
     dialogConfig.height = '330px';
-    console.log("CHAMA AQ");
 
     let dialogRef = this.dialog.open(LoginModalComponent, dialogConfig);
     this.afterClosed(dialogRef);
-
   }
 
   openDialogLostPet() {
@@ -540,11 +566,20 @@ export class AppComponent implements OnInit{
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
     dialogConfig.width = '520px';
-    dialogConfig.height = '585px';
+    dialogConfig.height = '590px';
 
     let dialogRef = this.dialog.open(LostPetModalComponent, dialogConfig);
 
-    //this.afterClosed(dialogRef); //arrumar NAO É ESSE E SIM O DO FOUNDPET
+    dialogRef.afterClosed().subscribe(result => {
+      if(result.petTotal != undefined){
+        this.petTotal = result.petTotal;
+      }
+      
+      if(result.update && this.searching){
+         this.petSearch();
+         this.hiddenSelectedResult();
+      } 
+    }); 
   }
 
   openDialogFoundPet() {
@@ -562,7 +597,7 @@ export class AppComponent implements OnInit{
         this.petTotal = result.petTotal;
       }
       
-      if(result.update){
+      if(result.update && this.searching){
          this.petSearch();
          this.hiddenSelectedResult();
       }
@@ -627,7 +662,7 @@ export class AppComponent implements OnInit{
 
   afterClosed(dialogRef){
     dialogRef.afterClosed().subscribe(result => {
-      if(result){
+      if(result && this.searching){
         this.petSearch();
         this.hiddenSelectedResult(); 
       }

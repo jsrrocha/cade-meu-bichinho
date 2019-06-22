@@ -8,50 +8,51 @@
 
 /* Search */
 
-.search-local {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  z-index: 2;
-  box-shadow: 1px 2px 5px #CCC;
-  border-radius: 70px 4px 4px 70px;
-  width: 100%;
-  max-width: 360px;
-  img {
-    max-width: 60px;
-    float: left;
-    position: relative;
-    z-index: 2;
-  }
-  form {
-    box-sizing: border-box;
-    width: calc(100% - 30px);
-    height: 60px;
-    float: left;
-    background: #FFF;
-    padding: 5px 10px 5px 35px;
-    margin-left: -30px;
-    position: relative;
-    border-radius: 0 4px 4px 0;
-    .search-field {
-      width: 99%;
-      font-size: 13px;
-    }
-    button {
-      margin-left: 5px;
-    }
-  }
-}
-
-
 .search-container {
   position: absolute;
   z-index: 5;
-  width: 380px;
-  max-width: 100%;
   padding: 80px 10px 10px 10px;
   box-sizing: border-box;
+  
+
+  .search-local {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 2;
+    box-shadow: 1px 2px 5px #CCC;
+    border-radius: 70px 4px 4px 70px;
+    width: 350px;
+    max-width: 360px;
+    img {
+      max-width: 60px;
+      float: left;
+      position: relative;
+      z-index: 2;
+    }
+    form {
+      box-sizing: border-box;
+      width: calc(100% - 30px);
+      height: 60px;
+      float: left;
+      background: #FFF;
+      padding: 5px 10px 5px 35px;
+      margin-left: -30px;
+      position: relative;
+      border-radius: 0 4px 4px 0;
+      .search-field {
+        width: 99%;
+        font-size: 13px;
+      }
+      button {
+        margin-left: 5px;
+      }
+    }
+  }
 }
+
+
+
 .filter-container {
   position: absolute;
   z-index: 4;
@@ -204,7 +205,6 @@
     height: auto;
     display: block;
     overflow-x: hidden;
-    //overflow-y: scroll;
     padding-top: 2px !important;
   }
   .item-list-pets{
@@ -528,7 +528,6 @@
   overflow-y: auto;
   height: 335px;
   border-radius: 4px;
-
 }
 
 .notification-card{
@@ -571,7 +570,8 @@ mat-button-toggle, .mat-button-toggle-appearance-standard{
     max-width: calc(100% - 20px);
   }
   .filter-container {
-    width: 378px;
+    //width: 378px;
+    
     .png-icon {
       width: 36px;
       height: 36px;
@@ -609,7 +609,7 @@ mat-button-toggle, .mat-button-toggle-appearance-standard{
 
 @media only screen and (max-width : 320px) {
   .filter-container {
-    width: 320px;
+    width: 330px;
   }
   .search-container {
     width: calc(100%);
@@ -619,5 +619,5 @@ mat-button-toggle, .mat-button-toggle-appearance-standard{
   }
   .footer-info {
     display: none;
-  }
+  } 
 }

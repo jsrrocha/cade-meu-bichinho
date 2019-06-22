@@ -26,12 +26,14 @@
       </mat-form-field>
 
       <!-- Date selection-->
-      <mat-form-field class="form-style">
-        <input matInput [matDatepicker]="picker" [formControl]="date" placeholder="Data de encontro" >
+      <mat-form-field  class="form-style">
+        <input matInput [matDatepicker]="picker" formControlName="date" placeholder="Data do encontro" >
         <mat-datepicker-toggle matSuffix [for]="picker" matTooltip="Selecione a data"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
-      </mat-form-field>
 
+        <mat-error *ngIf="formPetLost.controls.date.invalid">{{getDateErrorMessage()}}</mat-error>
+      </mat-form-field>
+ 
       <!-- Phone insertion-->
       <mat-form-field class="form-style">
         <input matInput formControlName="phone" placeholder="Telefone c/ DDD" required>
@@ -48,7 +50,7 @@
     <!-- Right -->
     <div class="form-right">
       <!-- Specie selection-->
-      <mat-button-toggle-group class=group [(value)]="selectedSpecie" #speciegroup="matButtonToggleGroup">
+      <mat-button-toggle-group class=group formControlName="selectedSpecie" #speciegroup="matButtonToggleGroup">
         <mat-button-toggle class=group-button [value]="0"  matTooltip="Meu pet é um cachorro">
           <img  class="select-png-icon" src="../assets/icons/blank.png">
         </mat-button-toggle>
@@ -57,10 +59,11 @@
             <img  class="select-png-icon" src="../assets/icons/veia.png">
         </mat-button-toggle>
       </mat-button-toggle-group>
+      <mat-error class ="group-error" *ngIf="formPetLost.controls.selectedSpecie.invalid">{{getSpecieErrorMessage()}}</mat-error> 
 
       <!-- Sex selection-->
-      <mat-button-toggle-group class=group [(value)]="selectedSex"  #sexgroup="matButtonToggleGroup" >
-        <mat-button-toggle class=group-button [value]="0" checked matTooltip="Ele é macho">
+      <mat-button-toggle-group class=group formControlName="selectedSex"  #sexgroup="matButtonToggleGroup" >
+        <mat-button-toggle class=group-button [value]="0" matTooltip="Ele é macho">
           <img  class="select-png-icon" src="../assets/icons/male.png">
         </mat-button-toggle>
 
@@ -68,10 +71,11 @@
           <img  class="select-png-icon" src="../assets/icons/female.png">
         </mat-button-toggle>
       </mat-button-toggle-group>
+      <mat-error class ="group-error" *ngIf="formPetLost.controls.selectedSex.invalid">{{getSexErrorMessage()}}</mat-error> 
 
       <!-- Life stage selection-->
-      <mat-button-toggle-group id="life-stage" class="group" [(value)]="selectedLifeStage"  #lifegroup="matButtonToggleGroup" >
-        <mat-button-toggle class=group-button [value]="0" checked matTooltip="Ele é filhote">
+      <mat-button-toggle-group id="life-stage" class="group" formControlName="selectedLifeStage"  #lifegroup="matButtonToggleGroup" >
+        <mat-button-toggle class=group-button [value]="0"  matTooltip="Ele é filhote">
           <img  class="select-png-icon" src="../assets/icons/puppy.png">
         </mat-button-toggle>
 
@@ -82,11 +86,12 @@
         <mat-button-toggle class=group-button [value]="2" matTooltip="Ele é idoso">
           <img  class="select-png-icon" src="../assets/icons/old.png">
         </mat-button-toggle>
-      </mat-button-toggle-group>
+      </mat-button-toggle-group> 
+      <mat-error class ="group-error" *ngIf="formPetLost.controls.selectedLifeStage.invalid">{{getLifeStageErrorMessage()}}</mat-error> 
 
       <!-- Fur color selection-->
-      <mat-button-toggle-group id="fur-color" class=group [(value)]="selectedFurColor"  #colorgroup="matButtonToggleGroup" >
-        <mat-button-toggle class=group-button [value]="0" checked matTooltip="A cor é parecida com branco">
+      <mat-button-toggle-group id="fur-color" class=group formControlName="selectedFurColor"  #colorgroup="matButtonToggleGroup" >
+        <mat-button-toggle class=group-button [value]="0" matTooltip="A cor é parecida com branco">
           <img  class="color-png-icon" src="../assets/icons/dogbranco.png">
         </mat-button-toggle>
 
@@ -114,6 +119,7 @@
           <img  class="color-png-icon" src="../assets/icons/dogcombolinhas.png">
         </mat-button-toggle>
       </mat-button-toggle-group>
+      <mat-error class ="group-error" *ngIf="formPetLost.controls.selectedFurColor.invalid">{{getFurColorErrorMessage()}}</mat-error> 
     </div>
 
     <!-- description insertion-->
@@ -122,13 +128,14 @@
     <!-- Local insertion(mockup)-->
     <label class="map-label">Onde ele foi encontrado? Arraste o marcador para o local no mapa:</label>
 
-    <div  class="select-local">
-      <div id=streetviewMap #streetviewMap class="map-location"> </div>
-    </div>
+    <div >
+      <input matInput class="select-local" placeholder="Selecione o local" #search id=searchLocal matTooltip="Selecione o local do pet"> 
+      <div id=streetviewMap #streetviewMap class="map-location"> </div>  
+    </div> 
 
     <div mat-dialog-actions class="actions">
       <button mat-raised-button color="primary" class=button type="submit" (click)="addPet()">Cadastrar</button>
-      <button mat-raised-button class="button" (click)="close()">Cancelar</button>
-    </div>
+      <button mat-raised-button class="button" (click)="close()">Cancelar</button> 
+    </div> 
   </form>
 </div>

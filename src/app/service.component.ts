@@ -9,8 +9,8 @@ import swal from 'sweetalert2';
 
 export class ServiceComponent {
 
-  //backendUrl = "http://localhost:8086/";
-  backendUrl = "https://cademeubichinho02.herokuapp.com/";
+  backendUrl = "http://localhost:8086/";
+  //backendUrl = "https://cademeubichinho02.herokuapp.com/";
 
   tokenForClient = "Basic Z2xvYmFsOjEyMzQ1Ng==";
 
@@ -78,7 +78,6 @@ export class ServiceComponent {
       return this.http.post(url,null);
   }
 
-
   addComment(data: object){
       const url = this.backendUrl + "comment/add";
       return this.http.post(url,data);
@@ -92,6 +91,11 @@ export class ServiceComponent {
   removeNotification(id:number){
       const url = this.backendUrl + "comment/notification/desactive/" + id ;
       return this.http.post(url,null);
+  }
+
+  addPerformance(data: object){
+      const url = this.backendUrl + "performance/add";
+      return this.http.post(url,data);
   }
 
   handleErrors(error: any){
@@ -139,5 +143,37 @@ export class ServiceComponent {
         width: 400
       })
     }
+  }
+
+  savePerformanceTime(secondsDiff,type,userId){
+    var secondsFinal = this.adjustDecimal('round', secondsDiff, -1);
+    
+    console.log(secondsDiff);
+    console.log(secondsFinal);
+
+    let performance = {
+       "time" : +secondsFinal,
+       "type" : type,
+       "userId": userId
+    }
+
+    this.addPerformance(performance).subscribe(
+      (data:any)=> {
+        console.log(data);
+      },
+      error => {
+        console.log(error);
+    });
+  }
+
+  adjustDecimal(type, value, exp) {
+    value = +value;
+    exp = +exp;
+
+    value = value.toString().split('e');
+    value = Math[type](+(value[0] + 'e' + (value[1] ? 
+                  (+value[1] - exp) : -exp)));
+    value = value.toString().split('e');
+    return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp));
   }
 }

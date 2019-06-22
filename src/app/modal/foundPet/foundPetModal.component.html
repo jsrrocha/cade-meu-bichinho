@@ -19,7 +19,7 @@
 
         <input  id="input-photo" type="file" style="display: none;" (change)="onFileSelected($event)" />
         <label matSuffix for="input-photo">
-           <mat-icon  matTooltip="Clique para escolher">cloud_upload</mat-icon>
+           <mat-icon  matTooltip="Clique para escolher">cloud_upload</mat-icon> 
         </label>
       </mat-form-field>
 
@@ -132,13 +132,13 @@
     <textarea id="description" class ="description-field border-on" rows="2" cols="60" maxlength="500" wrap="hard"  formControlName="description" matInput placeholder="Faltou algo? Ele possui raça? Ele usa coleira? É castrado? Possui alguma caracteristica que o identifique?  Descreva aqui :)" ></textarea>
 
     <!-- Local insertion-->
-    <label class="map-label">Onde ele foi encontrado? Arraste o marcador para o local no mapa:</label>
+    <label class="map-label">Onde ele foi encontrado? Arraste o marcador para o local no mapa:</label> 
 
-    <div class="select-local">
-      <div *ngIf="!edition" id=streetviewMap #streetviewMap class="map-location">
-      </div> 
+    <div >
+      <div *ngIf="!edition" id=streetviewMap #streetviewMap class="map-location"> </div> 
 
-      <div *ngIf="edition" id=streetviewMap #streetviewMap class="map-location-edit"> </div>  
+      <div *ngIf="edition" id=streetviewMap #streetviewMap class="map-location-edit"> </div> 
+      <input matInput class="select-local" placeholder="Selecione o local" #search id=searchLocal matTooltip="Selecione o local do pet">  
     </div> 
 
     <div mat-dialog-actions class="actions">

@@ -47,6 +47,8 @@ export class FoundPetModalComponent implements OnInit{
   @Input() lat: number = -30.0513678; // default Porto Alegre
   @Input() lng: number = -51.2160819; // default Porto Alegre
   @Input() zoom: number = 13;
+  @ViewChild('search')
+  public searchElement: ElementRef;
   latPet;
   lngPet;
   markerPet;
@@ -116,6 +118,7 @@ export class FoundPetModalComponent implements OnInit{
   }
 
   configureMap(){
+
     let center = {
       lat: this.lat,
       lng: this.lng
@@ -128,12 +131,19 @@ export class FoundPetModalComponent implements OnInit{
       {
         center: center,
         zoom: this.zoom,
+        streetViewControl: false, 
+        mapTypeControl: false,
         zoomControl: true, 
         zoomControlOptions: {
           position: google.maps.ControlPosition.RIGHT_CENTER
         },
-      });
+      }  
+    );
+    var searchLocal = (<HTMLInputElement>document.getElementById('searchLocal')); 
 
+    map.controls[google.maps.ControlPosition.TOP_LEFT].push(searchLocal);
+    
+    //Marker
     var image = {
       url: '../assets/icons/dog_found.png',
       scaledSize: new google.maps.Size(35, 35),
@@ -143,26 +153,47 @@ export class FoundPetModalComponent implements OnInit{
     var marker = new google.maps.Marker({
       map: map,
       draggable: true,
-      position: {lat: -30.055819, lng: -51.223238}, //Local Default
+      position: {lat: this.lat, lng: this.lng}, //Local Default
       icon: image,
       title:"Arrasta-me!"
-    });
+    }); 
 
     var infowindow = new google.maps.InfoWindow({
         content: "Arrasta-me para o local"
     });
-
+    this.markerPet = marker; 
     marker.addListener('click', function() {
-      infowindow.open(map, marker);
+      infowindow.open(map, marker); 
     });
 
-    this.markerPet = marker;
-    marker.addListener('dragend',handleEvent);
+    //Autocomplete
+    this.mapsAPILoader2.load().then(() => { 
+      let autocomplete = new google.maps.places.Autocomplete(this.searchElement.nativeElement, { 
+        types: ['address'] 
+      });
 
-    function handleEvent(event) {
-        //console.log(marker.getPosition().lat());
-        //console.log(marker.getPosition().lng());
-    }
+      // Set input autocomplete
+      autocomplete.addListener('place_changed', () => {
+        this.ngZone2.run(() => { 
+
+          // get the place result
+          let place: google.maps.places.PlaceResult = autocomplete.getPlace();
+
+          // verify result
+          if (place.geometry === undefined || place.geometry === null) {
+            return;
+          } 
+
+          // set latitude, longitude and zoom
+          map.setCenter(place.geometry.location);
+          map.setZoom(14);
+          marker.setPosition(place.geometry.location);
+
+          console.log(map);
+
+        }); 
+      });
+    });
   }
 
   fillPetEdition(){
@@ -172,7 +203,7 @@ export class FoundPetModalComponent implements OnInit{
     
     this.form.selectedSpecie
       .setValue(this.petEdition.petSpecie);
-    console.log(this.form.selectedSpecie.value);
+    
     this.form.selectedSex
       .setValue(this.petEdition.petSex);
     this.form.selectedLifeStage
@@ -277,6 +308,11 @@ export class FoundPetModalComponent implements OnInit{
       if(this.photoData !=null){
         this.photoWithoutHeader64 = this.photoData.split(',')[1];
       }
+      
+      //calculate performance time
+      this.endTime = new Date().getTime();
+      var secondsDiff = +(this.endTime - this.startTime) / 1000;
+
       let pet = {
          "name": this.form.name.value,
          "specie": this.form.selectedSpecie.value,
@@ -291,13 +327,14 @@ export class FoundPetModalComponent implements OnInit{
          "phoneWithWhats" :  this.form.phoneWithWhats.value,
          "description" : description,
          "lostPet" : "false",
-         "userId": this.cookieService.get('userLoggedId')
+         "userId": this.cookieService.get('userLoggedId'),
+         "performanceTime": secondsDiff
       }
       //console.log(pet);
 
       if(this.cookieService.get('userLoggedId') == undefined
          || this.cookieService.get('userLoggedId') == null ){
-
+        
         this.dialogRef.close(false);
         swal.fire({
           type: 'warning',
@@ -308,37 +345,34 @@ export class FoundPetModalComponent implements OnInit{
           this.openDialogLogin(pet);
         })
       }else{
+        this.service.savePerformanceTime(
+            secondsDiff,
+            0,
+            this.cookieService.get('userLoggedId'));
+        
         this.service.addPet(pet).subscribe(
           (data:any)=> {
               this.getPetCounting();
-
+          
               swal.fire({
                 title: 'Bom trabalho!',
                 text: 'Pet cadastrado com sucesso',
                 type: 'success',
                 width: 350
-              }).then((resultTwo) => {
-                
-                this.endTime = new Date().getTime();
-                var secondsDiff = +(this.endTime - this.startTime) 
-                / 1000;
+              })
 
-                var secondsFinal = this.adjustTwoDecimalPlaces('round', secondsDiff, -2);
-
-                console.log(secondsDiff);
-                console.log(secondsFinal);
-                
+              setTimeout(()=>{
                 let result = {
                   "petTotal": this.petTotal,
                   "update": true
                 }
                 this.dialogRef.close(result);
-              })
+              }, 30);   
           },
           error => {
               this.appLoading = false;
               this.service.handleErrors(error);
-              console.log(error);
+              console.log(error); 
         });
       }
     }
@@ -420,14 +454,5 @@ export class FoundPetModalComponent implements OnInit{
     })
   }
 
-  adjustTwoDecimalPlaces(type, value, exp) {
-    value = +value;
-    exp = +exp;
-    
-    value = value.toString().split('e');
-    value = Math[type](+(value[0] + 'e' + (value[1] ? 
-                  (+value[1] - exp) : -exp)));
-    value = value.toString().split('e');
-    return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp));
-  }
+ 
 }

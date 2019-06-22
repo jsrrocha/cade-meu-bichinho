@@ -103,15 +103,19 @@ export class LoginModalComponent {
           
           if(this.pet !=null){
             this.pet.userId = this.cookieService.get('userLoggedId');
+            this.service.savePerformanceTime(
+              this.pet.performanceTime,
+              0,
+              this.cookieService.get('userLoggedId')); 
             this.savePet(this.pet);
           }else{
-            this.dialogRef.close(true); 
             swal.fire({
               title: 'Bom trabalho!',
               text: 'Login realizado com sucesso',
               type: 'success',
               width: 350
             })
+            this.dialogRef.close(true); 
           }
         }
       },
@@ -124,14 +128,14 @@ export class LoginModalComponent {
     this.service.addPet(pet).subscribe(
       (data:any)=> {
         this.cookieService.put('petId',data.id);
-        this.dialogRef.close(true);
-
+        
         swal.fire({
           title: 'Bom trabalho!',
           text: 'Pet cadastrado com sucesso',
           type: 'success',
           width: 350
         })
+        this.dialogRef.close(true);
       },
       error => {
         this.service.handleErrors(error);

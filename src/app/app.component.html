@@ -281,15 +281,15 @@
        <p> O <b>{{notif.specie}} {{notif.name}}</b> que foi <b>{{notif.lostPet == "true" ? "perdido" : "encontrado"}} em {{notif.date | date:'dd/MM/yyy'}} </b> recebeu um comentário! *0* </p>
        <p> <b>{{notif.userName}}</b> comentou na postagem: </p>
        <br />
-       <p>{{notif.comment}}</p>
+       <p>{{notif.comment}}</p> 
        <br />
        <p *ngIf="notif.link !- ''">Link: {{notif.link}}</p>
 
        O telefone de contato de <b>{{notif.userName}}</b> é: <b>{{notif.userPhone}}</b> e <b>{{notif.userPhoneWithWhats == "true" ? "possui" : "não possui"}}</b> whats.
       </mat-card-content>
 
-      <button class="notification-delete" mat-icon-button (click)="deleteNotification(notif.id)" *ngIf="this.cookieService.get('userName') !='Admin global'" matTooltip="Remova uma notificação">
-        <mat-icon >delete</mat-icon>
+      <button class="notification-delete" *ngIf="this.cookieService.get('userName') !='Admin global'" mat-icon-button (click)="deleteNotification(notif.id)"  matTooltip="Remova uma notificação">
+        <mat-icon >delete</mat-icon>  
       </button>
 
     </mat-card>
