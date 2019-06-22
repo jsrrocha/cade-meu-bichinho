@@ -288,7 +288,7 @@
        O telefone de contato de <b>{{notif.userName}}</b> é: <b>{{notif.userPhone}}</b> e <b>{{notif.userPhoneWithWhats == "true" ? "possui" : "não possui"}}</b> whats.
       </mat-card-content>
 
-      <button class="notification-delete" *ngIf="this.cookieService.get('userName') !='Admin global'" mat-icon-button (click)="deleteNotification(notif.id)"  matTooltip="Remova uma notificação">
+      <button class="notification-delete" *ngIf="this.cookieService.get('userName') != 'Admin geral'" mat-icon-button (click)="deleteNotification(notif.id)"  matTooltip="Remova uma notificação">
         <mat-icon >delete</mat-icon>  
       </button>
 

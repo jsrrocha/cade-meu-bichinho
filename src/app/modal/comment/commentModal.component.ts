@@ -119,7 +119,7 @@ export class CommentModalComponent {
 
       this.service.addComment(comment).subscribe(
         (data:any)=> {
-            console.log(data);
+            
             this.dialogRef.close();
             swal.fire({
                       title: 'Bom trabalho!',

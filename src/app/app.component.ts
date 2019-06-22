@@ -70,7 +70,6 @@ export class AppComponent implements OnInit{
   searching = false;
   showNotifications = false;
   petBelongsToUser = false;
-  isAdmin = false;
 
   //Others
   latitude = null;
@@ -252,9 +251,7 @@ export class AppComponent implements OnInit{
   }
 
   fillResult(pet){
-    console.log("SELECIONADO ");
-    console.log(pet);
-    
+
     this.petId = pet.id;
     this.petName = pet.name;
     this.petSpecie = pet.specieNumber;
@@ -395,14 +392,14 @@ export class AppComponent implements OnInit{
         error => {
             this.appLoading = false;
             this.service.handleErrors(error);
-            console.log(error);
+            console.log(error); 
         });
       }
     })
   }
 
   logoutUserWithOutConfirmation(){
-    console.log("CHAMOU DESLOG")
+    
     if(this.cookieService.get('userLoggedId') != null
        && this.cookieService.get('userLoggedId') != undefined){
 
@@ -463,7 +460,7 @@ export class AppComponent implements OnInit{
 
     this.service.petSearch(pet).subscribe(
     (data:any)=> {
-        console.log(data);
+       
         this.pets = data;
         this.searching = true;
         this.appLoading = false;
@@ -479,18 +476,11 @@ export class AppComponent implements OnInit{
     if(this.cookieService.get('userLoggedId') != undefined
        && this.cookieService.get('userLoggedId') != null){
 
-      if(this.cookieService.get('userName') =='Admin global'){
-        this.isAdmin =true; 
-      }else{
-        this.isAdmin =false; 
-      }
-
       this.service.getCommentsWithNotificationsActiveByUserReceived(    +this.cookieService.get('userLoggedId'))
         .subscribe(
           (data:any)=> {
-              //console.log(data);
+             
               if(data.length == 0){
-
                 this.showNotifications = false;
                 swal.fire({
                   title: 'Você não possui notificações',
@@ -514,8 +504,7 @@ export class AppComponent implements OnInit{
   }
 
   deleteNotification(id){
-    //console.log(id);
-
+  
     swal.fire({
       title: 'Você realmente deseja remover a notificação?',
       type: 'warning',

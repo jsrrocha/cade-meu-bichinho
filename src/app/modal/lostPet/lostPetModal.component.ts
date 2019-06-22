@@ -181,8 +181,6 @@ export class LostPetModalComponent implements OnInit{
           map.setZoom(14);
           marker.setPosition(place.geometry.location);
 
-          console.log(map);
-
         }); 
       });
     });
@@ -297,7 +295,6 @@ export class LostPetModalComponent implements OnInit{
          "userId": this.cookieService.get('userLoggedId'),
          "performanceTime": secondsDiff
       }
-      //console.log(pet);
 
       if(this.cookieService.get('userLoggedId') == undefined
          || this.cookieService.get('userLoggedId') == null ){
@@ -339,7 +336,7 @@ export class LostPetModalComponent implements OnInit{
           error => {
               this.appLoading = false;
               this.service.handleErrors(error);
-              console.log(error); 
+              console.log(error);  
         });
       }
     }

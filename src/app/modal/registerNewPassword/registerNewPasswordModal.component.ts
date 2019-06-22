@@ -79,7 +79,6 @@ export class RegisterNewPasswordModalComponent {
     }    
   }  
 
-  //COMPARAÇÃO DE SENHAS ANTES?
   registerNewPassword(){
     if(this.formRegister.valid){
 
@@ -89,11 +88,9 @@ export class RegisterNewPasswordModalComponent {
         "newPassword" : this.form.newPassword.value,
         "confirmNewPassword": this.form.confirmPassword.value
       }
-      console.log(user);
       
       this.service.addNewPassword(user).subscribe(
         (data:any)=> {
-            console.log(data);
             this.dialogRef.close(); 
             swal.fire({
               title: 'Bom trabalho!',

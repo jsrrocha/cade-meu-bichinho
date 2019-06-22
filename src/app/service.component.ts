@@ -148,8 +148,8 @@ export class ServiceComponent {
   savePerformanceTime(secondsDiff,type,userId){
     var secondsFinal = this.adjustDecimal('round', secondsDiff, -1);
     
-    console.log(secondsDiff);
-    console.log(secondsFinal);
+    //console.log(secondsDiff);
+    //console.log(secondsFinal);
 
     let performance = {
        "time" : +secondsFinal,
@@ -158,9 +158,7 @@ export class ServiceComponent {
     }
 
     this.addPerformance(performance).subscribe(
-      (data:any)=> {
-        console.log(data);
-      },
+      (data:any)=> {},
       error => {
         console.log(error);
     });

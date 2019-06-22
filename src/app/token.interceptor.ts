@@ -28,7 +28,7 @@ export class TokenInterceptor implements HttpInterceptor {
       this.expireTime = parseInt(this.cookieService.get('expireTime'));
       
       if(new Date().getTime() >= this.expireTime){ 
-        console.log("REFRESH TOKEN");       
+             
         this.expireTime = new Date().getTime() + this.expiresIn * 1000;
         this.cookieService.put('expireTime',
         this.expireTime.toString());

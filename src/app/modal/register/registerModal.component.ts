@@ -86,7 +86,6 @@ export class RegisterModalComponent {
       
       this.service.addUser(user).subscribe(
             (data:any)=> {
-              //console.log(data);
               this.dialogRef.close();  
 
               swal.fire({

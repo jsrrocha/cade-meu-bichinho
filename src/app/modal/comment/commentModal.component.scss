@@ -1,6 +1,7 @@
 .comment{
   height:100%;
   max-height:100%;
+  
   .form-style{
     width: 270px !important;
     max-width: 100%;
@@ -47,6 +48,10 @@
   
   .mat-input-element::placeholder {
       color: black; 
+  }
+
+  .mat-input-element{
+    width: 80%;
   }
   
   //Buttons
