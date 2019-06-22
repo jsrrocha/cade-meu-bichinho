@@ -9,8 +9,8 @@ import swal from 'sweetalert2';
 
 export class ServiceComponent {
 
-  backendUrl = "http://localhost:8086/";
-  //backendUrl = "https://cademeubichinho02.herokuapp.com/";
+  //backendUrl = "http://localhost:8086/";
+  backendUrl = "https://cademeubichinho02.herokuapp.com/";
 
   tokenForClient = "Basic Z2xvYmFsOjEyMzQ1Ng==";
 
