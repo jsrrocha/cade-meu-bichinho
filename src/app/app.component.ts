@@ -46,7 +46,7 @@ export const MY_FORMATS = {
     {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
   ],
 })
-export class AppComponent implements OnInit{
+export class AppComponent implements OnInit,AfterViewInit{
   title = 'tcc';
 
   //Map
@@ -129,6 +129,7 @@ export class AppComponent implements OnInit{
       furColor: [null,Validators.required],
       description: [null],
       checkedAllDates: [true,Validators.required],
+      date: [new Date(),Validators.required] 
     });
   }
 
@@ -199,8 +200,15 @@ export class AppComponent implements OnInit{
     }, 15 * 60 * 1000);
   }
 
+  ngAfterViewInit(){
+    //adjust hour
+    this.formFilterPet.date.value.setHours(
+    this.formFilterPet.date.value.getHours()-3);
+    this.cd.detectChanges(); 
+  }
+
   setDateOfDayInPicker(){
-    this.datePicker = new FormControl(new Date());
+    //this.datePicker = new FormControl(new Date());
   }
 
   get formFilterPet() {
@@ -432,9 +440,8 @@ export class AppComponent implements OnInit{
     this.appLoading = true;
 
     if(!this.formFilterPet.checkedAllDates.value){
-      this.serializedDate = new FormControl((this.datePicker.value).toISOString());
-
-      this.dateFilter = this.serializedDate.value;
+       
+      this.dateFilter = this.formFilterPet.date.value;
     }else{
       this.dateFilter = null;
     }
@@ -452,11 +459,12 @@ export class AppComponent implements OnInit{
       "lifeStage": this.formFilterPet.lifeStage.value,
       "description" : this.formFilterPet.description.value,
       "lostPet" : this.formFilterPet.type.value,
-      "date" : this.dateFilter,
+      "date" : this.dateFilter,   
       "latitude": this.latitude,
       "longitude": this.longitude,
       "userId": this.userLoggedId
     }
+    console.log(pet); 
 
     this.service.petSearch(pet).subscribe(
     (data:any)=> {

@@ -152,7 +152,7 @@
             <input matInput 
             [readonly]="formFilter.controls.checkedAllDates.value" 
             [matDatepicker]="picker" 
-            [formControl]="datePicker" placeholder="Buscar pela data">
+            formControlName="date" placeholder="Buscar pela data">
             
             <mat-datepicker-toggle matSuffix [disabled]="formFilter.controls.checkedAllDates.value"  [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>

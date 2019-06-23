@@ -1,4 +1,4 @@
-import { Component,Inject, NgZone,ElementRef, OnInit, Input,ViewChild,AfterViewInit } from '@angular/core';
+import { Component,Inject, NgZone,ElementRef, OnInit, Input,ViewChild,AfterViewInit,ChangeDetectorRef } from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
 import {HttpClient, HttpParams, HttpHeaders} from '@angular/common/http';
 import {FormBuilder,FormControl, FormGroup,Validators} from '@angular/forms';
@@ -41,7 +41,7 @@ export const MY_FORMATS = {
   ],
 })
 
-export class LostPetModalComponent implements OnInit{
+export class LostPetModalComponent implements OnInit,AfterViewInit{
 
   //Map
   @Input() lat: number = -30.0513678; // default Porto Alegre
@@ -72,7 +72,8 @@ export class LostPetModalComponent implements OnInit{
     private mapsAPILoader2: MapsAPILoader,
     private ngZone2: NgZone,
     private cookieService: CookieService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private cd: ChangeDetectorRef,
     ){
 
     this.formPetLost = this.formBuilder.group({
@@ -103,7 +104,12 @@ export class LostPetModalComponent implements OnInit{
     setTimeout(()=>{
       this.configureMap();
     }, 30);
+  } 
+
+  ngAfterViewInit(){
+    this.cd.detectChanges();
   }
+
 
   get form() {
     return this.formPetLost.controls;
@@ -278,6 +284,9 @@ export class LostPetModalComponent implements OnInit{
       this.endTime = new Date().getTime();
       var secondsDiff = +(this.endTime - this.startTime) / 1000;
 
+      //adjust hour
+      this.form.date.value.setHours(this.form.date.value.getHours()-3);  
+
       let pet = {
          "name": this.form.name.value,
          "specie": this.form.selectedSpecie.value,
@@ -295,6 +304,8 @@ export class LostPetModalComponent implements OnInit{
          "userId": this.cookieService.get('userLoggedId'),
          "performanceTime": secondsDiff
       }
+      console.log(pet);
+
 
       if(this.cookieService.get('userLoggedId') == undefined
          || this.cookieService.get('userLoggedId') == null ){

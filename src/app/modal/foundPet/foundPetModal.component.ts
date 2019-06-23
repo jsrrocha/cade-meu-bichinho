@@ -1,4 +1,4 @@
-import { Component,Inject, NgZone,ElementRef, OnInit, Input,ViewChild,AfterViewInit } from '@angular/core';
+import { Component,Inject, NgZone,ElementRef, OnInit, Input,ViewChild,AfterViewInit,ChangeDetectorRef} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
 import {HttpClient, HttpParams, HttpHeaders} from '@angular/common/http';
 import {FormBuilder,FormControl, FormGroup,Validators} from '@angular/forms';
@@ -6,6 +6,7 @@ import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { MapsAPILoader } from '@agm/core';
 import { CookieService } from 'ngx-cookie';
 import swal from 'sweetalert2';
+import * as moment from 'moment';
 
 //material
 import { MAT_DIALOG_DATA, MatDialogRef,MatDialog, MatDatepickerModule,
@@ -41,7 +42,7 @@ export const MY_FORMATS = {
   ],
 })
 
-export class FoundPetModalComponent implements OnInit{
+export class FoundPetModalComponent implements OnInit,AfterViewInit{
 
   //Map
   @Input() lat: number = -30.0513678; // default Porto Alegre
@@ -73,6 +74,7 @@ export class FoundPetModalComponent implements OnInit{
     private ngZone2: NgZone,
     private cookieService: CookieService,
     private dialog: MatDialog,
+    private cd: ChangeDetectorRef,
 
     @Inject(MAT_DIALOG_DATA)
     private petEdition: any,
@@ -91,7 +93,7 @@ export class FoundPetModalComponent implements OnInit{
       phoneWithWhats: [false],
       description: [''],
       photoSrc: ['',Validators.required],
-      date: [new Date(),Validators.required]
+      date: [new Date(),Validators.required] 
     });
   }
 
@@ -111,6 +113,10 @@ export class FoundPetModalComponent implements OnInit{
     setTimeout(()=>{
       this.configureMap();
     }, 30);
+  }
+
+  ngAfterViewInit(){
+    this.cd.detectChanges();
   }
 
   get form() {
@@ -310,7 +316,10 @@ export class FoundPetModalComponent implements OnInit{
       //calculate performance time
       this.endTime = new Date().getTime();
       var secondsDiff = +(this.endTime - this.startTime) / 1000;
-
+      
+      //adjust hour
+      this.form.date.value.setHours(this.form.date.value.getHours()-3); 
+      
       let pet = {
          "name": this.form.name.value,
          "specie": this.form.selectedSpecie.value,
@@ -328,6 +337,7 @@ export class FoundPetModalComponent implements OnInit{
          "userId": this.cookieService.get('userLoggedId'),
          "performanceTime": secondsDiff
       }
+      console.log(pet);
 
       if(this.cookieService.get('userLoggedId') == undefined
          || this.cookieService.get('userLoggedId') == null ){
@@ -350,6 +360,8 @@ export class FoundPetModalComponent implements OnInit{
         this.service.addPet(pet).subscribe(
           (data:any)=> {
               this.getPetCounting();
+                    console.log(data);
+
           
               swal.fire({
                 title: 'Bom trabalho!',
