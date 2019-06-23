@@ -291,7 +291,7 @@ export class LostPetModalComponent implements OnInit{
          "phone" : this.form.phone.value,
          "phoneWithWhats" :  this.form.phoneWithWhats.value,
          "description" : description,
-         "lostPet" : "false",
+         "lostPet" : "true",
          "userId": this.cookieService.get('userLoggedId'),
          "performanceTime": secondsDiff
       }
