@@ -121,15 +121,21 @@ export class ServiceComponent {
       })
     }else if(error.error.error_description == "Invalid refresh token: "){
       //Ignora!
+    }else if(error.error.error == "invalid_token"){
+      swal.fire({
+        type: 'error',
+        title: 'Oops... Algo deu errado',
+        text: 'Tente novamente ou mande email para: cademeubichinho02@outlook.com',
+        width: 400
+      })
     }else if(error.error.error != undefined){
       swal.fire({
         type: 'error',
-        title: 'Não existe esse serviço',
-        width: 350
+        title: 'Oops... Algo deu errado',
+        text: 'Tente novamente ou mande email para: cademeubichinho02@outlook.com',
+        width: 400
       })
-
     }else if(error.error != undefined){
-
       swal.fire({
         type: 'error',
         title: error.error,
@@ -147,9 +153,6 @@ export class ServiceComponent {
 
   savePerformanceTime(secondsDiff,type,userId){
     var secondsFinal = this.adjustDecimal('round', secondsDiff, -1);
-    
-    //console.log(secondsDiff);
-    //console.log(secondsFinal);
 
     let performance = {
        "time" : +secondsFinal,

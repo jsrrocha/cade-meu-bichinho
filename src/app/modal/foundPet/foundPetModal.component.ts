@@ -116,6 +116,9 @@ export class FoundPetModalComponent implements OnInit,AfterViewInit{
   }
 
   ngAfterViewInit(){
+    //adjust hour
+    this.form.date.value.setHours(
+    this.form.date.value.getHours()-3);
     this.cd.detectChanges();
   }
 
@@ -317,9 +320,6 @@ export class FoundPetModalComponent implements OnInit,AfterViewInit{
       this.endTime = new Date().getTime();
       var secondsDiff = +(this.endTime - this.startTime) / 1000;
       
-      //adjust hour
-      this.form.date.value.setHours(this.form.date.value.getHours()-3); 
-      
       let pet = {
          "name": this.form.name.value,
          "specie": this.form.selectedSpecie.value,
@@ -337,7 +337,6 @@ export class FoundPetModalComponent implements OnInit,AfterViewInit{
          "userId": this.cookieService.get('userLoggedId'),
          "performanceTime": secondsDiff
       }
-      console.log(pet);
 
       if(this.cookieService.get('userLoggedId') == undefined
          || this.cookieService.get('userLoggedId') == null ){
@@ -360,8 +359,6 @@ export class FoundPetModalComponent implements OnInit,AfterViewInit{
         this.service.addPet(pet).subscribe(
           (data:any)=> {
               this.getPetCounting();
-                    console.log(data);
-
           
               swal.fire({
                 title: 'Bom trabalho!',

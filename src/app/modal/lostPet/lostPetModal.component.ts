@@ -107,7 +107,10 @@ export class LostPetModalComponent implements OnInit,AfterViewInit{
   } 
 
   ngAfterViewInit(){
-    this.cd.detectChanges();
+    //adjust hour
+    this.form.date.value.setHours(
+    this.form.date.value.getHours()-3);
+    this.cd.detectChanges(); 
   }
 
 
@@ -282,10 +285,7 @@ export class LostPetModalComponent implements OnInit,AfterViewInit{
       
       //calculate performance time
       this.endTime = new Date().getTime();
-      var secondsDiff = +(this.endTime - this.startTime) / 1000;
-
-      //adjust hour
-      this.form.date.value.setHours(this.form.date.value.getHours()-3);  
+      var secondsDiff = +(this.endTime - this.startTime) / 1000;  
 
       let pet = {
          "name": this.form.name.value,
@@ -304,8 +304,6 @@ export class LostPetModalComponent implements OnInit,AfterViewInit{
          "userId": this.cookieService.get('userLoggedId'),
          "performanceTime": secondsDiff
       }
-      console.log(pet);
-
 
       if(this.cookieService.get('userLoggedId') == undefined
          || this.cookieService.get('userLoggedId') == null ){

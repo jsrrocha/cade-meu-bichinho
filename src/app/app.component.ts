@@ -439,8 +439,7 @@ export class AppComponent implements OnInit,AfterViewInit{
   petSearch(){
     this.appLoading = true;
 
-    if(!this.formFilterPet.checkedAllDates.value){
-       
+    if(!this.formFilterPet.checkedAllDates.value){ 
       this.dateFilter = this.formFilterPet.date.value;
     }else{
       this.dateFilter = null;
